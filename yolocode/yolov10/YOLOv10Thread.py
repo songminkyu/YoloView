@@ -227,7 +227,7 @@ class YOLOv10Thread(QThread):
                 if isinstance(self.vid_writer[-1], cv2.VideoWriter):
                     self.vid_writer[-1].release()
                 break
-                #  判断是否更换模型
+                #  모델 변경 여부 결정
             if self.current_model_name != self.new_model_name:
                 self.send_msg.emit('Loading Model: {}'.format(os.path.basename(self.new_model_name)))
                 self.setup_model(self.new_model_name)
@@ -247,11 +247,11 @@ class YOLOv10Thread(QThread):
                 self.batch = next(datasets)
                 path, im0s, s = self.batch
                 self.vid_cap = self.dataset.cap if self.dataset.mode == "video" else None
-                # 原始图片送入 input框
+                # 원본 이미지가 입력 상자로 전송됩니다.
                 self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
                 count += 1
-                percent = 0  # 进度条
-                # 处理processBar
+                percent = 0  # 진행률 표시줄
+                # processBar 처리
                 if self.vid_cap:
                     if self.vid_cap.get(cv2.CAP_PROP_FRAME_COUNT) > 0:
                         percent = int(count / self.vid_cap.get(cv2.CAP_PROP_FRAME_COUNT) * self.progress_value)
