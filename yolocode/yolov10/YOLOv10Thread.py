@@ -72,7 +72,7 @@ class YOLOv10Thread(QThread):
         self.name = 'exp'
         self.exist_ok = False
         self.vid_stride = 1  # 비디오 프레임 속도
-        self.max_det = 1000  # 최대 테스트 수
+        self.max_det = 1000  # 최대 검출 수
         self.classes = None  # 탐지 범주 지정  --class 0, or --class 0 2 3
         self.line_thickness = 3
         self.names_map = {

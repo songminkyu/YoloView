@@ -18,11 +18,11 @@ from yolocode.yolov9.utils.torch_utils import select_device, smart_inference_mod
 
 
 class YOLOv9Thread(QThread):
-    # 输入 输出 消息
+    # 입출력 메시지
     send_input = Signal(np.ndarray)
     send_output = Signal(np.ndarray)
     send_msg = Signal(str)
-    # 状态栏显示数据 进度条数据
+    # 상태 표시줄에 데이터 진행 표시줄 데이터 보이기
     send_fps = Signal(str)  # fps
     # send_labels = Signal(dict)  # Detected target results (number of each category)
     send_progress = Signal(int)  # Completeness
@@ -34,11 +34,11 @@ class YOLOv9Thread(QThread):
 
     def __init__(self):
         super(YOLOv9Thread, self).__init__()
-        # YOLOSHOW 界面参数设置
+        # YOLOSHOW 인터페이스 매개 변수 설정
         self.current_model_name = None  # The detection model name to use
         self.new_model_name = None  # Models that change in real time
         self.source = None  # input source
-        self.stop_dtc = True  # 停止检测
+        self.stop_dtc = True  # 검사 중지
         self.is_continue = True  # continue/pause
         self.save_res = False  # Save test results
         self.iou_thres = 0.45  # iou
@@ -49,7 +49,7 @@ class YOLOv9Thread(QThread):
         self.res_status = False  # result status
         self.parent_workpath = None  # parent work path
 
-        # YOLOv9 参数设置
+        # YOLOv9 매개변수 설정
         self.model = None
         self.data = 'yolocode/yolov9/data/coco.yaml'  # data_dict
         self.imgsz = (640, 640)
@@ -67,17 +67,17 @@ class YOLOv9Thread(QThread):
         self.project = 'runs/detect'
         self.name = 'exp'
         self.exist_ok = False
-        self.vid_stride = 1  # 视频帧率
-        self.max_det = 1000  # 最大检测数
-        self.classes = None  # 指定检测类别  --class 0, or --class 0 2 3
+        self.vid_stride = 1  # 비디오 프레임 속도
+        self.max_det = 1000  # 최대 검출 수
+        self.classes = None  # 탐지 범주 지정  --class 0, or --class 0 2 3
         self.line_thickness = 3
-        self.results_picture = dict()     # 结果图片
-        self.results_table = list()         # 结果表格
+        self.results_picture = dict()     # 결과 사진
+        self.results_table = list()         # 결과표
 
     def run(self):
 
         source = str(self.source)
-        # 判断输入源类型
+        # 입력 소스 유형 결정
         if isinstance(IMG_FORMATS, str) or isinstance(IMG_FORMATS, tuple):
             self.is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
         else:
@@ -85,7 +85,7 @@ class YOLOv9Thread(QThread):
         self.is_url = source.lower().startswith(("rtsp://", "rtmp://", "http://", "https://"))
         self.webcam = source.isnumeric() or source.endswith(".streams") or (self.is_url and not self.is_file)
         self.screenshot = source.lower().startswith("screen")
-        # 判断输入源是否是文件夹，如果是列表，则是文件夹
+        # 입력 소스가 폴더인지 확인하고, 목록이면 폴더인지 확인.
         self.is_folder = isinstance(self.source, list)
         if self.save_res:
             self.save_path = increment_path(Path(self.project) / self.name, exist_ok=self.exist_ok)  # increment run
@@ -100,7 +100,7 @@ class YOLOv9Thread(QThread):
         self.stride, self.names, self.pt = model.stride, model.names, model.pt
         self.imgsz = check_img_size(self.imgsz, s=self.stride)  # check image size
 
-        # Dataloader 加载数据
+        # Dataloader
         bs = 1  # batch_size
         vid_stride = self.vid_stride
         dataset_list = []
@@ -126,22 +126,22 @@ class YOLOv9Thread(QThread):
 
     def detect(self, dataset, device, bs):
         seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
-        # seen 表示图片计数
+        # seen 은 이미지 수를 의미
         datasets = iter(dataset)
         count = 0  # run location frame
         start_time = time.time()  # used to calculate the frame rate
         while True:
             if self.stop_dtc:
                 self.send_msg.emit('Stop Detection')
-                # --- 发送图片和表格结果 --- #
+                # --- 이미지 및 테이블 결과 보내기 --- #
                 self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                 for key, value in self.results_picture.items():
                     self.results_table.append([key, str(value)])
                 self.results_picture = dict()
                 self.send_result_table.emit(self.results_table)  # 发送表格结果
                 self.results_table = list()
-                # --- 发送图片和表格结果 --- #
-                # 释放资源
+                # --- 이미지 및 테이블 결과 보내기 --- #
+                # 리소스 해제
                 if hasattr(dataset, 'threads'):
                     for thread in dataset.threads:
                         if thread.is_alive():
@@ -152,7 +152,7 @@ class YOLOv9Thread(QThread):
                 if isinstance(self.vid_writer[-1], cv2.VideoWriter):
                     self.vid_writer[-1].release()
                 break
-            #  判断是否更换模型
+            #  모델 교체 여부 판단
             if self.current_model_name != self.new_model_name:
                 weights = self.current_model_name
                 data = self.data
@@ -163,7 +163,7 @@ class YOLOv9Thread(QThread):
                 self.model.warmup(imgsz=(1 if pt or self.model.triton else bs, 3, *imgsz))  # warmup
                 seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
                 self.current_model_name = self.new_model_name
-            # 开始推理
+            # 추론 시작
             if self.is_continue:
                 if self.is_file:
                     self.send_msg.emit("Detecting File: {}".format(os.path.basename(self.source)))
@@ -176,11 +176,11 @@ class YOLOv9Thread(QThread):
                 else:
                     self.send_msg.emit("Detecting: {}".format(self.source))
                 path, im, im0s, self.vid_cap, s = next(datasets)
-                # 原始图片送入 input框
+                # 원본 이미지가 입력 상자로 전송됩니다.
                 self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
                 count += 1
-                percent = 0  # 进度条
-                # 处理processBar
+                percent = 0  # 진행률 표시줄
+                # processBar 처리
                 if self.vid_cap:
                     percent = int(count / self.vid_cap.get(cv2.CAP_PROP_FRAME_COUNT) * self.progress_value)
                     self.send_progress.emit(percent)
@@ -224,7 +224,7 @@ class YOLOv9Thread(QThread):
                         save_path = str(self.save_path / p.name)  # im.jpg
                         self.res_path = save_path
                     annotator = Annotator(im0, line_width=self.line_thickness, example=str(self.names))
-                    # 类别数量 目标数量
+                    # 카테고리 타겟 수
                     class_nums = 0
                     target_nums = 0
                     if len(det):
@@ -239,7 +239,7 @@ class YOLOv9Thread(QThread):
                             target_nums += int(n)
                             if self.names[int(c)] in self.labels_dict:
                                 self.labels_dict[self.names[int(c)]] += int(n)
-                            else:  # 第一次出现的类别
+                            else:  # 카테고리의 첫 번째 발생
                                 self.labels_dict[self.names[int(c)]] = int(n)
 
                         # Write results
@@ -250,9 +250,9 @@ class YOLOv9Thread(QThread):
 
                     # Stream results
                     im0 = annotator.result()
-                    # 发送结果
+                    # 결과 보내기
                     im0 = annotator.result()
-                    self.send_output.emit(im0)  # 输出图片
+                    self.send_output.emit(im0)  # 이미지 출력
                     self.send_class_num.emit(class_nums)
                     self.send_target_num.emit(target_nums)
                     self.results_picture = self.labels_dict
@@ -284,14 +284,14 @@ class YOLOv9Thread(QThread):
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
                     self.send_msg.emit('Finish Detection')
-                    # --- 发送图片和表格结果 --- #
-                    self.send_result_picture.emit(self.results_picture)  # 发送图片结果
+                    # --- 이미지 및 표 결과 보내기 --- #
+                    self.send_result_picture.emit(self.results_picture)  # 이미지 결과 보내기
                     for key, value in self.results_picture.items():
                         self.results_table.append([key, str(value)])
                     self.results_picture = dict()
-                    self.send_result_table.emit(self.results_table)  # 发送表格结果
+                    self.send_result_table.emit(self.results_table)  # 결과 내보내기
                     self.results_table = list()
-                    # --- 发送图片和表格结果 --- #
+                    # --- 이미지 및 표 결과 보내기 --- #
                     self.res_status = True
                     if self.vid_cap is not None:
                         self.vid_cap.release()
