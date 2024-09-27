@@ -3,17 +3,17 @@ from colorlog import ColoredFormatter
 
 class LoggerUtils:
     def __init__(self):
-        # 创建一个日志器
+        # 로거 생성
         self.logger = logging.getLogger('example_logger')
         self.logger.setLevel(logging.INFO)
 
-        # 检查日志器是否已经有处理器，避免重复添加
+        # 반복적으로 추가하는 것을 방지하려면 로거에 이미 프로세서가 있는지 확인하세요.
         if not self.logger.hasHandlers():
-            # 创建彩色日志格式
+            # 컬러 로그 형식 만들기
             log_format = "%(log_color)s%(levelname)-8s%(reset)s %(blue)s%(message)s"
             formatter = ColoredFormatter(log_format)
 
-            # 创建一个流处理器，并将其添加到日志器
+            # 스트림 프로세서를 생성하여 로거에 추가
             stream_handler = logging.StreamHandler()
             stream_handler.setFormatter(formatter)
             self.logger.addHandler(stream_handler)
