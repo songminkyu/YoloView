@@ -15,127 +15,89 @@ from shapely.geometry import LineString, Point, Polygon
 class ObjectCounter:
     """A class to manage the counting of objects in a real-time video stream based on their tracks."""
 
-    def __init__(self):
-        """Initializes the Counter with default values for various tracking and counting parameters."""
+    def __init__(
+        self,
+        names,
+        reg_pts=None,
+        line_thickness=2,
+        view_img=False,
+        view_in_counts=True,
+        view_out_counts=True,
+        draw_tracks=False,
+    ):
+        """
+        Initializes the ObjectCounter with various tracking and counting parameters.
 
+        Args:
+            names (dict): Dictionary of class names.
+            reg_pts (list): List of points defining the counting region.
+            line_thickness (int): Line thickness for bounding boxes.
+            view_img (bool): Flag to control whether to display the video stream.
+            view_in_counts (bool): Flag to control whether to display the in counts on the video stream.
+            view_out_counts (bool): Flag to control whether to display the out counts on the video stream.
+            draw_tracks (bool): Flag to control whether to draw the object tracks.
+        """
         # Mouse events
         self.is_drawing = False
         self.selected_point = None
 
         # Region & Line Information
-        self.reg_pts = [(20, 400), (1260, 400)]
-        self.line_dist_thresh = 15
+        self.reg_pts = [(20, 400), (1260, 400)] if reg_pts is None else reg_pts
         self.counting_region = None
-        self.region_color = (255, 0, 255)
-        self.region_thickness = 5
 
         # Image and annotation Information
         self.im0 = None
-        self.tf = None
-        self.view_img = False
-        self.view_in_counts = True
-        self.view_out_counts = True
+        self.tf = line_thickness
+        self.view_img = view_img
+        self.view_in_counts = view_in_counts
+        self.view_out_counts = view_out_counts
 
-        self.names = None  # Classes names
-        self.annotator = None  # Annotator
+        self.names = names  # Classes names
         self.window_name = "Ultralytics YOLOv8 Object Counter"
 
         # Object counting Information
         self.in_counts = 0
         self.out_counts = 0
-        self.counting_dict = {}
-        self.count_txt_thickness = 0
-        self.count_txt_color = (0, 0, 0)
-        self.count_color = (255, 255, 255)
+        self.count_ids = []
+        self.class_wise_count = {}
 
         # Tracks info
         self.track_history = defaultdict(list)
-        self.track_thickness = 2
-        self.draw_tracks = False
-        self.track_color = (0, 255, 0)
-
-        # Check if environment support imshow
-        self.env_check = check_imshow(warn=True)
-
-    def set_args(
-        self,
-        classes_names,
-        reg_pts,
-        count_reg_color=(255, 0, 255),
-        line_thickness=2,
-        track_thickness=2,
-        view_img=False,
-        view_in_counts=True,
-        view_out_counts=True,
-        draw_tracks=False,
-        count_txt_thickness=2,
-        count_txt_color=(0, 0, 0),
-        count_color=(255, 255, 255),
-        track_color=(0, 255, 0),
-        region_thickness=5,
-        line_dist_thresh=15,
-    ):
-        """
-        Configures the Counter's image, bounding box line thickness, and counting region points.
-
-        Args:
-            line_thickness (int): Line thickness for bounding boxes.
-            view_img (bool): Flag to control whether to display the video stream.
-            view_in_counts (bool): Flag to control whether to display the incounts on video stream.
-            view_out_counts (bool): Flag to control whether to display the outcounts on video stream.
-            reg_pts (list): Initial list of points defining the counting region.
-            classes_names (dict): Classes names
-            track_thickness (int): Track thickness
-            draw_tracks (Bool): draw tracks
-            count_txt_thickness (int): Text thickness for object counting display
-            count_txt_color (RGB color): count text color value
-            count_color (RGB color): count text background color value
-            count_reg_color (RGB color): Color of object counting region
-            track_color (RGB color): color for tracks
-            region_thickness (int): Object counting Region thickness
-            line_dist_thresh (int): Euclidean Distance threshold for line counter
-        """
-        self.tf = line_thickness
-        self.view_img = view_img
-        self.view_in_counts = view_in_counts
-        self.view_out_counts = view_out_counts
-        self.track_thickness = track_thickness
         self.draw_tracks = draw_tracks
 
-        # Region and line selection
-        if len(reg_pts) == 2:
+        # Check if environment supports imshow
+        self.env_check = check_imshow(warn=True)
+
+        # Initialize counting region
+        if len(self.reg_pts) == 2:
             print("Line Counter Initiated.")
-            self.reg_pts = reg_pts
             self.counting_region = LineString(self.reg_pts)
-        elif len(reg_pts) >= 3:
-            print("Region Counter Initiated.")
-            self.reg_pts = reg_pts
+        elif len(self.reg_pts) >= 3:
+            print("Polygon Counter Initiated.")
             self.counting_region = Polygon(self.reg_pts)
         else:
             print("Invalid Region points provided, region_points must be 2 for lines or >= 3 for polygons.")
             print("Using Line Counter Now")
             self.counting_region = LineString(self.reg_pts)
 
-        self.names = classes_names
-        self.track_color = track_color
-        self.count_txt_thickness = count_txt_thickness
-        self.count_txt_color = count_txt_color
-        self.count_color = count_color
-        self.region_color = count_reg_color
-        self.region_thickness = region_thickness
-        self.line_dist_thresh = line_dist_thresh
+        # Define the counting line segment
+        self.counting_line_segment = LineString(
+            [
+                (self.reg_pts[0][0], self.reg_pts[0][1]),
+                (self.reg_pts[1][0], self.reg_pts[1][1]),
+            ]
+        )
 
     def mouse_event_for_region(self, event, x, y, flags, params):
         """
-        This function is designed to move region with mouse events in a real-time video stream.
+        Handles mouse events for defining and moving the counting region in a real-time video stream.
 
         Args:
             event (int): The type of mouse event (e.g., cv2.EVENT_MOUSEMOVE, cv2.EVENT_LBUTTONDOWN, etc.).
             x (int): The x-coordinate of the mouse pointer.
             y (int): The y-coordinate of the mouse pointer.
-            flags (int): Any flags associated with the event (e.g., cv2.EVENT_FLAG_CTRLKEY,
-                cv2.EVENT_FLAG_SHIFTKEY, etc.).
-            params (dict): Additional parameters you may want to pass to the function.
+            flags (int): Any associated event flags (e.g., cv2.EVENT_FLAG_CTRLKEY,  cv2.EVENT_FLAG_SHIFTKEY, etc.).
+            params (dict): Additional parameters for the function.
         """
         if event == cv2.EVENT_LBUTTONDOWN:
             for i, point in enumerate(self.reg_pts):
@@ -159,19 +121,28 @@ class ObjectCounter:
 
     def extract_and_process_tracks(self, tracks):
         """Extracts and processes tracks for object counting in a video stream."""
-
         # Annotator Init and region drawing
-        self.annotator = Annotator(self.im0, self.tf, self.names)
+        annotator = Annotator(self.im0, self.tf, self.names)
 
-        if tracks[0].boxes.id is not None:
-            boxes = tracks[0].boxes.xyxy.cpu()
-            clss = tracks[0].boxes.cls.cpu().tolist()
-            track_ids = tracks[0].boxes.id.int().cpu().tolist()
+        # Draw region or line
+        annotator.draw_region(reg_pts=self.reg_pts, color=(104, 0, 123), thickness=self.tf * 2)
+
+        # Extract tracks for OBB or object detection
+        track_data = tracks[0].obb or tracks[0].boxes
+
+        if track_data and track_data.id is not None:
+            boxes = track_data.xyxy.cpu()
+            clss = track_data.cls.cpu().tolist()
+            track_ids = track_data.id.int().cpu().tolist()
 
             # Extract tracks
             for box, track_id, cls in zip(boxes, track_ids, clss):
                 # Draw bounding box
-                self.annotator.box_label(box, label=f"{track_id}:{self.names[cls]}", color=colors(int(cls), True))
+                annotator.box_label(box, label=self.names[cls], color=colors(int(track_id), True))
+
+                # Store class info
+                if self.names[cls] not in self.class_wise_count:
+                    self.class_wise_count[self.names[cls]] = {"IN": 0, "OUT": 0}
 
                 # Draw Tracks
                 track_line = self.track_history[track_id]
@@ -181,75 +152,68 @@ class ObjectCounter:
 
                 # Draw track trails
                 if self.draw_tracks:
-                    self.annotator.draw_centroid_and_tracks(
-                        track_line, color=self.track_color, track_thickness=self.track_thickness
+                    annotator.draw_centroid_and_tracks(
+                        track_line,
+                        color=colors(int(track_id), True),
+                        track_thickness=self.tf,
                     )
 
                 prev_position = self.track_history[track_id][-2] if len(self.track_history[track_id]) > 1 else None
-                centroid = Point((box[:2] + box[2:]) / 2)
 
-                # Count objects
-                if len(self.reg_pts) >= 3:  # any polygon
-                    is_inside = self.counting_region.contains(centroid)
-                    current_position = "in" if is_inside else "out"
+                # Count objects in any polygon
+                if len(self.reg_pts) >= 3:
+                    is_inside = self.counting_region.contains(Point(track_line[-1]))
 
-                    if prev_position is not None:
-                        if self.counting_dict[track_id] != current_position and is_inside:
+                    if prev_position is not None and is_inside and track_id not in self.count_ids:
+                        self.count_ids.append(track_id)
+
+                        if (box[0] - prev_position[0]) * (self.counting_region.centroid.x - prev_position[0]) > 0:
                             self.in_counts += 1
-                            self.counting_dict[track_id] = "in"
-                        elif self.counting_dict[track_id] != current_position and not is_inside:
-                            self.out_counts += 1
-                            self.counting_dict[track_id] = "out"
+                            self.class_wise_count[self.names[cls]]["IN"] += 1
                         else:
-                            self.counting_dict[track_id] = current_position
+                            self.out_counts += 1
+                            self.class_wise_count[self.names[cls]]["OUT"] += 1
 
-                    else:
-                        self.counting_dict[track_id] = current_position
-
+                # Count objects using line
                 elif len(self.reg_pts) == 2:
-                    if prev_position is not None:
-                        is_inside = (box[0] - prev_position[0]) * (
-                            self.counting_region.centroid.x - prev_position[0]
-                        ) > 0
-                        current_position = "in" if is_inside else "out"
+                    if (
+                        prev_position is not None
+                        and track_id not in self.count_ids
+                        and LineString([(prev_position[0], prev_position[1]), (box[0], box[1])]).intersects(
+                            self.counting_line_segment
+                        )
+                    ):
+                        self.count_ids.append(track_id)
 
-                        if self.counting_dict[track_id] != current_position and is_inside:
+                        # Determine the direction of movement (IN or OUT)
+                        dx = (box[0] - prev_position[0]) * (self.counting_region.centroid.x - prev_position[0])
+                        dy = (box[1] - prev_position[1]) * (self.counting_region.centroid.y - prev_position[1])
+                        if dx > 0 and dy > 0:
                             self.in_counts += 1
-                            self.counting_dict[track_id] = "in"
-                        elif self.counting_dict[track_id] != current_position and not is_inside:
-                            self.out_counts += 1
-                            self.counting_dict[track_id] = "out"
+                            self.class_wise_count[self.names[cls]]["IN"] += 1
                         else:
-                            self.counting_dict[track_id] = current_position
-                    else:
-                        self.counting_dict[track_id] = None
+                            self.out_counts += 1
+                            self.class_wise_count[self.names[cls]]["OUT"] += 1
 
-        incount_label = f"In Count : {self.in_counts}"
-        outcount_label = f"OutCount : {self.out_counts}"
+        labels_dict = {}
 
-        # Display counts based on user choice
-        counts_label = None
-        if not self.view_in_counts and not self.view_out_counts:
-            counts_label = None
-        elif not self.view_in_counts:
-            counts_label = outcount_label
-        elif not self.view_out_counts:
-            counts_label = incount_label
-        else:
-            counts_label = f"{incount_label} {outcount_label}"
+        for key, value in self.class_wise_count.items():
+            if value["IN"] != 0 or value["OUT"] != 0:
+                if not self.view_in_counts and not self.view_out_counts:
+                    continue
+                elif not self.view_in_counts:
+                    labels_dict[str.capitalize(key)] = f"OUT {value['OUT']}"
+                elif not self.view_out_counts:
+                    labels_dict[str.capitalize(key)] = f"IN {value['IN']}"
+                else:
+                    labels_dict[str.capitalize(key)] = f"IN {value['IN']} OUT {value['OUT']}"
 
-        if counts_label is not None:
-            self.annotator.count_labels(
-                counts=counts_label,
-                count_txt_size=self.count_txt_thickness,
-                txt_color=self.count_txt_color,
-                color=self.count_color,
-            )
+        if labels_dict:
+            annotator.display_analytics(self.im0, labels_dict, (104, 31, 17), (255, 255, 255), 10)
 
     def display_frames(self):
-        """Display frame."""
+        """Displays the current frame with annotations and regions in a window."""
         if self.env_check:
-            self.annotator.draw_region(reg_pts=self.reg_pts, color=self.region_color, thickness=self.region_thickness)
             cv2.namedWindow(self.window_name)
             if len(self.reg_pts) == 4:  # only add mouse event If user drawn region
                 cv2.setMouseCallback(self.window_name, self.mouse_event_for_region, {"region_points": self.reg_pts})
@@ -275,4 +239,5 @@ class ObjectCounter:
 
 
 if __name__ == "__main__":
-    ObjectCounter()
+    classes_names = {0: "person", 1: "car"}  # example class names
+    ObjectCounter(classes_names)

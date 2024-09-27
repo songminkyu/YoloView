@@ -52,7 +52,7 @@ class YOLOv10Thread(QThread):
         self.res_status = False  # result status
         self.parent_workpath = None  # parent work path
 
-        # YOLOv8 参数设置
+        # YOLOv8 매개변수 설정
         self.model = None
         self.data = 'yolocode/yolov8/cfg/datasets/coco.yaml'  # data_dict
         self.imgsz = 640

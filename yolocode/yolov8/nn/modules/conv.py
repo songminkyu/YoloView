@@ -158,9 +158,7 @@ class GhostConv(nn.Module):
     """Ghost Convolution https://github.com/huawei-noah/ghostnet."""
 
     def __init__(self, c1, c2, k=1, s=1, g=1, act=True):
-        """Initializes the GhostConv object with input channels, output channels, kernel size, stride, groups and
-        activation.
-        """
+        """Initializes Ghost Convolution module with primary and cheap operations for efficient feature learning."""
         super().__init__()
         c_ = c2 // 2  # hidden channels
         self.cv1 = Conv(c1, c_, k, s, None, g, act=act)
@@ -296,7 +294,7 @@ class SpatialAttention(nn.Module):
     def __init__(self, kernel_size=7):
         """Initialize Spatial-attention module with kernel size argument."""
         super().__init__()
-        assert kernel_size in (3, 7), "kernel size must be 3 or 7"
+        assert kernel_size in {3, 7}, "kernel size must be 3 or 7"
         padding = 3 if kernel_size == 7 else 1
         self.cv1 = nn.Conv2d(2, 1, kernel_size, padding=padding, bias=False)
         self.act = nn.Sigmoid()
