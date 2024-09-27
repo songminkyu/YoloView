@@ -577,6 +577,27 @@ class SPPELAN(nn.Module):
         return self.cv5(torch.cat(y, 1))
         
         
+class ELAN1(nn.Module):
+
+    def __init__(self, c1, c2, c3, c4):  # ch_in, ch_out, number, shortcut, groups, expansion
+        super().__init__()
+        self.c = c3//2
+        self.cv1 = Conv(c1, c3, 1, 1)
+        self.cv2 = Conv(c3//2, c4, 3, 1)
+        self.cv3 = Conv(c4, c4, 3, 1)
+        self.cv4 = Conv(c3+(2*c4), c2, 1, 1)
+
+    def forward(self, x):
+        y = list(self.cv1(x).chunk(2, 1))
+        y.extend(m(y[-1]) for m in [self.cv2, self.cv3])
+        return self.cv4(torch.cat(y, 1))
+
+    def forward_split(self, x):
+        y = list(self.cv1(x).split((self.c, self.c), 1))
+        y.extend(m(y[-1]) for m in [self.cv2, self.cv3])
+        return self.cv4(torch.cat(y, 1))
+        
+        
 class RepNCSPELAN4(nn.Module):
     # csp-elan
     def __init__(self, c1, c2, c3, c4, c5=1):  # ch_in, ch_out, number, shortcut, groups, expansion
@@ -672,7 +693,7 @@ class DetectMultiBackend(nn.Module):
 
         super().__init__()
         w = str(weights[0] if isinstance(weights, list) else weights)
-        pt, jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle, triton = self._model_type(w)
+        pt, jit, onnx, onnx_end2end, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle, triton = self._model_type(w)
         fp16 &= pt or jit or onnx or engine  # FP16
         nhwc = coreml or saved_model or pb or tflite or edgetpu  # BHWC formats (vs torch BCWH)
         stride = 32  # default stride
@@ -1182,6 +1203,18 @@ class Proto(nn.Module):
 
     def forward(self, x):
         return self.cv3(self.cv2(self.upsample(self.cv1(x))))
+
+
+class UConv(nn.Module):
+    def __init__(self, c1, c_=256, c2=256):  # ch_in, number of protos, number of masks
+        super().__init__()
+        
+        self.cv1 = Conv(c1, c_, k=3)
+        self.cv2 = nn.Conv2d(c_, c2, 1, 1)
+        self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+
+    def forward(self, x):
+        return self.up(self.cv2(self.cv1(x)))
 
 
 class Classify(nn.Module):
