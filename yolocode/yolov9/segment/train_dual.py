@@ -22,25 +22,25 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-import segment.val_dual as validate  # for end-of-epoch mAP
+import yolocode.yolov9.segment.val_dual as validate  # for end-of-epoch mAP
 from models.experimental import attempt_load
 from models.yolo import SegmentationModel
-from utils.autoanchor import check_anchors
-from utils.autobatch import check_train_batch_size
-from utils.callbacks import Callbacks
-from utils.downloads import attempt_download, is_url
-from utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
+from yolocode.yolov9.utils.autoanchor import check_anchors
+from yolocode.yolov9.utils.autobatch import check_train_batch_size
+from yolocode.yolov9.utils.callbacks import Callbacks
+from yolocode.yolov9.utils.downloads import attempt_download, is_url
+from yolocode.yolov9.utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
                            check_git_status, check_img_size, check_requirements, check_suffix, check_yaml, colorstr,
                            get_latest_run, increment_path, init_seeds, intersect_dicts, labels_to_class_weights,
                            labels_to_image_weights, one_cycle, print_args, print_mutation, strip_optimizer, yaml_save)
-from utils.loggers import GenericLogger
-from utils.plots import plot_evolve, plot_labels
-from utils.segment.dataloaders import create_dataloader
-from utils.segment.loss_tal_dual import ComputeLoss
+from yolocode.yolov9.utils.loggers import GenericLogger
+from yolocode.yolov9.utils.plots import plot_evolve, plot_labels
+from yolocode.yolov9.utils.segment.dataloaders import create_dataloader
+from yolocode.yolov9.utils.segment.loss_tal_dual import ComputeLoss
 #from utils.segment.loss_tal_dual import ComputeLossLH as ComputeLoss
-from utils.segment.metrics import KEYS, fitness
-from utils.segment.plots import plot_images_and_masks, plot_results_with_masks
-from utils.torch_utils import (EarlyStopping, ModelEMA, de_parallel, select_device, smart_DDP, smart_optimizer,
+from yolocode.yolov9.utils.segment.metrics import KEYS, fitness
+from yolocode.yolov9.utils.segment.plots import plot_images_and_masks, plot_results_with_masks
+from yolocode.yolov9.utils.torch_utils import (EarlyStopping, ModelEMA, de_parallel, select_device, smart_DDP, smart_optimizer,
                                smart_resume, torch_distributed_zero_first)
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html

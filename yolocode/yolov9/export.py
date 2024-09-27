@@ -21,12 +21,12 @@ if str(ROOT) not in sys.path:
 if platform.system() != 'Windows':
     ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-from models.experimental import attempt_load
-from models.yolo import ClassificationModel, Detect, DetectionModel, SegmentationModel
-from yolocode.yolov9.utils.dataloaders import LoadImages
-from yolocode.yolov9.utils.general import (LOGGER, Profile, check_dataset, check_img_size, check_requirements, check_version,
+from models.experimental import attempt_load, End2End
+from models.yolo import ClassificationModel, Detect, DDetect, DualDetect, DualDDetect, DetectionModel, SegmentationModel
+from utils.dataloaders import LoadImages
+from utils.general import (LOGGER, Profile, check_dataset, check_img_size, check_requirements, check_version,
                            check_yaml, colorstr, file_size, get_default_args, print_args, url2file, yaml_save)
-from yolocode.yolov9.utils.torch_utils import select_device, smart_inference_mode
+from utils.torch_utils import select_device, smart_inference_mode
 
 MACOS = platform.system() == 'Darwin'  # macOS environment
 
@@ -37,6 +37,7 @@ def export_formats():
         ['PyTorch', '-', '.pt', True, True],
         ['TorchScript', 'torchscript', '.torchscript', True, True],
         ['ONNX', 'onnx', '.onnx', True, True],
+        ['ONNX END2END', 'onnx_end2end', '_end2end.onnx', True, True],
         ['OpenVINO', 'openvino', '_openvino_model', True, False],
         ['TensorRT', 'engine', '.engine', False, True],
         ['CoreML', 'coreml', '.mlmodel', True, False],
@@ -137,6 +138,64 @@ def export_onnx(model, im, file, opset, dynamic, simplify, prefix=colorstr('ONNX
         except Exception as e:
             LOGGER.info(f'{prefix} simplifier failure: {e}')
     return f, model_onnx
+    
+
+@try_export
+def export_onnx_end2end(model, im, file, simplify, topk_all, iou_thres, conf_thres, device, labels, prefix=colorstr('ONNX END2END:')):
+    # YOLO ONNX export
+    check_requirements('onnx')
+    import onnx
+    LOGGER.info(f'\n{prefix} starting export with onnx {onnx.__version__}...')
+    f = os.path.splitext(file)[0] + "-end2end.onnx"
+    batch_size = 'batch'
+
+    dynamic_axes = {'images': {0 : 'batch', 2: 'height', 3:'width'}, } # variable length axes
+
+    output_axes = {
+                    'num_dets': {0: 'batch'},
+                    'det_boxes': {0: 'batch'},
+                    'det_scores': {0: 'batch'},
+                    'det_classes': {0: 'batch'},
+                }
+    dynamic_axes.update(output_axes)
+    model = End2End(model, topk_all, iou_thres, conf_thres, None ,device, labels)
+
+    output_names = ['num_dets', 'det_boxes', 'det_scores', 'det_classes']
+    shapes = [ batch_size, 1,  batch_size,  topk_all, 4,
+               batch_size,  topk_all,  batch_size,  topk_all]
+
+    torch.onnx.export(model, 
+                          im, 
+                          f, 
+                          verbose=False, 
+                          export_params=True,       # store the trained parameter weights inside the model file
+                          opset_version=12, 
+                          do_constant_folding=True, # whether to execute constant folding for optimization
+                          input_names=['images'],
+                          output_names=output_names,
+                          dynamic_axes=dynamic_axes)
+
+    # Checks
+    model_onnx = onnx.load(f)  # load onnx model
+    onnx.checker.check_model(model_onnx)  # check onnx model
+    for i in model_onnx.graph.output:
+        for j in i.type.tensor_type.shape.dim:
+            j.dim_param = str(shapes.pop(0))
+
+    if simplify:
+        try:
+            import onnxsim
+
+            print('\nStarting to simplify ONNX...')
+            model_onnx, check = onnxsim.simplify(model_onnx)
+            assert check, 'assert check failed'
+        except Exception as e:
+            print(f'Simplifier failure: {e}')
+
+        # print(onnx.helper.printable_graph(onnx_model.graph))  # print a human readable model
+        onnx.save(model_onnx,f)
+        print('ONNX export success, saved as %s' % f)
+    return f, model_onnx
 
 
 @try_export
@@ -148,7 +207,10 @@ def export_openvino(file, metadata, half, prefix=colorstr('OpenVINO:')):
     LOGGER.info(f'\n{prefix} starting export with openvino {ie.__version__}...')
     f = str(file).replace('.pt', f'_openvino_model{os.sep}')
 
-    cmd = f"mo --input_model {file.with_suffix('.onnx')} --output_dir {f} --data_type {'FP16' if half else 'FP32'}"
+    #cmd = f"mo --input_model {file.with_suffix('.onnx')} --output_dir {f} --data_type {'FP16' if half else 'FP32'}"
+    #cmd = f"mo --input_model {file.with_suffix('.onnx')} --output_dir {f} {"--compress_to_fp16" if half else ""}"
+    half_arg = "--compress_to_fp16" if half else ""
+    cmd = f"mo --input_model {file.with_suffix('.onnx')} --output_dir {f} {half_arg}"
     subprocess.run(cmd.split(), check=True, env=os.environ)  # export
     yaml_save(Path(f) / file.with_suffix('.yaml').name, metadata)  # add metadata.yaml
     return f, None
@@ -471,7 +533,7 @@ def run(
     fmts = tuple(export_formats()['Argument'][1:])  # --include arguments
     flags = [x in include for x in fmts]
     assert sum(flags) == len(include), f'ERROR: Invalid --include {include}, valid --include arguments are {fmts}'
-    jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle = flags  # export booleans
+    jit, onnx, onnx_end2end, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle = flags  # export booleans
     file = Path(url2file(weights) if str(weights).startswith(('http:/', 'https:/')) else weights)  # PyTorch weights
 
     # Load PyTorch model
@@ -494,7 +556,7 @@ def run(
     # Update model
     model.eval()
     for k, m in model.named_modules():
-        if isinstance(m, (Detect, V6Detect)):
+        if isinstance(m, (Detect, DDetect, DualDetect, DualDDetect)):
             m.inplace = inplace
             m.dynamic = dynamic
             m.export = True
@@ -503,7 +565,7 @@ def run(
         y = model(im)  # dry runs
     if half and not coreml:
         im, model = im.half(), model.half()  # to FP16
-    shape = tuple((y[0] if isinstance(y, tuple) else y).shape)  # model output shape
+    shape = tuple((y[0] if isinstance(y, (tuple, list)) else y).shape)  # model output shape
     metadata = {'stride': int(max(model.stride)), 'names': model.names}  # model metadata
     LOGGER.info(f"\n{colorstr('PyTorch:')} starting from {file} with output shape {shape} ({file_size(file):.1f} MB)")
 
@@ -516,6 +578,12 @@ def run(
         f[1], _ = export_engine(model, im, file, half, dynamic, simplify, workspace, verbose)
     if onnx or xml:  # OpenVINO requires ONNX
         f[2], _ = export_onnx(model, im, file, opset, dynamic, simplify)
+    if onnx_end2end:
+        if isinstance(model, DetectionModel):
+            labels = model.names
+            f[2], _ = export_onnx_end2end(model, im, file, simplify, topk_all, iou_thres, conf_thres, device, len(labels))
+        else:
+            raise RuntimeError("The model is not a DetectionModel.")
     if xml:  # OpenVINO
         f[3], _ = export_openvino(file, metadata, half)
     if coreml:  # CoreML
@@ -554,12 +622,17 @@ def run(
         h = '--half' if half else ''  # --half FP16 inference arg
         s = "# WARNING ⚠️ ClassificationModel not yet supported for PyTorch Hub AutoShape inference" if cls else \
             "# WARNING ⚠️ SegmentationModel not yet supported for PyTorch Hub AutoShape inference" if seg else ''
-        LOGGER.info(f'\nExport complete ({time.time() - t:.1f}s)'
-                    f"\nResults saved to {colorstr('bold', file.parent.resolve())}"
-                    f"\nDetect:          python {dir / ('detect.py' if det else 'predict.py')} --weights {f[-1]} {h}"
-                    f"\nValidate:        python {dir / 'val.py'} --weights {f[-1]} {h}"
-                    f"\nPyTorch Hub:     model = torch.hub.load('ultralytics/yolov5', 'custom', '{f[-1]}')  {s}"
-                    f"\nVisualize:       https://netron.app")
+        if onnx_end2end:
+            LOGGER.info(f'\nExport complete ({time.time() - t:.1f}s)'
+                        f"\nResults saved to {colorstr('bold', file.parent.resolve())}"
+                        f"\nVisualize:       https://netron.app")
+        else:
+            LOGGER.info(f'\nExport complete ({time.time() - t:.1f}s)'
+                        f"\nResults saved to {colorstr('bold', file.parent.resolve())}"
+                        f"\nDetect:          python {dir / ('detect.py' if det else 'predict.py')} --weights {f[-1]} {h}"
+                        f"\nValidate:        python {dir / 'val.py'} --weights {f[-1]} {h}"
+                        f"\nPyTorch Hub:     model = torch.hub.load('ultralytics/yolov5', 'custom', '{f[-1]}')  {s}"
+                        f"\nVisualize:       https://netron.app")
     return f  # return list of exported files/dirs
 
 
@@ -583,15 +656,22 @@ def parse_opt():
     parser.add_argument('--nms', action='store_true', help='TF: add NMS to model')
     parser.add_argument('--agnostic-nms', action='store_true', help='TF: add agnostic NMS to model')
     parser.add_argument('--topk-per-class', type=int, default=100, help='TF.js NMS: topk per class to keep')
-    parser.add_argument('--topk-all', type=int, default=100, help='TF.js NMS: topk for all classes to keep')
-    parser.add_argument('--iou-thres', type=float, default=0.45, help='TF.js NMS: IoU threshold')
-    parser.add_argument('--conf-thres', type=float, default=0.25, help='TF.js NMS: confidence threshold')
+    parser.add_argument('--topk-all', type=int, default=100, help='ONNX END2END/TF.js NMS: topk for all classes to keep')
+    parser.add_argument('--iou-thres', type=float, default=0.45, help='ONNX END2END/TF.js NMS: IoU threshold')
+    parser.add_argument('--conf-thres', type=float, default=0.25, help='ONNX END2END/TF.js NMS: confidence threshold')
     parser.add_argument(
         '--include',
         nargs='+',
         default=['torchscript'],
-        help='torchscript, onnx, openvino, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle')
+        help='torchscript, onnx, onnx_end2end, openvino, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle')
     opt = parser.parse_args()
+
+    if 'onnx_end2end' in opt.include:  
+        opt.simplify = True
+        opt.dynamic = True
+        opt.inplace = True
+        opt.half = False
+
     print_args(vars(opt))
     return opt
 

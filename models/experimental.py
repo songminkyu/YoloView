@@ -318,7 +318,7 @@ if 'yolov7' in yolo_name:
 
 ### --- YOLOv9 Code --- ###
 if 'yolov9' in yolo_name:
-    from yolocode.yolov9.utils.downloads import attempt_download_YOLOV9
+    from yolocode.yolov9.utils.downloads import attempt_download
     def attempt_load_YOLOV9(weights, device=None, inplace=True, fuse=True):
         # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
         from models.yolo import Detect, Model
