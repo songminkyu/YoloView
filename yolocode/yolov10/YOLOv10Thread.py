@@ -25,7 +25,7 @@ class YOLOv10Thread(QThread):
     send_input = Signal(np.ndarray)
     send_output = Signal(np.ndarray)
     send_msg = Signal(str)
-    # 状态栏显示数据 进度条数据
+    # 상태 표시줄 표시 데이터 진행 표시줄 데이터
     send_fps = Signal(str)  # fps
     # send_labels = Signal(dict)  # Detected target results (number of each category)
     send_progress = Signal(int)  # Completeness
@@ -37,7 +37,7 @@ class YOLOv10Thread(QThread):
 
     def __init__(self):
         super(YOLOv10Thread, self).__init__()
-        # YOLOSHOW 界面参数设置
+        # YOLOSHOW 인터페이스 매개변수 설정
         self.current_model_name = None  # The detection model name to use
         self.new_model_name = None  # Models that change in real time
         self.source = None  # input source
@@ -71,9 +71,9 @@ class YOLOv10Thread(QThread):
         self.project = 'runs/detect'
         self.name = 'exp'
         self.exist_ok = False
-        self.vid_stride = 1  # 视频帧率
-        self.max_det = 1000  # 最大检测数
-        self.classes = None  # 指定检测类别  --class 0, or --class 0 2 3
+        self.vid_stride = 1  # 비디오 프레임 속도
+        self.max_det = 1000  # 최대 테스트 수
+        self.classes = None  # 탐지 범주 지정  --class 0, or --class 0 2 3
         self.line_thickness = 3
         self.names_map = {
             0: "person",
@@ -157,8 +157,8 @@ class YOLOv10Thread(QThread):
             78: "hair drier",
             79: "toothbrush"
         }
-        self.results_picture = dict()     # 结果图片
-        self.results_table = list()         # 结果表格
+        self.results_picture = dict()     # 결과 사진
+        self.results_table = list()         # 결과표
         self.callbacks = defaultdict(list, callbacks.default_callbacks)  # add callbacks
         callbacks.add_integration_callbacks(self)
 
@@ -171,12 +171,12 @@ class YOLOv10Thread(QThread):
             self.model.names = {key: self.names_map[int(value)] if isinstance(value, int) else value for key, value in self.model.names.items() if isinstance(value, int)}
 
         source = str(self.source)
-        # 判断输入源类型
+        # 입력 소스 유형 결정
         self.is_file = Path(source).suffix[1:] in (IMG_FORMATS | VID_FORMATS)
         self.is_url = source.lower().startswith(("rtsp://", "rtmp://", "http://", "https://"))
         self.webcam = source.isnumeric() or source.endswith(".streams") or (self.is_url and not self.is_file)
         self.screenshot = source.lower().startswith("screen")
-        # 判断输入源是否是文件夹，如果是列表，则是文件夹
+        # 입력 소스가 폴더인지 확인하고, 목록이면 폴더인지 확인합니다.
         self.is_folder = isinstance(self.source, list)
         if self.save_res:
             self.save_path = increment_path(Path(self.project) / self.name, exist_ok=self.exist_ok)  # increment run
@@ -202,17 +202,17 @@ class YOLOv10Thread(QThread):
         while True:
             if self.stop_dtc:
                 self.send_msg.emit('Stop Detection')
-                # --- 发送图片和表格结果 --- #
-                self.send_result_picture.emit(self.results_picture)  # 发送图片结果
+                # --- 이미지 및 표 결과 보내기 --- #
+                self.send_result_picture.emit(self.results_picture)  # 이미지 결과 보내기
                 for key, value in self.results_picture.items():
                     self.results_table.append([key, str(value)])
                 self.results_picture = dict()
-                self.send_result_table.emit(self.results_table)  # 发送表格结果
+                self.send_result_table.emit(self.results_table)  # 결과 테이블 내보내기
                 self.results_table = list()
-                # --- 发送图片和表格结果 --- #
-                # 释放资源
+                # --- 이미지 및 표 결과 보내기 --- #
+                # 리소스 해제
                 self.dataset.running = False  # stop flag for Thread
-                # 判断self.dataset里面是否有threads
+                # self.dataset에 스레드가 있는지 확인
                 if hasattr(self.dataset, 'threads'):
                     for thread in self.dataset.threads:
                         if thread.is_alive():
@@ -307,7 +307,7 @@ class YOLOv10Thread(QThread):
                             class_nums += 1
                             if label_name in self.labels_dict:
                                 self.labels_dict[label_name] += int(nums)
-                            else:  # 第一次出现的类别
+                            else:  # 카테고리의 첫 번째 발생
                                 self.labels_dict[label_name] = int(nums)
 
                     # Send test results
@@ -326,14 +326,14 @@ class YOLOv10Thread(QThread):
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
                     self.send_msg.emit('Finish Detection')
-                    # --- 发送图片和表格结果 --- #
+                    # --- 이미지 및 표 결과 보내기 --- #
                     self.send_result_picture.emit(self.results_picture)  # 发送图片结果
                     for key, value in self.results_picture.items():
                         self.results_table.append([key, str(value)])
                     self.results_picture = dict()
                     self.send_result_table.emit(self.results_table)  # 发送表格结果
                     self.results_table = list()
-                    # --- 发送图片和表格结果 --- #
+                    # --- 이미지 및 표 결과 보내기 --- #
                     self.res_status = True
                     if self.vid_cap is not None:
                         self.vid_cap.release()
