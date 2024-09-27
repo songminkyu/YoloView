@@ -184,7 +184,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
         self.initThreads()
 
-        # --- 초기 매개변수 조정 --- #
+        # --- 하이퍼파라미터 조정 --- #
         self.ui.iou_spinbox.valueChanged.connect(
             lambda x: self.changeValue(x, 'iou_spinbox'))  # iou box
         self.ui.iou_slider.valueChanged.connect(lambda x: self.changeValue(x, 'iou_slider'))  # iou scroll bar
@@ -194,7 +194,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.speed_slider.valueChanged.connect(lambda x: self.changeValue(x, 'speed_slider'))  # speed scroll bar
         self.ui.line_spinbox.valueChanged.connect(lambda x: self.changeValue(x, 'line_spinbox'))  # line box
         self.ui.line_slider.valueChanged.connect(lambda x: self.changeValue(x, 'line_slider'))  # line slider
-        # --- 초기 매개변수 조정 --- #
+        # --- 하이퍼파라미터 조정 --- #
 
         # --- 시작/중지 --- #
         self.ui.run_button.clicked.connect(self.runorContinue)

@@ -32,7 +32,7 @@ ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov10", "yolov5-se
                    "yolov8-pose", "yolov8-obb"]
 
 
-# YOLOSHOW窗口类 动态加载UI文件 和 Ui_mainWindow
+# YOLOSHOW 윈도우 클래스는 UI 파일과 Ui_mainWindow를 동적으로 로드합니다.
 class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
     def __init__(self):
         super().__init__()
@@ -42,24 +42,24 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.result_statistic = None
         self.detect_result = None
 
-        # --- 加载UI --- #
+        # --- UI 로드 --- #
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setAttribute(Qt.WA_TranslucentBackground, True)  # 透明背景
         self.setWindowFlags(Qt.FramelessWindowHint)  # 无头窗口
-        # --- 加载UI --- #
+        # --- UI 로드 --- #
 
-        # 初始化侧边栏
+        # 사이드바 초기화
         self.initSiderWidget()
 
-        # --- 最大化 最小化 关闭 --- #
+        # --- 최대화 최소화 닫기 --- #
         self.ui.maximizeButton.clicked.connect(self.maxorRestore)
         self.ui.minimizeButton.clicked.connect(self.showMinimized)
         self.ui.closeButton.clicked.connect(self.close)
         self.ui.topbox.doubleClickFrame.connect(self.maxorRestore)
-        # --- 最大化 最小化 关闭 --- #
+        # --- 최대화 최소화 닫기 --- #
 
-        # --- 播放 暂停 停止 --- #
+        # --- 재생 일시 정지 --- #
         self.playIcon = QtGui.QIcon()
         self.playIcon.addPixmap(QtGui.QPixmap(f"{self.current_workpath}/images/newsize/play.png"), QtGui.QIcon.Normal,
                                 QtGui.QIcon.Off)
@@ -69,14 +69,14 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                                 QtGui.QIcon.Selected, QtGui.QIcon.On)
         self.ui.run_button.setCheckable(True)
         self.ui.run_button.setIcon(self.playIcon)
-        # --- 播放 暂停 停止 --- #
+        # --- 재생 일시 정지 --- #
 
-        # --- 侧边栏缩放 --- #
+        # --- 사이드바 확대/축소 --- #
         self.ui.src_menu.clicked.connect(self.scaleMenu)  # hide menu button
         self.ui.src_setting.clicked.connect(self.scalSetting)  # setting button
-        # --- 侧边栏缩放 --- #
+        # --- 사이드바 확대/축소 --- #
 
-        # --- 自动加载/动态改变 PT 模型 --- #
+        # --- PT 모델 자동 로드/동적으로 변경 --- #
         self.pt_Path = f"{self.current_workpath}/ptfiles/"
         self.pt_list = os.listdir(f'{self.current_workpath}/ptfiles/')
         self.pt_list = [file for file in self.pt_list if file.endswith('.pt')]
@@ -91,9 +91,9 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.qtimer_search.start(2000)
         self.ui.model_box1.currentTextChanged.connect(lambda: self.changeModel("left"))
         self.ui.model_box2.currentTextChanged.connect(lambda: self.changeModel("right"))
-        # --- 自动加载/动态改变 PT 模型 --- #
+        # --- PT 모델 자동 로드/동적으로 변경 --- #
 
-        # --- 超参数调整 --- #
+        # --- 하이퍼파라미터 조정 --- #
         self.ui.iou_spinbox.valueChanged.connect(lambda x: self.changeValue(x, 'iou_spinbox'))  # iou box
         self.ui.iou_slider.valueChanged.connect(lambda x: self.changeValue(x, 'iou_slider'))  # iou scroll bar
         self.ui.conf_spinbox.valueChanged.connect(lambda x: self.changeValue(x, 'conf_spinbox'))  # conf box
@@ -102,32 +102,32 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.ui.speed_slider.valueChanged.connect(lambda x: self.changeValue(x, 'speed_slider'))  # speed scroll bar
         self.ui.line_spinbox.valueChanged.connect(lambda x: self.changeValue(x, 'line_spinbox'))  # line box
         self.ui.line_slider.valueChanged.connect(lambda x: self.changeValue(x, 'line_slider'))  # line slider
-        # --- 超参数调整 --- #
+        # --- 하이퍼파라미터 조정 --- #
 
-        # --- 导入 图片/视频、调用摄像头、导入文件夹（批量处理）、调用网络摄像头、结果统计图片、结果统计表格 --- #
+        # --- 사진/동영상 가져오기, 카메라 호출, 폴더 가져오기(일괄 처리), 웹 카메라 호출, 결과 통계 사진, 결과 통계 테이블 --- #
         self.ui.src_img.clicked.connect(self.selectFile)
-        # 对比模型模式 不支持同时读取摄像头流
+        # 모델 비교 모드는 카메라 스트림 동시 읽기를 지원하지 않음.
         # self.src_webcam.clicked.connect(self.selectWebcam)
         self.ui.src_folder.clicked.connect(self.selectFolder)
         self.ui.src_camera.clicked.connect(self.selectRtsp)
         # self.ui.src_result.clicked.connect(self.showResultStatics)
         # self.ui.src_table.clicked.connect(self.showTableResult)
-        # --- 导入 图片/视频、调用摄像头、导入文件夹（批量处理）、调用网络摄像头、结果统计图片、结果统计表格 --- #
+        # --- 사진/동영상 가져오기, 카메라 호출, 폴더 가져오기(일괄 처리), 웹 카메라 호출, 결과 통계 사진, 결과 통계 테이블 --- #
 
-        # --- 导入模型、 导出结果 --- #
+        # --- 모델 가져오기 및 결과 내보내기 --- #
         self.ui.import_button.clicked.connect(self.importModel)
         self.ui.save_status_button.clicked.connect(self.saveStatus)
         self.ui.save_button.clicked.connect(self.saveResult)
         self.ui.save_button.setEnabled(False)
-        # --- 导入模型、 导出结果 --- #
+        # --- 모델 가져오기 및 결과 내보내기 --- #
 
-        # --- 视频、图片 预览 --- #
+        # --- 비디오, 사진 미리보기 --- #
         self.ui.main_leftbox.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
         self.ui.main_rightbox.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        # --- 视频、图片 预览 --- #
+        # --- 비디오, 사진 미리보기 --- #
 
-        # --- 状态栏 初始化 --- #
-        # 状态栏阴影效果
+        # --- 상태 표시줄 초기화 --- #
+        # 상태 표시줄 그림자 효과
         self.shadowStyle(self.ui.mainBody, QColor(0, 0, 0, 38), top_bottom=['top', 'bottom'])
         self.shadowStyle(self.ui.Class_QF1, QColor(142, 197, 252), top_bottom=['top', 'bottom'])
         self.shadowStyle(self.ui.Target_QF1, QColor(159, 172, 230), top_bottom=['top', 'bottom'])
@@ -138,18 +138,18 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.shadowStyle(self.ui.Fps_QF2, QColor(170, 128, 213), top_bottom=['top', 'bottom'])
         self.shadowStyle(self.ui.Model_QF2, QColor(162, 129, 247), top_bottom=['top', 'bottom'])
 
-        # 状态栏默认显示
-        self.model_name1 = self.ui.model_box1.currentText()  # 获取默认 model
+        # 상태 표시줄은 기본적으로 표시
+        self.model_name1 = self.ui.model_box1.currentText()  # 기본 Model 가져오기
         self.ui.Class_num1.setText('--')
         self.ui.Target_num1.setText('--')
         self.ui.fps_label1.setText('--')
         self.ui.Model_label1.setText(str(self.model_name1).replace(".pt", ""))
-        self.model_name2 = self.ui.model_box2.currentText()  # 获取默认 model
+        self.model_name2 = self.ui.model_box2.currentText()  # 기본 Model 가져오기
         self.ui.Class_num2.setText('--')
         self.ui.Target_num2.setText('--')
         self.ui.fps_label2.setText('--')
         self.ui.Model_label2.setText(str(self.model_name2).replace(".pt", ""))
-        # --- 状态栏 初始化 --- #
+        # --- 상태 표시줄 초기화 --- #
 
         # --- YOLOv5 QThread --- #
         self.yolov5_thread1 = YOLOv5Thread()
@@ -208,7 +208,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.initModel(self.rtdetr_thread2, "rtdetr", "right")
         # --- RT-DETR QThread --- #
 
-        # --- 开始 / 停止 --- #
+        # --- 시작/중지 --- #
 
         # --- YOLOv8-Pose QThread --- #
         self.yolov8pose_thread1 = YOLOv8PoseThread()
@@ -228,11 +228,11 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
         self.ui.run_button.clicked.connect(self.runorContinue)
         self.ui.stop_button.clicked.connect(self.stopDetect)
-        # --- 开始 / 停止 --- #
+        # --- 시작/중지 --- #
 
-        # --- Setting栏 初始化 --- #
+        # --- 설정 표시줄 초기화 --- #
         self.loadConfig()
-        # --- Setting栏 初始化 --- #
+        # --- 설정 표시줄 초기화 --- #
 
         # --- MessageBar Init --- #
         self.showStatus("Welcome to YOLOSHOW")
@@ -247,30 +247,30 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                              self.yolov8pose_thread1, self.yolov8pose_thread2, self.yolov8obb_thread1,
                              self.yolov8obb_thread2]
 
-    # 初始化模型
+    # 모델 초기화
     def initModel(self, yolo_thread, yoloname=None, mode="all"):
         if mode == "left":
-            # 左侧模型加载
+            # 왼쪽 모델 로드
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box1.currentText()
             yolo_thread.progress_value = self.ui.progress_bar.maximum()
             yolo_thread.send_output.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
-            # 第一个模型来控制消息
+            # 메시지를 제어하는 최초의 모델
             yolo_thread.send_msg.connect(lambda x: self.showStatus(x))
             yolo_thread.send_fps.connect(lambda x: self.ui.fps_label1.setText(str(x)))
             yolo_thread.send_class_num.connect(lambda x: self.ui.Class_num1.setText(str(x)))
             yolo_thread.send_target_num.connect(lambda x: self.ui.Target_num1.setText(str(x)))
         if mode == "right":
-            # 右侧模型加载
+            # 오른쪽 모델 로드
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box2.currentText()
             yolo_thread.progress_value = self.ui.progress_bar.maximum()
             yolo_thread.send_output.connect(lambda x: self.showImg(x, self.ui.main_rightbox, 'img'))
-            # 后一个模型来控制进度条
+            # 진행률 표시줄을 제어하는 후자 모델
             yolo_thread.send_progress.connect(lambda x: self.ui.progress_bar.setValue(x))
             yolo_thread.send_fps.connect(lambda x: self.ui.fps_label2.setText(str(x)))
             yolo_thread.send_class_num.connect(lambda x: self.ui.Class_num2.setText(str(x)))
             yolo_thread.send_target_num.connect(lambda x: self.ui.Target_num2.setText(str(x)))
 
-    # 在MessageBar显示消息
+    # MessageBar에 메시지 표시
     def showStatus(self, msg):
         self.ui.message_bar.setText(msg)
         if msg == 'Finish Detection':
@@ -292,7 +292,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.ui.main_leftbox.clear()  # clear image display
             self.ui.main_rightbox.clear()
 
-    # 导出结果状态判断
+    # 내보내기 결과 상태
     def saveStatus(self):
         if self.ui.save_status_button.checkState() == Qt.CheckState.Unchecked:
             self.showStatus('NOTE: Run image results are not saved.')
@@ -306,7 +306,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 yolo_thread.save_res = True
             self.ui.save_button.setEnabled(True)
 
-    # 导出检测结果 --- 过程代码
+    # 테스트 결과 내보내기 --- 프로세스 코드
     def saveResultProcess(self, outdir, yolo_thread, folder):
         if folder:
             try:
@@ -332,7 +332,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             except Exception as err:
                 self.showStatus(f"Error occurred while saving the result: {err}")
 
-    # 导出结果
+    # 결과 내보내기
     def saveResult(self):
         thread1_status = (not self.yolov5_thread1.res_status and not self.yolov7_thread1.res_status
                           and not self.yolov8_thread1.res_status and not self.yolov9_thread1.res_status and not self.yolov10_thread1
@@ -344,7 +344,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                           and not self.rtdetr_thread2.res_status and not self.yolov8pose_thread2.res_status and not self.yolov8obb_thread2.res_status)
         self.model_name = self.model_name1
 
-        # 默认保存左侧模型的检测结果
+        # 기본적으로 왼쪽 모델의 검출 결과가 저장.
         if thread1_status:
             self.showStatus("Please select the Image/Video before starting detection...")
             return
@@ -356,9 +356,9 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         is_folder = isinstance(self.inputPath, list)
         if is_folder:
             self.OutputDir = QFileDialog.getExistingDirectory(
-                self,  # 父窗口对象
-                "Save Results in new Folder",  # 标题
-                save_path,  # 起始目录
+                self,  # 부모 창 객체
+                "Save Results in new Folder",  # 제목
+                save_path,  # 시작 디렉토리
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread1, folder=True)
@@ -383,10 +383,10 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.saveResultProcess(self.OutputDir, self.yolov8obb_thread1, folder=True)
         else:
             self.OutputDir, _ = QFileDialog.getSaveFileName(
-                self,  # 父窗口对象
-                "Save Image/Video",  # 标题
-                save_path,  # 起始目录
-                "Image/Vide Type (*.jpg *.jpeg *.png *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 选择类型过滤项，过滤内容在括号中
+                self,  # 부모 창 객체
+                "Save Image/Video",  # 제목
+                save_path,  # 시작 디렉토리
+                "Image/Vide Type (*.jpg *.jpeg *.png *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 포함.
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread1, folder=False)
@@ -414,7 +414,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         with open(config_file, 'w', encoding='utf-8') as f:
             f.write(config_json)
 
-    # 加载 pt 模型到 model_box
+    # pt 모델을 model_box에 로드
     def loadModels(self):
         pt_list = os.listdir(f'{self.current_workpath}/ptfiles/')
         pt_list = [file for file in pt_list if file.endswith('.pt')]
@@ -427,14 +427,14 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.ui.model_box2.clear()
             self.ui.model_box2.addItems(self.pt_list)
 
-    # 检查模型是否符合命名要求
+    # 모델이 명명 요구 사항을 충족하는지 확인
     def checkModelName(self, modelname):
         for name in self.allModelNames:
             if modelname in name:
                 return True
         return False
 
-    # 重新加载模型
+    # 모델 다시 로드
     def resignModel(self, yoloname, mode=None):
         self.reloadModel()
         if mode == "left":
@@ -511,7 +511,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         yolo_thread.stop_dtc = True
         yolo_thread.finished.connect((lambda: self.resignModel(current_yoloname, mode="left")))
 
-    # 停止其他模型
+    # 다른 모델 중지
     def stopOtherModel(self, current_yoloname=None, mode=None):
         modelname = self.allModelNames
         for yoloname in modelname:
@@ -584,7 +584,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         yolo_thread.stop_dtc = True
         yolo_thread.wait()
 
-    # 暂停另外一侧模型
+    # 다른쪽 모델 일시 중지
     def PauseAnotherModel(self, mode=None):
         buttonStatus = self.ui.run_button.isChecked()
         if buttonStatus:
@@ -647,7 +647,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                         self.model_name2) and self.yolov8obb_thread2.isRunning():
                     self.PauseAnotherModelProcess(self.yolov8obb_thread2)
 
-    # 继续另外一侧模型
+    # 다른 모델로 계속 진행
     def ContinueAnotherModel(self, mode=None):
         buttonStatus = self.ui.run_button.isChecked()
         if buttonStatus:
@@ -731,23 +731,23 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
     def changeModelProcess(self, yolo_thread, yoloname, mode=None):
         if mode == "left":
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box1.currentText()
-            # 重载 common 和 yolo 模块
+            # common과 yolo 모듈 불러오기
             glo.set_value('yoloname1', yoloname)
-            # 停止其他模型
+            # 다른 모델 정지
             self.stopOtherModel(yoloname, mode="left")
         else:
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box2.currentText()
-            # 重载 common 和 yolo 模块
+            # common과 yolo 모듈 불러오기
             glo.set_value('yoloname2', yoloname)
-            # 停止其他模型
+            # 다른 모델 중지
             self.stopOtherModel(yoloname, mode="right")
 
-    # Model 变化
+    # Model 변경
     def changeModel(self, mode=None):
         if mode == "left":
-            # 左侧模型
+            # 왼쪽 모델
             self.model_name1 = self.ui.model_box1.currentText()
-            self.ui.Model_label1.setText(str(self.model_name1).replace(".pt", ""))  # 修改状态栏显示
+            self.ui.Model_label1.setText(str(self.model_name1).replace(".pt", ""))  # 상태 표시줄 표시 수정
             if "yolov5" in self.model_name1 and not self.checkSegName(self.model_name1):
                 self.changeModelProcess(self.yolov5_thread1, "yolov5", "left")
             elif "yolov7" in self.model_name1:
@@ -809,7 +809,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         else:
             yolo_thread.is_continue = False
 
-    # 运行右侧模型
+    # 오른쪽 모델을 실행.
     def runRightModel(self, mode=None):
         if mode == "start":
             if "yolov5" in self.model_name2 and not self.checkSegName(self.model_name2):
@@ -869,18 +869,18 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.runRightModel(mode="pause")
             self.showStatus('Pause Detection')
 
-    # 运行模型
+    # 모델 실행
     def runModel(self, runbuttonStatus=None):
         self.ui.save_status_button.setEnabled(False)
         if runbuttonStatus:
             self.ui.run_button.setChecked(True)
-        # 首先判断是否两边的模型均为正确模型
+        # 먼저 양쪽 모델이 올바른 모델인지 확인.
         if self.checkModelName(self.model_name1) and self.checkModelName(self.model_name2):
             self.showStatus('The current model is not supported')
             if self.ui.run_button.isChecked():
                 self.ui.run_button.setChecked(False)
             return
-        # 左侧模型
+        # 왼쪽 모델
         if "yolov5" in self.model_name1 and not self.checkSegName(self.model_name1):
             self.runModelProcess(self.yolov5_thread1)
         elif "yolov7" in self.model_name1:
@@ -903,7 +903,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         elif "yolov8" in self.model_name1 and self.checkObbName(self.model_name1):
             self.runModelProcess(self.yolov8obb_thread1)
 
-    # 开始/暂停 预测
+    # 예측 시작/일시 중지
     def runorContinue(self):
         if self.inputPath is not None:
             glo.set_value('yoloname1', self.model_name1)
@@ -914,7 +914,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.showStatus("Please select the Image/Video before starting detection...")
             self.ui.run_button.setChecked(False)
 
-    # 停止识别
+    # 인식 중지
     def stopDetect(self):
         self.quitRunningModel(stop_status=True)
         self.ui.run_button.setChecked(False)
