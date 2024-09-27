@@ -5,7 +5,7 @@
 ***YOLOSHOW*** is a graphical user interface (GUI) application embed with`YOLOv5` `YOLOv7` `YOLOv8` `YOLOv9` `YOLOv10` `RT-DETR` algorithm. 
 
  <p align="center"> 
-  English &nbsp; | &nbsp; <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/README_ko.md">한국어</a>
+  English &nbsp; | &nbsp; <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/main/README_ko.md">한국어</a>
  </p>
 
 ![](UI.png)
