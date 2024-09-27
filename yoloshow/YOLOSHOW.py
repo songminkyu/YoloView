@@ -262,7 +262,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                 self,  # 부모 창 객체
                 "Save Image/Video",  # 제목
                 save_path,  #시작 디렉토리
-                "Image/Vide Type (*.jpg *.jpeg *.png *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 있습니다.
+                "Image/Vide Type (*.jpg *.jpeg *.png *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 포함.
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=False)

@@ -86,10 +86,10 @@ GPU : NVIDIA GeForce GTX 1660Ti 6GB
 
 ### 1. Create virtual environment
 
-create a virtual environment equipped with python version 3.9, then activate environment. 
+create a virtual environment equipped with python version 3.11, then activate environment. 
 
 ```shell
-conda create -n yoloshow python=3.9
+conda create -n yoloshow python>=3.11
 conda activate yoloshow
 ```
 

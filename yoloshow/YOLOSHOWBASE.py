@@ -40,7 +40,7 @@ ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov5-seg", "yolov8
 loggertool = LoggerUtils()
 
 
-# YOLOSHOW窗口类 动态加载UI文件 和 Ui_mainWindow
+# YOLOSHOW 윈도우 클래스는 UI 파일과 Ui_mainWindow를 동적으로 로드합니다.
 class YOLOSHOWBASE:
     def __init__(self):
         super().__init__()
@@ -49,14 +49,14 @@ class YOLOSHOWBASE:
         self.result_statistic = None
         self.detect_result = None
 
-    # 初始化左侧菜单栏
+    # 왼쪽 메뉴바 초기화
     def initSiderWidget(self):
-        # --- 侧边栏 --- #
+        # --- 사이드바 --- #
         self.ui.leftBox.setFixedWidth(WIDTH_LEFT_BOX_STANDARD)
         # logo
         self.ui.logo.setFixedSize(WIDTH_LOGO, WIDTH_LOGO)
 
-        # 将左侧菜单栏的按钮固定宽度
+        # 왼쪽 메뉴 표시줄의 버튼 너비 수정
         for child_left_box_widget in self.ui.leftbox_bottom.children():
 
             if isinstance(child_left_box_widget, QFrame):
@@ -66,7 +66,7 @@ class YOLOSHOWBASE:
                     if isinstance(child_left_box_widget_btn, QPushButton):
                         child_left_box_widget_btn.setFixedWidth(WIDTH_LEFT_BOX_EXTENDED)
 
-    # 加载模型
+    # 모델 로드
     def initModel(self, model_thread, yoloname=None):
         model_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box.currentText()
         model_thread.progress_value = self.ui.progress_bar.maximum()
@@ -82,7 +82,7 @@ class YOLOSHOWBASE:
 
         return model_thread
 
-    # 阴影效果
+    # 그림자 효과
     def shadowStyle(self, widget, Color, top_bottom=None):
         shadow = QGraphicsDropShadowEffect(self)
         if 'top' in top_bottom and 'bottom' not in top_bottom:
@@ -95,7 +95,7 @@ class YOLOSHOWBASE:
         shadow.setColor(Color)  # 阴影颜色
         widget.setGraphicsEffect(shadow)
 
-    # 侧边栏缩放
+    # 사이드바 확대/축소
     def scaleMenu(self):
         # standard = 80
         # maxExtend = 180
@@ -116,7 +116,7 @@ class YOLOSHOWBASE:
         self.animation.setEasingCurve(QEasingCurve.InOutQuint)
         self.animation.start()
 
-    # 设置栏缩放
+    # 막대 확대/축소 설정
     def scalSetting(self):
         # GET WIDTH
         widthSettingBox = self.ui.settingBox.width()  # right set column width
@@ -189,12 +189,12 @@ class YOLOSHOWBASE:
         self.group.addAnimation(self.setting_box)
         self.group.start()
 
-    # 最大化最小化窗口
+    # 최소화 창 최대화
     def maxorRestore(self):
         global GLOBAL_WINDOW_STATE
         status = GLOBAL_WINDOW_STATE
         if status:
-            # 获取当前屏幕的宽度和高度
+            # 현재 화면의 너비와 높이를 가져옴.
             self.showMaximized()
             self.ui.maximizeButton.setStyleSheet("""
                           QPushButton:hover{
@@ -213,32 +213,32 @@ class YOLOSHOWBASE:
                                   """)
             GLOBAL_WINDOW_STATE = True
 
-    # 选择照片/视频 并展示
+    # 사진/비디오 선택 및 표시
     def selectFile(self):
-        # 获取上次选择文件的路径
+        # 마지막으로 선택한 파일의 경로를 가져옴.
         config_file = f'{self.current_workpath}/config/file.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
         file_path = config['file_path']
         if not os.path.exists(file_path):
             file_path = os.getcwd()
         file, _ = QFileDialog.getOpenFileName(
-            self,  # 父窗口对象
+            self,  # 부모 창 객체
             "Select your Image / Video",  # 标题
-            file_path,  # 默认打开路径为当前路径
+            file_path,  # 기본 열기 경로는 현재 경로
             "Image / Video type (*.jpg *.jpeg *.png *.bmp *.dib *.jpe *.jp2 *.mp4)"  # 选择类型过滤项，过滤内容在括号中
         )
         if file:
             self.inputPath = file
             glo.set_value('inputPath', self.inputPath)
-            # 如果是视频， 显示第一帧
+            # 비디오인 경우 첫 번째 프레임을 표시.
             if ".avi" in self.inputPath or ".mp4" in self.inputPath:
-                # 显示第一帧
+                # 첫 번째 프레임 표시
                 self.cap = cv2.VideoCapture(self.inputPath)
                 ret, frame = self.cap.read()
                 if ret:
                     # rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     self.showImg(frame, self.ui.main_leftbox, 'img')
-            # 如果是图片 正常显示
+            # 사진이라면 정상적으로 표시 됨.
             else:
                 self.showImg(self.inputPath, self.ui.main_leftbox, 'path')
             self.showStatus('Loaded File：{}'.format(os.path.basename(self.inputPath)))
@@ -247,7 +247,7 @@ class YOLOSHOWBASE:
             with open(config_file, 'w', encoding='utf-8') as f:
                 f.write(config_json)
 
-    # 选择摄像头
+    # 카메라 선택
     def selectWebcam(self):
         try:
             # get the number of local cameras
@@ -273,7 +273,7 @@ class YOLOSHOWBASE:
         except Exception as e:
             self.showStatus('%s' % e)
 
-    # 调用网络摄像头
+    # 웹캠 연결
     def actionWebcam(self, cam):
         self.showStatus(f'Loading camera：Camera_{cam}')
         self.thread = WebcamThread(cam)
@@ -281,7 +281,7 @@ class YOLOSHOWBASE:
         self.thread.start()
         self.inputPath = int(cam)
 
-    # 选择文件夹
+    # 폴더 선택
     def selectFolder(self):
         config_file = f'{self.current_workpath}/config/folder.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
@@ -305,7 +305,7 @@ class YOLOSHOWBASE:
             with open(config_file, 'w', encoding='utf-8') as f:
                 f.write(config_json)
 
-    # 选择网络摄像头 Rtsp
+    # 웹캠 Rtsp 선택
     def selectRtsp(self):
         # rtsp://rtsp-test-server.viomic.com:554/stream
         rtspDialog = CustomMessageBox(self, mode="single")
@@ -336,47 +336,47 @@ class YOLOSHOWBASE:
                 self.showStatus('URL is not an rtsp stream')
                 return False
 
-    # 检测网络摄像头 Rtsp 是否连通
+    # 웹캠 Rtsp가 연결되어 있는지 확인
     def checkRtspUrl(self, url, timeout=5):
         try:
-            # 解析URL获取主机名和端口
+            # URL을 구문 분석하여 호스트 이름과 포트를 취득
             from urllib.parse import urlparse
             parsed_url = urlparse(url)
             hostname = parsed_url.hostname
-            port = parsed_url.port or 554  # RTSP默认端口是554
+            port = parsed_url.port or 554  # RTSP 기본 포트는 554
 
-            # 创建socket对象
+            # socket 객체 생성
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(timeout)
-            # 尝试连接
+            # socket 연결 시도
             sock.connect((hostname, port))
-            # 关闭socket
+            # socket 닫기
             sock.close()
             return True
         except Exception as e:
             return False
 
-    # 检测Http网络摄像头 是否连通
+    # HTTP 웹캠이 연결되어 있는지 확인
     def checkHttpUrl(self, url, timeout=5):
         try:
-            # 解析URL获取主机名和端口
+            # URL을 구문 분석하여 호스트 이름과 포트를 취득
             from urllib.parse import urlparse
             parsed_url = urlparse(url)
             hostname = parsed_url.hostname
-            port = parsed_url.port or 80  # HTTP默认端口是80
+            port = parsed_url.port or 80  # HTTP 기본 포트는 80
 
-            # 创建socket对象
+            # socket 객체 생성
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(timeout)
-            # 尝试连接
+            # socket 연결 시도
             sock.connect((hostname, port))
-            # 关闭socket
+            # socket 닫기
             sock.close()
             return True
         except Exception as e:
             return False
 
-    # 显示Label图片
+    # 라벨 이미지 표시
     @staticmethod
     def showImg(img, label, flag):
         try:
@@ -406,26 +406,26 @@ class YOLOSHOWBASE:
         except Exception as e:
             print(repr(e))
 
-    # resize 窗口大小
+    # 창 크기 조정
     def resizeGrip(self):
         self.left_grip.setGeometry(0, 10, 10, self.height())
         self.right_grip.setGeometry(self.width() - 10, 10, 10, self.height())
         self.top_grip.setGeometry(0, 0, self.width(), 10)
         self.bottom_grip.setGeometry(0, self.height() - 10, self.width(), 10)
 
-    # 导入模块
+    # 모듈 가져오기
     def importModel(self):
-        # 获取上次选择文件的路径
+        # 마지막으로 선택한 파일의 경로를 가져옴.
         config_file = f'{self.current_workpath}/config/model.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
         self.model_path = config['model_path']
         if not os.path.exists(self.model_path):
             self.model_path = os.getcwd()
         file, _ = QFileDialog.getOpenFileName(
-            self,  # 父窗口对象
+            self,  # 부모 창 객체
             "Select your YOLO Model",  # 标题
-            self.model_path,  # 默认打开路径为当前路径
-            "Model File (*.pt)"  # 选择类型过滤项，过滤内容在括号中
+            self.model_path,  # 기본 열기 경로는 현재 경로.
+            "Model File (*.pt)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 포함.
         )
         if file:
             fileptPath = os.path.join(self.pt_Path, os.path.basename(file))
@@ -439,7 +439,7 @@ class YOLOSHOWBASE:
             else:
                 self.showStatus('Model already exists')
 
-    # 解决 Modelname 当中的 seg命名问题
+    # Modelname의 세그먼트 이름 지정 문제 해결
     def checkSegName(self, modelname):
         if "yolov5" in modelname:
             return bool(re.match(r'yolov5.?-seg.*\.pt$', modelname))
@@ -452,7 +452,7 @@ class YOLOSHOWBASE:
         elif "yolov10" in modelname:
             return bool(re.match(r'yolov10.?-seg.*\.pt$', modelname))
 
-    # 解决  Modelname 当中的 pose命名问题
+    # Modelname의 포즈 명명 문제 해결
     def checkPoseName(self, modelname):
         if "yolov5" in modelname:
             return bool(re.match(r'yolov5.?-pose.*\.pt$', modelname))
@@ -465,7 +465,7 @@ class YOLOSHOWBASE:
         elif "yolov10" in modelname:
             return bool(re.match(r'yolov10.?-pose.*\.pt$', modelname))
 
-    # 解决  Modelname 当中的 pose命名问题
+    # Modelname의 포즈 명명 문제 해결
     def checkObbName(self, modelname):
         if "yolov5" in modelname:
             return bool(re.match(r'yolov5.?-obb.*\.pt$', modelname))
@@ -478,7 +478,7 @@ class YOLOSHOWBASE:
         elif "yolov10" in modelname:
             return bool(re.match(r'yolov10.?-obb.*\.pt$', modelname))
 
-    # 停止运行中的模型
+    # 실행 중인 모델 중지
     def quitRunningModel(self, stop_status=False):
         self.initThreads()
         for yolo_thread in self.yolo_threads:
@@ -491,7 +491,7 @@ class YOLOSHOWBASE:
                 loggertool.info(f"Error: {err}")
                 pass
 
-    # 在MessageBar显示消息
+    # MessageBar에 메시지 표시
     def showStatus(self, msg):
         self.ui.message_bar.setText(msg)
         if msg == 'Finish Detection':
@@ -510,7 +510,7 @@ class YOLOSHOWBASE:
             self.ui.Target_num.setText('--')
             self.ui.fps_label.setText('--')
 
-    # 导出结果状态判断
+    # 내보내기 결과 상태
     def saveStatus(self):
         if self.ui.save_status_button.checkState() == Qt.CheckState.Unchecked:
             self.showStatus('NOTE: Run image results are not saved.')
@@ -523,7 +523,7 @@ class YOLOSHOWBASE:
                 yolo_thread.save_res = True
             self.ui.save_button.setEnabled(True)
 
-    # 导出结果
+    # 결과 내보내기
     def saveResult(self):
         if (not self.yolov5_thread.res_status and not self.yolov7_thread.res_status
                 and not self.yolov8_thread.res_status and not self.yolov9_thread.res_status
@@ -539,9 +539,9 @@ class YOLOSHOWBASE:
         is_folder = isinstance(self.inputPath, list)
         if is_folder:
             self.OutputDir = QFileDialog.getExistingDirectory(
-                self,  # 父窗口对象
-                "Save Results in new Folder",  # 标题
-                save_path,  # 起始目录
+                self,  # 부모 창 객체
+                "Save Results in new Folder",  # 제목
+                save_path,  # 시작 디렉토리
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=True)
@@ -562,10 +562,10 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.yolov8pose_thread, folder=True)
         else:
             self.OutputDir, _ = QFileDialog.getSaveFileName(
-                self,  # 父窗口对象
-                "Save Image/Video",  # 标题
-                save_path,  # 起始目录
-                "Image/Vide Type (*.jpg *.jpeg *.png *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 选择类型过滤项，过滤内容在括号中
+                self,  # 부모 창 객체
+                "Save Image/Video",  # 제목
+                save_path,  # 시작 디렉토리
+                "Image/Vide Type (*.jpg *.jpeg *.png *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 포함.
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=False)
@@ -589,7 +589,7 @@ class YOLOSHOWBASE:
         with open(config_file, 'w', encoding='utf-8') as f:
             f.write(config_json)
 
-    # 导出检测结果 --- 过程代码
+    # 테스트 결과 내보내기 --- 프로세스 코드
     def saveResultProcess(self, outdir, yolo_thread, folder):
         if folder:
             try:
@@ -615,7 +615,7 @@ class YOLOSHOWBASE:
             except Exception as err:
                 self.showStatus(f"Error occurred while saving the result: {err}")
 
-    # 加载 Setting 栏
+    # 로드 설정 표시줄
     def loadConfig(self):
         config_file = self.current_workpath + '/config/setting.json'
         iou = 0.45
@@ -656,7 +656,7 @@ class YOLOSHOWBASE:
         self.ui.line_spinbox.setValue(line_thickness)
         self.ui.line_slider.setValue(line_thickness)
 
-    # 加载 pt 模型到 model_box
+    # pt 모델을 model_box에 로드
     def loadModels(self):
         pt_list = os.listdir(f'{self.current_workpath}/ptfiles/')
         pt_list = [file for file in pt_list if file.endswith('.pt')]
@@ -667,13 +667,13 @@ class YOLOSHOWBASE:
             self.ui.model_box.clear()
             self.ui.model_box.addItems(self.pt_list)
 
-    # 重载模型
+    # 모델 다시 로드
     def reloadModel(self):
         importlib.reload(common)
         importlib.reload(yolo)
         importlib.reload(experimental)
 
-    # 调整超参数
+    # 하이퍼파라미터 튜닝
     def changeValue(self, x, flag):
         if flag == 'iou_spinbox':
             self.ui.iou_slider.setValue(int(x * 100))  # The box value changes, changing the slider
@@ -736,7 +736,7 @@ class YOLOSHOWBASE:
             # self.rtdetr_thread.line_thickness = x
             # self.yolov8pose_thread.line_thickness = x
 
-    # 修改YOLOv5、YOLOv7、YOLOv9 解决 yolo.py冲突
+    # YOLOv5, YOLOv7 및 YOLOv9를 수정하여 yolo.py 충돌 해결
     def solveYoloConflict(self, ptnamelst):
         for ptname in ptnamelst:
             ptbaseName = os.path.basename(ptname)
@@ -830,25 +830,25 @@ class YOLOSHOWBASE:
         glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov5-seg yolov8-seg rtdetr yolov8-pose")
         self.reloadModel()
 
-    # 接受统计结果，然后写入json中
+    # 통계 결과를 수락하고 json에 기록
     def setResultStatistic(self, value):
-        # 写入 JSON 文件
+        # JSON 파일에 쓰기
         with open('config/result.json', 'w', encoding='utf-8') as file:
             json.dump(value, file, ensure_ascii=False, indent=4)
-        # --- 获取统计结果 + 绘制柱状图 --- #
+        # --- 통계 결과 얻기 + 히스토그램 그리기 --- #
         self.result_statistic = value
         self.plot_thread = PlottingThread(self.result_statistic, self.current_workpath)
         self.plot_thread.start()
-        # --- 获取统计结果 + 绘制柱状图 --- #
+        # --- 통계 결과 얻기 + 히스토그램 그리기 --- #
 
-    # 展示柱状图结果
+    # 막대 차트 결과 표시
     def showResultStatics(self):
         self.resutl_statistic = dict()
-        # 读取 JSON 文件
+        # JSON 파일 읽기
         with open(self.current_workpath + r'\config\result.json', 'r', encoding='utf-8') as file:
             self.result_statistic = json.load(file)
         if self.result_statistic:
-            # 创建新字典，使用中文键
+            # 한국어 키를 사용하여 새 사전 만들기
             result_str = ""
             for index, (key, value) in enumerate(self.result_statistic.items()):
                 result_str += f"{key}:{value}x \t"
@@ -869,7 +869,7 @@ class YOLOSHOWBASE:
                 isClosable=True
             )
 
-        # 修改字体大小
+        # 글꼴 크기 수정
         view.titleLabel.setStyleSheet("""font-size: 30px; 
                                             color: black; 
                                             font-weight: bold; 
@@ -878,7 +878,7 @@ class YOLOSHOWBASE:
         view.contentLabel.setStyleSheet("""font-size: 25px; 
                                             color: black; 
                                             font-family: 'KaiTi';""")
-        # 修改image的大小
+        # 이미지 크기 수정
         width = self.ui.rightbox_main.width() // 2.5
         height = self.ui.rightbox_main.height() // 2.5
         view.imageLabel.setFixedSize(width, height)
@@ -890,11 +890,11 @@ class YOLOSHOWBASE:
         w = AcrylicFlyout.make(view, self.ui.rightbox_play, self)
         view.closed.connect(w.close)
 
-    # 获取表格结果的列表
+    # 테이블 결과 목록 가져오기
     def setTableResult(self, value):
         self.detect_result = value
 
-    # 展示表格结果
+    # 테이블 결과 표시
     def showTableResult(self):
         self.table_result = TableViewQWidget(infoList=self.detect_result)
         self.table_result.show()

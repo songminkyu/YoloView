@@ -32,7 +32,7 @@ class YOLOSHOWWindow(YOLOSHOW):
 
 
     def dropEvent(self, event):
-        # files = [url.toLocalFile() for url in event.mimeData().urls()]  # 모든 파일 경로 가져오기
+        # files = [url.toLocalFile() for url in event.mimeData().urls()]  # 모든 파일 경로 가져옴
         file = event.mimeData().urls()[0].toLocalFile()  # ==> 파일 경로 가져오기
         if file:
             # 폴더인지 확인
@@ -47,9 +47,9 @@ class YOLOSHOWWindow(YOLOSHOW):
             #사진/비디오
             else:
                 self.inputPath = file
-                # 동영상인 경우 첫 번째 프레임을 표시합니다.
+                # 동영상인 경우 첫 번째 프레임을 표시.
                 if ".avi" in self.inputPath or ".mp4" in self.inputPath:
-                    # 첫 번째 프레임을 표시합니다
+                    # 첫 번째 프레임을 표시
                     self.cap = cv2.VideoCapture(self.inputPath)
                     ret, frame = self.cap.read()
                     if ret:
@@ -159,7 +159,7 @@ class YOLOSHOWVSWindow(YOLOSHOWVS):
             # 사진/비디오
             else:
                 self.inputPath = file
-                # 비디오인 경우 첫 번째 프레임을 표시합니다.
+                # 비디오인 경우 첫 번째 프레임을 표시.
                 if ".avi" in self.inputPath or ".mp4" in self.inputPath:
                     # 첫 번째 프레임 표시
                     self.cap = cv2.VideoCapture(self.inputPath)
@@ -167,7 +167,7 @@ class YOLOSHOWVSWindow(YOLOSHOWVS):
                     if ret:
                         # rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                         self.showImg(frame, self.main_leftbox, 'img')
-                # 사진이라면 정상적으로 표시됩니다
+                # 사진이라면 정상적으로 표시 됨.
                 else:
                     self.showImg(self.inputPath, self.main_leftbox, 'path')
                 self.showStatus('Loaded File：{}'.format(os.path.basename(self.inputPath)))

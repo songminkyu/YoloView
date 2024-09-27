@@ -86,10 +86,10 @@ GPU: NVIDIA GeForce GTX 1660Ti 6GB
 
 ### 1. 가상 환경 생성
 
-python 버전 3.9가 장착된 가상 환경을 생성한 다음 환경을 활성화합니다.
+python 버전 3.11가 장착된 가상 환경을 생성한 다음 환경을 활성화합니다.
 
 ```shell
-conda create -n yoloshow python=3.9
+conda create -n yoloshow python=3.11
 conda activate yoloshow
 ```
 
