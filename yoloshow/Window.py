@@ -1,3 +1,5 @@
+from sympy import false
+
 from utils import glo
 import json
 import os
@@ -24,8 +26,9 @@ class YOLOSHOWWindow(YOLOSHOW):
         self.setAcceptDrops(True)  # ==> 설정 창은 드래그를 지원합니다(설정해야 함).
         # --- 창을 드래그하여 창 크기를 변경하세요 --- #
         self.animation_window = None
+        self.drag = False
 
-    # 鼠标拖入事件
+        # 鼠标拖入事件
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():  # 파일인지 확인
             event.acceptProposedAction()  # 드래그 앤 드롭 데이터 허용
