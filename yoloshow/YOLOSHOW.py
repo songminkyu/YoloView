@@ -74,6 +74,10 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.run_button.setIcon(self.playIcon)
         # --- 재생 일시 정지 --- #
 
+        # --- track mode --- #
+        self.ui.track_box.currentIndexChanged.connect(self.selectedTrackMode)
+        # --- track mode --- #
+
         # --- 사이드바 확대/축소 --- #
         self.ui.src_menu.clicked.connect(self.scaleMenu)  # hide menu button
         self.ui.src_setting.clicked.connect(self.scalSetting)  # setting button
@@ -125,7 +129,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.shadowStyle(self.ui.Model_QF, QColor(162, 129, 247), top_bottom=['top', 'bottom'])
         self.shadowStyle(self.ui.modelLabel, QColor(162, 129, 247), top_bottom=['top', 'bottom'])
         # 상태 표시줄 그림자 효과
-        self.model_name = self.ui.model_box.currentText()  # 获取默认 model
+        self.model_name = self.ui.model_box.currentText()  # model 기본값 가져오기
         self.ui.Class_num.setText('--')
         self.ui.Target_num.setText('--')
         self.ui.fps_label.setText('--')
@@ -208,6 +212,9 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         # --- MessageBar Init --- #
         self.showStatus("Welcome to YOLOSHOW")
         # --- MessageBar Init --- #
+
+    def selectedTrackMode(self):
+        self.updateTrackMode(self.yolov8_thread)
 
     def initThreads(self):
         self.yolo_threads = [self.yolov5_thread, self.yolov7_thread, self.yolov8_thread, self.yolov9_thread,

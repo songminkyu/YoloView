@@ -82,6 +82,9 @@ class YOLOSHOWBASE:
 
         return model_thread
 
+    def updateTrackMode(self,model_thread,yoloname=None):
+        model_thread.track_mode = True if self.ui.track_box.currentText() == "On" else False
+
     # 그림자 효과
     def shadowStyle(self, widget, Color, top_bottom=None):
         shadow = QGraphicsDropShadowEffect(self)
@@ -291,7 +294,7 @@ class YOLOSHOWBASE:
         FolderPath = QFileDialog.getExistingDirectory(
             self,
             "Select your Folder",
-            folder_path  # 起始目录
+            folder_path  # 시작 디렉토리
         )
         if FolderPath:
             FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png", ".jpeg", ".bmp", ".dib", ".jpe", ".jp2"]
@@ -379,8 +382,6 @@ class YOLOSHOWBASE:
     # 라벨 이미지 표시
     def showImg(self, img, label, flag):
         try:
-            track_mode = self.ui.track_box.currentText()
-
             if flag == "path":
                 img_src = cv2.imdecode(np.fromfile(img, dtype=np.uint8), -1)
             else:

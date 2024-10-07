@@ -19,7 +19,6 @@ from yolocode.yolov5.utils.general import increment_path
 from yolocode.yolov8.utils.checks import check_imgsz
 from yolocode.yolov8.utils.torch_utils import select_device
 
-
 class YOLOv8Thread(QThread):
     # 입출력 메시지
     send_input = Signal(np.ndarray)
@@ -37,6 +36,8 @@ class YOLOv8Thread(QThread):
     def __init__(self):
         super(YOLOv8Thread, self).__init__()
         # YOLOSHOW 인터페이스 매개 변수 설정
+        self.track_history = defaultdict(lambda: [])
+        self.track_mode = False
         self.current_model_name = None  # The detection model name to use
         self.new_model_name = None  # Models that change in real time
         self.source = None  # input source
@@ -110,6 +111,7 @@ class YOLOv8Thread(QThread):
             self.detect()
 
     def detect(self, ):
+
         # warmup model
         if not self.done_warmup:
             self.model.warmup(imgsz=(1 if self.model.pt or self.model.triton else self.dataset.bs, 3, *self.imgsz))
@@ -190,7 +192,10 @@ class YOLOv8Thread(QThread):
                     preds = self.inference(im)
                 # Postprocess
                 with self.dt[2]:
-                    self.results = self.postprocess(preds, im, im0s)
+                    if self.track_mode == True:
+                        self.results, self.track_pointlist = self.track_postprocess(self.model, self.track_history, preds, im0s)
+                    else:
+                        self.results = self.postprocess(preds, im, im0s)
 
                 n = len(im0s)
                 for i in range(n):
@@ -262,11 +267,12 @@ class YOLOv8Thread(QThread):
     def setup_model(self, model, verbose=True):
         """Initialize YOLO model with given parameters and set it to evaluation mode."""
         self.model = AutoBackend(
-            model or self.model,
+            weights=model or self.model,
             device=select_device(self.device, verbose=verbose),
             dnn=self.dnn,
             data=self.data,
             fp16=self.half,
+            batch=self.batch,
             fuse=True,
             verbose=verbose,
         )
@@ -304,6 +310,57 @@ class YOLOv8Thread(QThread):
         self.vid_path = [None] * self.dataset.bs
         self.vid_writer = [None] * self.dataset.bs
         self.vid_frame = [None] * self.dataset.bs
+
+    def track_postprocess(self, model, track_history, preds, orig_imgs):
+
+        try:
+            # Set the track model for track line
+            track_result = model.track(orig_imgs, persist=True)
+
+            # Set the track preds
+            preds = ops.non_max_suppression(preds,
+                                            self.conf_thres,
+                                            self.iou_thres,
+                                            agnostic=self.agnostic_nms,
+                                            max_det=self.max_det,
+                                            classes=self.classes,
+                                            nc=len(self.model.names))
+
+            if not isinstance(orig_imgs,
+                              list):  # input images are a torch.Tensor, not a list
+                orig_imgs = ops.convert_torch2numpy_batch(orig_imgs)
+
+            results = []
+
+            for i, pred in enumerate(preds):
+                orig_img = orig_imgs[i]
+                img_path = self.batch[0][i]
+                # Store result
+                results.append(
+                    Results(orig_img, path=img_path, names=self.model.names, boxes=track_result[0].boxes.data))
+
+                # Get the boxes and track IDs
+                boxes = track_result[0].boxes.xywh.cpu()
+                if results[0].boxes.id is not None:
+                    track_ids = track_result[0].boxes.id.int().cpu().tolist()
+                output = []
+                # Plot the tracks
+                if results[0].boxes.id is not None:
+                    for box, track_id in zip(boxes, track_ids):
+                        x, y, w, h = box
+                        track = track_history[track_id]
+                        track.append((float(x), float(y)))  # x, y center point
+                        if len(track) > 30:  # retain 90 tracks for 90 frames
+                            track.pop(0)
+
+                        # Get the points
+                        points = np.hstack(track).astype(np.int32).reshape(
+                            (-1, 1, 2))
+                        output.append(points)
+            return results, output
+
+        except Exception as e:
+            print("Error", e)
 
     def postprocess(self, preds, img, orig_imgs):
         """Post-processes predictions and returns a list of Results objects."""
