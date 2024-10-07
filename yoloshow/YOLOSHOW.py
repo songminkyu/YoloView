@@ -152,10 +152,10 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.initModel(self.yolov9_thread, "yolov9")
         # --- YOLOv9 QThread --- #
 
-        # --- YOLOv9 QThread --- #
+        # --- YOLOv10 QThread --- #
         self.yolov10_thread = YOLOv10Thread()
         self.initModel(self.yolov10_thread, "yolov10")
-        # --- YOLOv9 QThread --- #
+        # --- YOLOv10 QThread --- #
 
         # --- YOLOv5-Seg QThread --- #
         self.yolov5seg_thread = YOLOv5SegThread()
