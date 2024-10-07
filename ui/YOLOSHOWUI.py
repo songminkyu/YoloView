@@ -245,7 +245,7 @@ class Ui_MainWindow(object):
         self.logo.setSizePolicy(sizePolicy)
         self.logo.setMinimumSize(QSize(60, 60))
         self.logo.setMaximumSize(QSize(60, 60))
-        self.logo.setStyleSheet(u"image: url(:/leftbox/images/swimmingliu_icon.png);\n"
+        self.logo.setStyleSheet(u"image: url(:/leftbox/images/yolo_icon.png);\n"
 "border:2px solid rgba(0,0,0,5%);\n"
 "border-radius: 10%;\n"
 "")
@@ -2006,7 +2006,7 @@ class Ui_MainWindow(object):
         self.maximizeButton.setText("")
         self.title.setText(QCoreApplication.translate("MainWindow", u"YOLO SHOW -YOLO Graphical User Interface based on Pyside6", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"YOLO SHOW", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"SwimmingLiu", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Mksong", None))
         self.src_menu.setText(QCoreApplication.translate("MainWindow", u" Menu   ", None))
         self.src_img.setText(QCoreApplication.translate("MainWindow", u"Media", None))
         self.src_webcam.setText(QCoreApplication.translate("MainWindow", u" Webcam", None))

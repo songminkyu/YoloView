@@ -116,7 +116,15 @@ Install dependency package of program
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
-### 4. Add Font
+### 4. Pyside6 Resource Build (Absolute Path)
+
+If the resource has changed, you must run the command below.
+
+```shell
+pyside6-rcc {YOLOSHOW_New_Path}\ui\YOLOSHOWUI.qrc -o {YOLOSHOW_New_Path}\ui\YOLOSHOWUI_rc.py
+```
+
+### 5. Add Font
 
 #### Windows User
 
@@ -134,7 +142,7 @@ sudo fc-cache -fv
 
 The MacBook is so expensive that I cannot afford it, please install `.ttf` by yourself. 😂
 
-### 5. Run Program
+### 6. Run Program
 
 ```shell
 python main.py

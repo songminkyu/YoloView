@@ -115,8 +115,14 @@ cd {프로그램의 위치 program}
 ```shell
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+### 4. Pyside6 Resource 빌드 (절대경로)
 
-### 4. 글꼴 추가
+리소스 변경이 되었다면 아래 명령어를 실행 해야함. 
+
+```shell
+pyside6-rcc {YOLOSHOW_New_Path}\ui\YOLOSHOWUI.qrc -o {YOLOSHOW_New_Path}\ui\YOLOSHOWUI_rc.py
+```
+### 5. 글꼴 추가
 
 #### Windows 사용자
 
@@ -134,7 +140,7 @@ sudo fc-cache -fv
 
 MacBook이 너무 비싸서 살 수 없어요. `.ttf`를 직접 설치해 주세요. 😂
 
-### 5. 프로그램 실행
+### 6. 프로그램 실행
 
 ```shell
 python main.py

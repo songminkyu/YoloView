@@ -15,7 +15,7 @@ from yoloshow.ChangeWindow import yoloshow2vs, vs2yoloshow
 
 if __name__ == '__main__':
     app = QApplication([])  # 애플리케이션 인스턴스 생성
-    app.setWindowIcon(QIcon('images/swimmingliu.ico'))  # 애플리케이션 아이콘 설정
+    app.setWindowIcon(QIcon('images/yolo.ico'))  # 애플리케이션 아이콘 설정
 
     # 모든 QFrame의 테두리를 제거하기 위해 전체 애플리케이션에 대한 스타일시트를 설정
     app.setStyleSheet("QFrame { border: none; }")
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     yoloshowvs = yoloshowVSWindow()
 
     # 전역 변수 관리자를 초기화하고 값을 설정
-    glo._init()  # 初始化全局变量空间
+    glo._init()  # 전역 변수 공간 초기화
     glo.set_value('yoloshow', yoloshow)  # Yoloshow Window 인스턴스 저장
     glo.set_value('yoloshowvs', yoloshowvs)  # yoloshowvs Window 인스턴스 저장
 

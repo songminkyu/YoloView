@@ -404,7 +404,7 @@ Spacer{
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">image: url(:/leftbox/images/swimmingliu_icon.png);
+                   <string notr="true">image: url(:/leftbox/images/yolo_icon.png);
 border:2px solid rgba(0,0,0,5%);
 border-radius: 10%;
 </string>
@@ -461,7 +461,7 @@ QFrame{
                    <item>
                     <widget class="QLabel" name="label_3">
                      <property name="text">
-                      <string>SwimmingLiu</string>
+                      <string>Mksong</string>
                      </property>
                     </widget>
                    </item>
