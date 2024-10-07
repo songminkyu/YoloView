@@ -1145,6 +1145,23 @@ class Ui_MainWindow(object):
         self.horizontalLayout_20 = QHBoxLayout(self.rightbox_play)
         self.horizontalLayout_20.setObjectName(u"horizontalLayout_20")
         self.horizontalLayout_20.setContentsMargins(5, 5, 5, 5)
+
+        # Create the combo box
+        self.track_box = ComboBox(self.rightBox)
+        self.track_box.setObjectName(u"track_box")
+        self.track_box.addItem("Off")  # Default Off
+        self.track_box.addItem("On")
+
+        # Optionally, add a label next to the combo box to explain its purpose
+        self.track_label = QLabel("Track Mode ", self.rightBox)
+        self.track_label.setStyleSheet(u"font: 700 11pt \"Segoe UI\";\n"
+                                       "color: rgba(0, 0, 0, 140);")
+
+        self.track_box.setFixedSize(70, 26)  # 100px width, 40px height
+        # Add the combo box and the label to the layout of the red bordered area (likely horizontalLayout_9)
+        self.horizontalLayout_20.addWidget(self.track_label)  # Add label
+        self.horizontalLayout_20.addWidget(self.track_box)  # Add combo box
+
         self.run_button = QPushButton(self.rightbox_play)
         self.run_button.setObjectName(u"run_button")
         self.run_button.setMinimumSize(QSize(0, 30))

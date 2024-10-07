@@ -377,9 +377,10 @@ class YOLOSHOWBASE:
             return False
 
     # 라벨 이미지 표시
-    @staticmethod
-    def showImg(img, label, flag):
+    def showImg(self, img, label, flag):
         try:
+            track_mode = self.ui.track_box.currentText()
+
             if flag == "path":
                 img_src = cv2.imdecode(np.fromfile(img, dtype=np.uint8), -1)
             else:
