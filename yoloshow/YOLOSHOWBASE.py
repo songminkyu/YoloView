@@ -91,8 +91,8 @@ class YOLOSHOWBASE:
             shadow.setOffset(0, 5)
         else:
             shadow.setOffset(5, 5)
-        shadow.setBlurRadius(10)  # 阴影半径
-        shadow.setColor(Color)  # 阴影颜色
+        shadow.setBlurRadius(10)  # 그림자 반경
+        shadow.setColor(Color)  # 그림자 색상
         widget.setGraphicsEffect(shadow)
 
     # 사이드바 확대/축소
