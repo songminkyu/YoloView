@@ -223,9 +223,9 @@ class YOLOSHOWBASE:
             file_path = os.getcwd()
         file, _ = QFileDialog.getOpenFileName(
             self,  # 부모 창 객체
-            "Select your Image / Video",  # 标题
+            "Select your Image / Video",  # 제목
             file_path,  # 기본 열기 경로는 현재 경로
-            "Image / Video type (*.jpg *.jpeg *.png *.bmp *.dib *.jpe *.jp2 *.mp4)"  # 选择类型过滤项，过滤内容在括号中
+            "Image / Video type (*.jpg *.jpeg *.png *.bmp *.dib *.jpe *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 있습니다.
         )
         if file:
             self.inputPath = file
