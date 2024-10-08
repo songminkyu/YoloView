@@ -29,7 +29,7 @@
 - [x] Support Oriented Bounding Boxes ( `YOLOv8` )
 - [x] Add `YOLOv10` Algorithm
 - [x] Support Dragging File Input
-- [x] Tracking & Counting ( `Industrialization` )
+- [x] Tracking & Counting ( `YOLOv8` )
 
 ## Functions
 
