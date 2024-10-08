@@ -408,6 +408,15 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                     self.stopOtherModelProcess(self.yolov8obb_thread, current_yoloname)
 
     def changeModelProcess(self, yolo_thread, yoloname):
+
+        # yolov8 이면 track 모드 UI 활성화
+        if yoloname == 'yolov8':
+            self.ui.track_box.show()
+            self.ui.track_label.show()
+        else:
+            self.ui.track_box.hide()
+            self.ui.track_label.hide()
+
         yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box.currentText()
         # Common 및 Yolo 모듈 오버로드
         glo.set_value('yoloname', yoloname)

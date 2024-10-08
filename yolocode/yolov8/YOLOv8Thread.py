@@ -196,7 +196,7 @@ class YOLOv8Thread(QThread,BasePredictor):
                     preds = self.inference(im)
                 # Postprocess
                 with self.dt[2]:
-                    if self.track_mode == True:
+                    if self.track_mode == True: # track 모드가 활성화 할경우
                         self.results, self.track_pointlist = self.track_postprocess(self.track_model, self.track_history, preds, im0s)
                     else:
                         self.results = self.postprocess(preds, im, im0s)
@@ -469,6 +469,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         }
         self.plotted_img = result.plot(**plot_args)
 
+        # track 모드에서 라인 이미지 생성
         self.im = self.plotted_img
         if self.track_mode == True:
             for points in self.track_pointlist:
