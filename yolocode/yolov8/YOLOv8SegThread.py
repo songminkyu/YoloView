@@ -84,7 +84,7 @@ class YOLOv8SegThread(QThread):
 
         if not self.model:
             self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
-            self.setup_model(self.new_model_name)
+            self.init_setup_model(self.new_model_name)
             self.used_model_name = self.new_model_name
 
         source = str(self.source)
@@ -152,7 +152,7 @@ class YOLOv8SegThread(QThread):
                 #  모델 변경 여부 결정
             if self.current_model_name != self.new_model_name:
                 self.send_msg.emit('Loading Model: {}'.format(os.path.basename(self.new_model_name)))
-                self.setup_model(self.new_model_name)
+                self.init_setup_model(self.new_model_name)
                 self.current_model_name = self.new_model_name
             if self.is_continue:
                 if self.is_file:
@@ -264,7 +264,7 @@ class YOLOv8SegThread(QThread):
                     break
 
 
-    def setup_model(self, model, verbose=True):
+    def init_setup_model(self, model, verbose=True):
         """Initialize YOLO model with given parameters and set it to evaluation mode."""
         self.model = AutoBackend(
             model or self.model,

@@ -12,14 +12,16 @@ from yolocode.yolov8.data.augment import classify_transforms, LetterBox
 from yolocode.yolov8.data.utils import IMG_FORMATS, VID_FORMATS
 from yolocode.yolov8.engine.predictor import STREAM_WARNING
 from yolocode.yolov8.engine.results import Results
-from models.common import AutoBackend
-from yolocode.yolov8.utils import callbacks, ops, LOGGER, colorstr, MACOS, WINDOWS
+from yolocode.yolov8.utils import callbacks, ops, LOGGER, colorstr, MACOS, WINDOWS,DEFAULT_CFG
 from collections import defaultdict
 from yolocode.yolov5.utils.general import increment_path
 from yolocode.yolov8.utils.checks import check_imgsz
 from yolocode.yolov8.utils.torch_utils import select_device
+from yolocode.yolov8 import YOLO
+from yolocode.yolov8.engine.predictor import BasePredictor
+from yolocode.yolov8.cfg import get_cfg, get_save_dir
 
-class YOLOv8Thread(QThread):
+class YOLOv8Thread(QThread,BasePredictor):
     # 입출력 메시지
     send_input = Signal(np.ndarray)
     send_output = Signal(np.ndarray)
@@ -35,6 +37,8 @@ class YOLOv8Thread(QThread):
 
     def __init__(self):
         super(YOLOv8Thread, self).__init__()
+        BasePredictor.__init__(self, cfg=DEFAULT_CFG, overrides=None, _callbacks=None)
+        self.used_model_name = None  # 사용할 감지 모델의 이름
         # YOLOSHOW 인터페이스 매개 변수 설정
         self.track_history = defaultdict(lambda: [])
         self.track_mode = False
@@ -84,7 +88,7 @@ class YOLOv8Thread(QThread):
 
         if not self.model:
             self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
-            self.setup_model(self.new_model_name)
+            self.init_setup_model(self.new_model_name)
             self.used_model_name = self.new_model_name
 
         source = str(self.source)
@@ -151,7 +155,7 @@ class YOLOv8Thread(QThread):
                 #  모델 변경 여부 결정
             if self.current_model_name != self.new_model_name:
                 self.send_msg.emit('Loading Model: {}'.format(os.path.basename(self.new_model_name)))
-                self.setup_model(self.new_model_name)
+                self.init_setup_model(self.new_model_name)
                 self.current_model_name = self.new_model_name
             if self.is_continue:
                 if self.is_file:
@@ -193,7 +197,7 @@ class YOLOv8Thread(QThread):
                 # Postprocess
                 with self.dt[2]:
                     if self.track_mode == True:
-                        self.results, self.track_pointlist = self.track_postprocess(self.model, self.track_history, preds, im0s)
+                        self.results, self.track_pointlist = self.track_postprocess(self.track_model, self.track_history, preds, im0s)
                     else:
                         self.results = self.postprocess(preds, im, im0s)
 
@@ -264,22 +268,13 @@ class YOLOv8Thread(QThread):
                         self.vid_writer[-1].release()  # release final video writer
                     break
 
-    def setup_model(self, model, verbose=True):
+    def init_setup_model(self, model, verbose=True):
         """Initialize YOLO model with given parameters and set it to evaluation mode."""
-        self.model = AutoBackend(
-            weights=model or self.model,
-            device=select_device(self.device, verbose=verbose),
-            dnn=self.dnn,
-            data=self.data,
-            fp16=self.half,
-            batch=self.batch,
-            fuse=True,
-            verbose=verbose,
-        )
+        if self.track_mode == True:
+            self.track_model = YOLO(self.new_model_name)  # 추적 모델 초기화
 
-        self.device = self.model.device  # update device
-        self.half = self.model.fp16  # update half
-        self.model.eval()
+        self.setup_model(self.new_model_name)  # 모델 설정
+        self.used_model_name = self.new_model_name
 
     def setup_source(self, source):
         """Sets up source and inference mode."""
@@ -332,12 +327,17 @@ class YOLOv8Thread(QThread):
 
             results = []
 
+            # Visualize the results on the frame
+
+
             for i, pred in enumerate(preds):
                 orig_img = orig_imgs[i]
                 img_path = self.batch[0][i]
                 # Store result
                 results.append(
                     Results(orig_img, path=img_path, names=self.model.names, boxes=track_result[0].boxes.data))
+
+                annotated_frame = results[0].plot()
 
                 # Get the boxes and track IDs
                 boxes = track_result[0].boxes.xywh.cpu()
@@ -468,4 +468,10 @@ class YOLOv8Thread(QThread):
             "labels": True,
         }
         self.plotted_img = result.plot(**plot_args)
+
+        self.im = self.plotted_img
+        if self.track_mode == True:
+            for points in self.track_pointlist:
+                cv2.polylines(self.im, [points], isClosed=False, color=(203, 224, 252), thickness=5)
+
         return log_string
