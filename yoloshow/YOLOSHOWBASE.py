@@ -537,7 +537,8 @@ class YOLOSHOWBASE:
                 and not self.yolov8_thread.res_status and not self.yolov9_thread.res_status
                 and not self.yolov5seg_thread.res_status and not self.yolov8seg_thread.res_status
                 and not self.rtdetr_thread.res_status and not self.yolov8pose_thread.res_status
-                and not self.yolov11_thread.res_status):
+                and not self.yolov11_thread.res_status and not self.yolov11pose_thread.res_status
+                and not self.yolov11seg_thread.res_status):
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f'{self.current_workpath}/config/save.json'
@@ -561,9 +562,6 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=True)
             elif "yolov9" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=True)
-            elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                    self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=True)
             elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=True)
             elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
@@ -572,6 +570,13 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=True)
             elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8pose_thread, folder=True)
+            elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
+                    self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=True)
+            elif "yolo11" in self.model_name and self.checkSegName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov11seg_thread, folder=True)
+            elif "yolo11" in self.model_name and self.checkPoseName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov11pose_thread, folder=True)
         else:
             self.OutputDir, _ = QFileDialog.getSaveFileName(
                 self,  # 부모 창 객체
@@ -588,9 +593,6 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=False)
             elif "yolov9" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=False)
-            elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                    self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=False)
             elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=False)
             elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
@@ -599,6 +601,13 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=False)
             elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8pose_thread, folder=False)
+            elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
+                    self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=False)
+            elif "yolo11" in self.model_name and self.checkSegName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov11seg_thread, folder=False)
+            elif "yolo11" in self.model_name and self.checkPoseName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov11pose_thread, folder=False)
         config['save_path'] = self.OutputDir
         config_json = json.dumps(config, ensure_ascii=False, indent=2)
         with open(config_file, 'w', encoding='utf-8') as f:
