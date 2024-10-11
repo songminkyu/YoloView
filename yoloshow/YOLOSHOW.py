@@ -188,7 +188,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
         # --- YOLOv8-Obb QThread --- #
         self.yolov8obb_thread = YOLOv8ObbThread()
-        self.initModel(self.yolov8obb_thread, "yolov8-pose")
+        self.initModel(self.yolov8obb_thread, "yolov8-obb")
         # --- YOLOv8-Obb QThread --- #
 
         self.initThreads()
