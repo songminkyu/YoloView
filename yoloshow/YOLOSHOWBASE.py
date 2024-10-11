@@ -4,7 +4,7 @@ from ui.utils.drawFigure import PlottingThread
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
+glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
 
 from utils.logger import LoggerUtils
 import re
@@ -35,7 +35,7 @@ WIDTH_SETTING_BAR = 300
 WIDTH_LOGO = 60
 WINDOW_SPLIT_BODY = 20
 KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting']
-ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov5-seg", "yolov8-seg", "rtdetr", "yolov8-pose"]
+ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9","yolo11", "yolov5-seg", "yolov8-seg", "rtdetr", "yolov8-pose"]
 
 loggertool = LoggerUtils()
 
@@ -453,6 +453,8 @@ class YOLOSHOWBASE:
             return bool(re.match(r'yolov9.?-seg.*\.pt$', modelname))
         elif "yolov10" in modelname:
             return bool(re.match(r'yolov10.?-seg.*\.pt$', modelname))
+        elif "yolo11" in modelname:
+            return bool(re.match(r'yolo11.?-seg.*\.pt$', modelname))
 
     # Modelname의 포즈 명명 문제 해결
     def checkPoseName(self, modelname):
@@ -466,6 +468,8 @@ class YOLOSHOWBASE:
             return bool(re.match(r'yolov9.?-pose.*\.pt$', modelname))
         elif "yolov10" in modelname:
             return bool(re.match(r'yolov10.?-pose.*\.pt$', modelname))
+        elif "yolo11" in modelname:
+            return bool(re.match(r'yolo11.?-pose.*\.pt$', modelname))
 
     # Modelname의 포즈 명명 문제 해결
     def checkObbName(self, modelname):
@@ -479,6 +483,8 @@ class YOLOSHOWBASE:
             return bool(re.match(r'yolov9.?-obb.*\.pt$', modelname))
         elif "yolov10" in modelname:
             return bool(re.match(r'yolov10.?-obb.*\.pt$', modelname))
+        elif "yolo11" in modelname:
+            return bool(re.match(r'yolo11.?-obb.*\.pt$', modelname))
 
     # 실행 중인 모델 중지
     def quitRunningModel(self, stop_status=False):
@@ -530,7 +536,8 @@ class YOLOSHOWBASE:
         if (not self.yolov5_thread.res_status and not self.yolov7_thread.res_status
                 and not self.yolov8_thread.res_status and not self.yolov9_thread.res_status
                 and not self.yolov5seg_thread.res_status and not self.yolov8seg_thread.res_status
-                and not self.rtdetr_thread.res_status and not self.yolov8pose_thread.res_status):
+                and not self.rtdetr_thread.res_status and not self.yolov8pose_thread.res_status
+                and not self.yolov11_thread.res_status):
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f'{self.current_workpath}/config/save.json'
@@ -554,6 +561,9 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=True)
             elif "yolov9" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=True)
+            elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
+                    self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=True)
             elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=True)
             elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
@@ -578,6 +588,9 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=False)
             elif "yolov9" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=False)
+            elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
+                    self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=False)
             elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=False)
             elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
@@ -688,6 +701,7 @@ class YOLOSHOWBASE:
             # self.yolov7_thread.iou_thres = x / 100
             # self.yolov8_thread.iou_thres = x / 100
             # self.yolov9_thread.iou_thres = x / 100
+            # self.yolov11_thread.iou_thres = x / 100
             # self.yolov5seg_thread.iou_thres = x / 100
             # self.yolov8seg_thread.iou_thres = x / 100
             # self.rtdetr_thread.iou_thres = x / 100
@@ -703,6 +717,7 @@ class YOLOSHOWBASE:
             # self.yolov7_thread.conf_thres = x / 100
             # self.yolov8_thread.conf_thres = x / 100
             # self.yolov9_thread.conf_thres = x / 100
+            # self.yolov11_thread.conf_thres = x / 100
             # self.yolov5seg_thread.conf_thres = x / 100
             # self.yolov8seg_thread.conf_thres = x / 100
             # self.rtdetr_thread.conf_thres = x / 100
@@ -718,6 +733,7 @@ class YOLOSHOWBASE:
             # self.yolov7_thread.speed_thres = x  # ms
             # self.yolov8_thread.speed_thres = x  # ms
             # self.yolov9_thread.speed_thres = x  # ms
+            # self.yolov11_thread.speed_thres = x / ms
             # self.yolov5seg_thread.speed_thres = x  # ms
             # self.yolov8seg_thread.speed_thres = x  # ms
             # self.rtdetr_thread.speed_thres = x  # ms
@@ -733,6 +749,7 @@ class YOLOSHOWBASE:
             # self.yolov7_thread.line_thickness = x
             # self.yolov8_thread.line_thickness = x
             # self.yolov9_thread.line_thickness = x
+            # self.yolov11_thread.line_thickness = x
             # self.yolov5seg_thread.line_thickness = x
             # self.yolov8seg_thread.line_thickness = x
             # self.rtdetr_thread.line_thickness = x
