@@ -855,7 +855,7 @@ class YOLOSHOWBASE:
                             _new_param.data = _old_param.data.clone()
                         net['model'].model[_module_index] = yolov9_detect
                 torch.save(net, ptname)
-        glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov5-seg yolov8-seg rtdetr yolov8-pose")
+        glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose")
         self.reloadModel()
 
     # 통계 결과를 수락하고 json에 기록

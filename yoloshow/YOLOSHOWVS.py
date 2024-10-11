@@ -1,7 +1,7 @@
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
+glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolo11 yolo11-seg yolo11-pose yolo11-obb")
 import json
 import os
 import shutil
@@ -28,8 +28,8 @@ WIDTH_LEFT_BOX_STANDARD = 80
 WIDTH_LEFT_BOX_EXTENDED = 180
 WIDTH_LOGO = 60
 UI_FILE_PATH = "ui/YOLOSHOWUIVS.ui"
-ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov10","yolo11", "yolov5-seg", "yolov8-seg", "rtdetr",
-                   "yolov8-pose", "yolov8-obb"]
+ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov10", "yolov5-seg", "yolov8-seg", "rtdetr",
+                   "yolov8-pose", "yolov8-obb", "yolo11","yolo11-seg","yolo11-pose", "yolo11-obb"]
 
 
 # YOLOSHOW 윈도우 클래스는 UI 파일과 Ui_mainWindow를 동적으로 로드합니다.
