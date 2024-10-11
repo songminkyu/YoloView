@@ -59,6 +59,10 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.ui.topbox.doubleClickFrame.connect(self.maxorRestore)
         # --- 최대화 최소화 닫기 --- #
 
+        # --- track mode --- #
+        self.ui.track_box.currentIndexChanged.connect(self.selectedTrackMode)
+        # --- track mode --- #
+
         # --- 재생 일시 정지 --- #
         self.playIcon = QtGui.QIcon()
         self.playIcon.addPixmap(QtGui.QPixmap(f"{self.current_workpath}/images/newsize/play.png"), QtGui.QIcon.Normal,
@@ -299,6 +303,12 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             yolo_thread.send_fps.connect(lambda x: self.ui.fps_label2.setText(str(x)))
             yolo_thread.send_class_num.connect(lambda x: self.ui.Class_num2.setText(str(x)))
             yolo_thread.send_target_num.connect(lambda x: self.ui.Target_num2.setText(str(x)))
+
+    def selectedTrackMode(self):
+        self.updateTrackMode(self.yolov8_thread1,'yolov8')
+        self.updateTrackMode(self.yolov11_thread1, 'yolo11')
+        self.updateTrackMode(self.yolov8_thread2, 'yolov8')
+        self.updateTrackMode(self.yolov11_thread2, 'yolo11')
 
     # MessageBar에 메시지 표시
     def showStatus(self, msg):
@@ -893,6 +903,15 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     self.initModel(self.yolov11obb_thread2, "yolo11-obb", "right")
 
     def changeModelProcess(self, yolo_thread, yoloname, mode=None):
+
+        # yolov8 이면 track 모드 UI 활성화
+        if yoloname == 'yolov8' or yoloname == 'yolo11':
+            self.ui.track_box.show()
+            self.ui.track_label.show()
+        else:
+            self.ui.track_box.hide()
+            self.ui.track_label.hide()
+
         if mode == "left":
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box1.currentText()
             # common과 yolo 모듈 불러오기

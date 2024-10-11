@@ -1443,8 +1443,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_20.addWidget(self.track_box)  # Add combo box
 
         # 기능 임시 숨김 처리
-        self.track_box.hide()  # Hide the combo box
-        self.track_label.hide()  # Hide the label
+        #self.track_box.hide()  # Hide the combo box
+        #self.track_label.hide()  # Hide the label
 
         self.run_button = QPushButton(self.rightbox_play)
         self.run_button.setObjectName(u"run_button")

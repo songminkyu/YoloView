@@ -1,5 +1,4 @@
 {
-    "bus ": 1,
-    "persons ": 4,
-    "stop sign ": 1
+    "cars ": 6,
+    "truck ": 1
 }

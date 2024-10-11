@@ -233,15 +233,15 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.showStatus("Welcome to YOLOSHOW")
         # --- MessageBar Init --- #
 
-    def selectedTrackMode(self):
-        self.updateTrackMode(self.yolov8_thread,'yolov8')
-        self.updateTrackMode(self.yolov11_thread, 'yolo11')
-
     def initThreads(self):
         self.yolo_threads = [self.yolov5_thread, self.yolov7_thread, self.yolov9_thread, self.yolov10_thread, self.rtdetr_thread,
                              self.yolov5seg_thread, self.yolov8_thread, self.yolov8seg_thread, self.yolov8pose_thread,
                              self.yolov8obb_thread, self.yolov11_thread,self.yolov11seg_thread, self.yolov11pose_thread,
                              self.yolov11obb_thread]
+
+    def selectedTrackMode(self):
+        self.updateTrackMode(self.yolov8_thread,'yolov8')
+        self.updateTrackMode(self.yolov11_thread, 'yolo11')
 
     #결과 내보내기
     def saveResult(self):
@@ -457,7 +457,6 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                     self.stopOtherModelProcess(self.yolov11obb_thread, current_yoloname)
 
     def changeModelProcess(self, yolo_thread, yoloname):
-
         # yolov8 이면 track 모드 UI 활성화
         if yoloname == 'yolov8' or yoloname == 'yolo11':
             self.ui.track_box.show()
