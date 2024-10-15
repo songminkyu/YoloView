@@ -16,7 +16,7 @@ from yolocode.yolov8.engine.results import Results
 from models.common import AutoBackend
 from yolocode.yolov8.utils import callbacks, ops, LOGGER, colorstr, MACOS, WINDOWS
 from collections import defaultdict
-from yolocode.yolov5.utils.general import increment_path
+from yolocode.yolov8.utils.files import increment_path
 from yolocode.yolov8.utils.checks import check_imgsz
 from yolocode.yolov8.utils.torch_utils import select_device
 
