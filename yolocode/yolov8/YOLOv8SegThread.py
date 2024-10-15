@@ -171,8 +171,8 @@ class YOLOv8SegThread(QThread):
                 # 原始图片送入 input框
                 self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
                 count += 1
-                percent = 0  # 进度条
-                # 处理processBar
+                percent = 0  # 진행률 표시줄
+                # processBar 제어
                 if self.vid_cap:
                     if self.vid_cap.get(cv2.CAP_PROP_FRAME_COUNT) > 0:
                         percent = int(count / self.vid_cap.get(cv2.CAP_PROP_FRAME_COUNT) * self.progress_value)
@@ -248,14 +248,14 @@ class YOLOv8SegThread(QThread):
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
                     self.send_msg.emit('Finish Detection')
-                    # --- 发送图片和表格结果 --- #
-                    self.send_result_picture.emit(self.results_picture)  # 发送图片结果
+                    # --- 이미지 및 표 결과 보내기 --- #
+                    self.send_result_picture.emit(self.results_picture)  # 이미지 결과 보내기
                     for key, value in self.results_picture.items():
                         self.results_table.append([key, str(value)])
                     self.results_picture = dict()
-                    self.send_result_table.emit(self.results_table)  # 发送表格结果
+                    self.send_result_table.emit(self.results_table)  # 양식 결과 보내기
                     self.results_table = list()
-                    # --- 发送图片和表格结果 --- #
+                    # --- 이미지 및 표 결과 보내기 --- #
                     self.res_status = True
                     if self.vid_cap is not None:
                         self.vid_cap.release()
