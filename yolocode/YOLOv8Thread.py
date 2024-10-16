@@ -428,6 +428,9 @@ class YOLOv8Thread(QThread,BasePredictor):
         suffix, fourcc = (".mp4", "avc1") if MACOS else (".avi", "WMV2") if WINDOWS else (".avi", "MJPG")
         # Save imgs
         if self.dataset.mode == "image":
+            root, ext = os.path.splitext(save_path)
+            if ext.lower() == '.heic':
+                save_path = root + '.png'
             cv2.imwrite(save_path, im0)
             return save_path
 
