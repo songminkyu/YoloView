@@ -426,10 +426,10 @@ class YOLOv8Thread(QThread,BasePredictor):
         """Save video predictions as mp4 at specified path."""
         im0 = self.plotted_img
         suffix, fourcc = (".mp4", "avc1") if MACOS else (".avi", "WMV2") if WINDOWS else (".avi", "MJPG")
-        # Save imgs
         if self.dataset.mode == "image":
             root, ext = os.path.splitext(save_path)
             if ext.lower() == '.heic':
+                # cv2.imwrite 에는 heic 확장자로 저장 안되는 문제로, 확장자를 png로 변경 하여 저장
                 save_path = root + '.png'
             cv2.imwrite(save_path, im0)
             return save_path
