@@ -12,22 +12,18 @@ from PySide6.QtCore import QTimer, Qt
 from PySide6 import QtCore, QtGui
 from ui.YOLOSHOWUIVS import Ui_MainWindow
 from yoloshow.YOLOSHOWBASE import YOLOSHOWBASE
-from yolocode.yolov5.YOLOv5Thread import YOLOv5Thread
-from yolocode.yolov7.YOLOv7Thread import YOLOv7Thread
-from yolocode.yolov8.YOLOv8Thread import YOLOv8Thread
-from yolocode.yolov9.YOLOv9Thread import YOLOv9Thread
-from yolocode.yolov5.YOLOv5SegThread import YOLOv5SegThread
-from yolocode.yolov8.YOLOv8SegThread import YOLOv8SegThread
-from yolocode.yolov8.RTDETRThread import RTDETRThread
-from yolocode.yolov8.YOLOv8PoseThread import YOLOv8PoseThread
-from yolocode.yolov8.YOLOv8ObbThread import YOLOv8ObbThread
+from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOv8SegThread import YOLOv8SegThread
+from yolocode.RTDETRThread import RTDETRThread
+from yolocode.YOLOv8PoseThread import YOLOv8PoseThread
+from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
 
 GLOBAL_WINDOW_STATE = True
 WIDTH_LEFT_BOX_STANDARD = 80
 WIDTH_LEFT_BOX_EXTENDED = 180
 WIDTH_LOGO = 60
 UI_FILE_PATH = "ui/YOLOSHOWUIVS.ui"
-ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov10", "yolov5-seg", "yolov8-seg", "rtdetr",
+ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov10", "yolov5-seg", "yolov8-seg", "rtdetr",
                    "yolov8-pose", "yolov8-obb", "yolo11","yolo11-seg","yolo11-pose", "yolo11-obb"]
 
 
@@ -155,18 +151,11 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # --- 상태 표시줄 초기화 --- #
 
         # --- YOLOv5 QThread --- #
-        self.yolov5_thread1 = YOLOv5Thread()
-        self.yolov5_thread2 = YOLOv5Thread()
+        self.yolov5_thread1 = YOLOv8Thread()
+        self.yolov5_thread2 = YOLOv8Thread()
         self.initModel(self.yolov5_thread1, "yolov5", "left")
         self.initModel(self.yolov5_thread2, "yolov5", "right")
         # --- YOLOv5 QThread --- #
-
-        # --- YOLOv7 QThread --- #
-        self.yolov7_thread1 = YOLOv7Thread()
-        self.yolov7_thread2 = YOLOv7Thread()
-        self.initModel(self.yolov7_thread1, "yolov7", "left")
-        self.initModel(self.yolov7_thread2, "yolov7", "right")
-        # --- YOLOv7 QThread --- #
 
         # --- YOLOv8 QThread --- #
         self.yolov8_thread1 = YOLOv8Thread()
@@ -176,8 +165,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # --- YOLOv8 QThread --- #
 
         # --- YOLOv9 QThread --- #
-        self.yolov9_thread1 = YOLOv9Thread()
-        self.yolov9_thread2 = YOLOv9Thread()
+        self.yolov9_thread1 = YOLOv8Thread()
+        self.yolov9_thread2 = YOLOv8Thread()
         self.initModel(self.yolov9_thread1, "yolov9", "left")
         self.initModel(self.yolov9_thread2, "yolov9", "right")
         # --- YOLOv9 QThread --- #
@@ -190,8 +179,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # --- YOLOv10 QThread --- #
 
         # --- YOLOv5-Seg QThread --- #
-        self.yolov5seg_thread1 = YOLOv5SegThread()
-        self.yolov5seg_thread2 = YOLOv5SegThread()
+        self.yolov5seg_thread1 = YOLOv8SegThread()
+        self.yolov5seg_thread2 = YOLOv8SegThread()
         self.initModel(self.yolov5seg_thread1, "yolov5-seg", "left")
         self.initModel(self.yolov5seg_thread2, "yolov5-seg", "right")
         # --- YOLOv5-Seg QThread --- #
@@ -271,9 +260,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # --- MessageBar Init --- #
 
     def initThreads(self):
-        self.yolo_threads = [self.yolov5_thread1, self.yolov5_thread2, self.yolov7_thread1, self.yolov7_thread2,
-                             self.yolov9_thread1, self.yolov9_thread2, self.yolov10_thread1, self.yolov10_thread2,
-                             self.yolov5seg_thread1, self.yolov5seg_thread2,
+        self.yolo_threads = [self.yolov5_thread1, self.yolov5_thread2, self.yolov9_thread1, self.yolov9_thread2,
+                             self.yolov10_thread1, self.yolov10_thread2, self.yolov5seg_thread1, self.yolov5seg_thread2,
                              self.yolov8_thread1, self.yolov8_thread2, self.yolov8seg_thread1, self.yolov8seg_thread2,
                              self.rtdetr_thread1, self.rtdetr_thread2, self.yolov8pose_thread1, self.yolov8pose_thread2,
                              self.yolov8obb_thread1, self.yolov8obb_thread2,
@@ -373,14 +361,14 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
     # 결과 내보내기
     def saveResult(self):
-        thread1_status = (not self.yolov5_thread1.res_status and not self.yolov7_thread1.res_status
+        thread1_status = (not self.yolov5_thread1.res_status
                           and not self.yolov9_thread1.res_status and not self.yolov10_thread1 and not self.yolov5seg_thread1.res_status
                           and not self.rtdetr_thread1.res_status
                           and not self.yolov8_thread1.res_status and not self.yolov8seg_thread1.res_status and not self.yolov8pose_thread1.res_status
                           and not self.yolov8obb_thread1.res_status
                           and not self.yolov11_thread1.res_status and not self.yolov11seg_thread1.res_status and not self.yolov11pose_thread1.res_status
                           and not self.yolov11obb_thread1.res_status)
-        thread2_status = (not self.yolov5_thread2.res_status and not self.yolov7_thread2.res_status
+        thread2_status = (not self.yolov5_thread2.res_status
                           and not self.yolov9_thread2.res_status and not self.yolov10_thread2 and not self.yolov5seg_thread2.res_status
                           and not self.rtdetr_thread2.res_status
                           and not self.yolov8_thread2.res_status and not self.yolov8seg_thread2.res_status and not self.yolov8pose_thread2.res_status
@@ -407,8 +395,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread1, folder=True)
-            elif "yolov7" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolov7_thread1, folder=True)
             elif "yolov8" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
                     self.model_name) and not self.checkObbName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread1, folder=True)
@@ -444,8 +430,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread1, folder=False)
-            elif "yolov7" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolov7_thread1, folder=False)
             elif "yolov8" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
                     self.model_name) and not self.checkObbName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread1, folder=False)
@@ -502,22 +486,19 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.reloadModel()
         if mode == "left":
             if yoloname == "yolov5":
-                self.yolov5_thread1 = YOLOv5Thread()
+                self.yolov5_thread1 = YOLOv8Thread()
                 self.initModel(self.yolov5_thread1, "yolov5", "left")
-            elif yoloname == "yolov7":
-                self.yolov7_thread1 = YOLOv7Thread()
-                self.initModel(self.yolov7_thread1, "yolov7", "left")
             elif yoloname == "yolov8":
                 self.yolov8_thread1 = YOLOv8Thread()
                 self.initModel(self.yolov8_thread1, "yolov8", "left")
             elif yoloname == "yolov9":
-                self.yolov9_thread1 = YOLOv9Thread()
+                self.yolov9_thread1 = YOLOv8Thread()
                 self.initModel(self.yolov9_thread1, "yolov9", "left")
             elif yoloname == "yolov10":
                 self.yolov10_thread1 = YOLOv8Thread()
                 self.initModel(self.yolov10_thread1, "yolov10", "left")
             elif yoloname == "yolov5-seg":
-                self.yolov5seg_thread1 = YOLOv5SegThread()
+                self.yolov5seg_thread1 = YOLOv8SegThread()
                 self.initModel(self.yolov5seg_thread1, "yolov5-seg", "left")
             elif yoloname == "yolov8-seg":
                 self.yolov8seg_thread1 = YOLOv8SegThread()
@@ -549,22 +530,19 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.runModel(True)
         else:
             if yoloname == "yolov5":
-                self.yolov5_thread2 = YOLOv5Thread()
+                self.yolov5_thread2 = YOLOv8Thread()
                 self.initModel(self.yolov5_thread2, "yolov5", "right")
-            elif yoloname == "yolov7":
-                self.yolov7_thread2 = YOLOv7Thread()
-                self.initModel(self.yolov7_thread2, "yolov7", "right")
             elif yoloname == "yolov8":
                 self.yolov8_thread2 = YOLOv8Thread()
                 self.initModel(self.yolov8_thread2, "yolov8", "right")
             elif yoloname == "yolov9":
-                self.yolov9_thread2 = YOLOv9Thread()
+                self.yolov9_thread2 = YOLOv8Thread()
                 self.initModel(self.yolov9_thread2, "yolov9", "right")
             elif yoloname == "yolov10":
                 self.yolov10_thread2 = YOLOv8Thread()
                 self.initModel(self.yolov10_thread2, "yolov10", "right")
             elif yoloname == "yolov5-seg":
-                self.yolov5seg_thread2 = YOLOv5SegThread()
+                self.yolov5seg_thread2 = YOLOv8SegThread()
                 self.initModel(self.yolov5seg_thread2, "yolov5-seg", "right")
             elif yoloname == "yolov8-seg":
                 self.yolov8seg_thread2 = YOLOv8SegThread()
@@ -609,9 +587,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     if yoloname == "yolov5" and self.yolov5_thread1.isRunning():
                         self.PauseAnotherModel(mode="right")
                         self.stopOtherModelProcess(self.yolov5_thread1, current_yoloname)
-                    elif yoloname == "yolov7" and self.yolov7_thread1.isRunning():
-                        self.PauseAnotherModel(mode="right")
-                        self.stopOtherModelProcess(self.yolov7_thread1, current_yoloname)
                     elif yoloname == "yolov8" and self.yolov8_thread1.isRunning():
                         self.PauseAnotherModel(mode="right")
                         self.stopOtherModelProcess(self.yolov8_thread1, current_yoloname)
@@ -652,9 +627,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     if yoloname == "yolov5" and self.yolov5_thread2.isRunning():
                         self.PauseAnotherModel(mode="left")
                         self.stopOtherModelProcess(self.yolov5_thread2, current_yoloname)
-                    elif yoloname == "yolov7" and self.yolov7_thread2.isRunning():
-                        self.PauseAnotherModel(mode="left")
-                        self.stopOtherModelProcess(self.yolov7_thread2, current_yoloname)
                     elif yoloname == "yolov8" and self.yolov8_thread2.isRunning():
                         self.PauseAnotherModel(mode="left")
                         self.stopOtherModelProcess(self.yolov8_thread2, current_yoloname)
@@ -705,8 +677,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 if "yolov5" in self.model_name1 and not self.checkSegName(
                         self.model_name1) and self.yolov5_thread1.isRunning():
                     self.PauseAnotherModelProcess(self.yolov5_thread1)
-                elif "yolov7" in self.model_name1 and self.yolov7_thread1.isRunning():
-                    self.PauseAnotherModelProcess(self.yolov7_thread1)
                 elif ("yolov8" in self.model_name1 and not self.checkSegName(
                         self.model_name1) and not self.checkPoseName(self.model_name1)
                       and not self.checkObbName(self.model_name1)
@@ -748,8 +718,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 if "yolov5" in self.model_name2 and not self.checkSegName(
                         self.model_name2) and self.yolov5_thread2.isRunning():
                     self.PauseAnotherModelProcess(self.yolov5_thread2)
-                elif "yolov7" in self.model_name2 and self.yolov7_thread2.isRunning():
-                    self.PauseAnotherModelProcess(self.yolov7_thread2)
                 elif ("yolov8" in self.model_name2 and not self.checkSegName(
                         self.model_name2) and not self.checkPoseName(self.model_name2) and not self.checkObbName(
                     self.model_name2)
@@ -795,11 +763,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             if mode == "left":
                 if "yolov5" in self.model_name1 and not self.checkSegName(
                         self.model_name1) and buttonStatus:
-                    self.yolov5_thread1 = YOLOv5Thread()
+                    self.yolov5_thread1 = YOLOv8Thread()
                     self.initModel(self.yolov5_thread1, "yolov5", "left")
-                elif "yolov7" in self.model_name1 and buttonStatus:
-                    self.yolov7_thread1 = YOLOv7Thread()
-                    self.initModel(self.yolov7_thread1, "yolov7", "left")
                 elif ("yolov8" in self.model_name1 and not self.checkSegName(
                         self.model_name1) and not self.checkPoseName(self.model_name1) and not self.checkObbName(
                     self.model_name1)
@@ -807,14 +772,14 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     self.yolov8_thread1 = YOLOv8Thread()
                     self.initModel(self.yolov8_thread1, "yolov8", "left")
                 elif "yolov9" in self.model_name1 and buttonStatus:
-                    self.yolov9_thread1 = YOLOv9Thread()
+                    self.yolov9_thread1 = YOLOv8Thread()
                     self.initModel(self.yolov9_thread1, "yolov9", "left")
                 elif "yolov10" in self.model_name1 and buttonStatus:
                     self.yolov10_thread1 = YOLOv8Thread()
                     self.initModel(self.yolov10_thread1, "yolov10", "left")
                 elif "yolov5" in self.model_name1 and self.checkSegName(
                         self.model_name1) and buttonStatus:
-                    self.yolov5seg_thread1 = YOLOv5SegThread()
+                    self.yolov5seg_thread1 = YOLOv8SegThread()
                     self.initModel(self.yolov5seg_thread1, "yolov5-seg", "left")
                 elif "yolov8" in self.model_name1 and self.checkSegName(
                         self.model_name1) and buttonStatus:
@@ -849,12 +814,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 if "yolov5" in self.model_name2 and not self.checkSegName(
                         self.model_name2) and buttonStatus:
 
-                    self.yolov5_thread2 = YOLOv5Thread()
+                    self.yolov5_thread2 = YOLOv8Thread()
                     self.initModel(self.yolov5_thread2, "yolov5", "right")
-                elif "yolov7" in self.model_name2 and buttonStatus:
-
-                    self.yolov7_thread2 = YOLOv7Thread()
-                    self.initModel(self.yolov7_thread2, "yolov7", "right")
                 elif ("yolov8" in self.model_name2 and not self.checkSegName(
                         self.model_name2) and not self.checkPoseName(self.model_name2) and not self.checkObbName(
                     self.model_name2)
@@ -862,14 +823,14 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     self.yolov8_thread2 = YOLOv8Thread()
                     self.initModel(self.yolov8_thread2, "yolov8", "right")
                 elif "yolov9" in self.model_name2 and buttonStatus:
-                    self.yolov9_thread2 = YOLOv9Thread()
+                    self.yolov9_thread2 = YOLOv8Thread()
                     self.initModel(self.yolov9_thread2, "yolov9", "right")
                 elif "yolov10" in self.model_name2 and buttonStatus:
                     self.yolov10_thread2 = YOLOv8Thread()
                     self.initModel(self.yolov10_thread2, "yolov10", "right")
                 elif "yolov5" in self.model_name2 and self.checkSegName(
                         self.model_name2) and buttonStatus:
-                    self.yolov5seg_thread2 = YOLOv5SegThread()
+                    self.yolov5seg_thread2 = YOLOv8SegThread()
                     self.initModel(self.yolov5seg_thread2, "yolov5-seg", "right")
                 elif "yolov8" in self.model_name2 and self.checkSegName(
                         self.model_name2) and buttonStatus:
@@ -932,8 +893,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.ui.Model_label1.setText(str(self.model_name1).replace(".pt", ""))  # 상태 표시줄 표시 수정
             if "yolov5" in self.model_name1 and not self.checkSegName(self.model_name1):
                 self.changeModelProcess(self.yolov5_thread1, "yolov5", "left")
-            elif "yolov7" in self.model_name1:
-                self.changeModelProcess(self.yolov7_thread1, "yolov7", "left")
             elif "yolov8" in self.model_name1 and not self.checkSegName(self.model_name1) \
                     and not self.checkPoseName(self.model_name1) and not self.checkObbName(self.model_name1):
                 self.changeModelProcess(self.yolov8_thread1, "yolov8", "left")
@@ -968,8 +927,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.ui.Model_label2.setText(str(self.model_name2).replace(".pt", ""))
             if "yolov5" in self.model_name2 and not self.checkSegName(self.model_name2):
                 self.changeModelProcess(self.yolov5_thread2, "yolov5", "right")
-            elif "yolov7" in self.model_name2:
-                self.changeModelProcess(self.yolov7_thread2, "yolov7", "right")
             elif "yolov8" in self.model_name2 and not self.checkSegName(self.model_name2) \
                     and not self.checkPoseName(self.model_name2) and not self.checkObbName(self.model_name2):
                 self.changeModelProcess(self.yolov8_thread2, "yolov8", "right")
@@ -1014,8 +971,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         if mode == "start":
             if "yolov5" in self.model_name2 and not self.checkSegName(self.model_name2):
                 self.runRightModelProcess(self.yolov5_thread2, "start")
-            elif "yolov7" in self.model_name2:
-                self.runRightModelProcess(self.yolov7_thread2, "start")
             elif "yolov8" in self.model_name2 and not self.checkSegName(self.model_name2) \
                     and not self.checkPoseName(self.model_name2) and not self.checkObbName(self.model_name2):
                 self.runRightModelProcess(self.yolov8_thread2, "start")
@@ -1045,8 +1000,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         elif mode == "pause":
             if "yolov5" in self.model_name2 and not self.checkSegName(self.model_name2):
                 self.runRightModelProcess(self.yolov5_thread2, "pause")
-            elif "yolov7" in self.model_name2:
-                self.runRightModelProcess(self.yolov7_thread2, "pause")
             elif "yolov8" in self.model_name2 and not self.checkSegName(self.model_name2) \
                     and not self.checkPoseName(self.model_name2) and not self.checkObbName(self.model_name2):
                 self.runRightModelProcess(self.yolov8_thread2, "pause")
@@ -1101,8 +1054,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # 왼쪽 모델
         if "yolov5" in self.model_name1 and not self.checkSegName(self.model_name1):
             self.runModelProcess(self.yolov5_thread1)
-        elif "yolov7" in self.model_name1:
-            self.runModelProcess(self.yolov7_thread1)
         elif "yolov8" in self.model_name1 and not self.checkSegName(self.model_name1) \
                 and not self.checkPoseName(self.model_name1) and not self.checkObbName(self.model_name1):
             self.runModelProcess(self.yolov8_thread1)

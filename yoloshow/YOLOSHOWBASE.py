@@ -4,7 +4,7 @@ from ui.utils.drawFigure import PlottingThread
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
+glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
 
 from utils.logger import LoggerUtils
 import re
@@ -35,7 +35,7 @@ WIDTH_SETTING_BAR = 300
 WIDTH_LOGO = 60
 WINDOW_SPLIT_BODY = 20
 KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting']
-ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9","yolo11", "yolov5-seg", "yolov8-seg", "rtdetr", "yolov8-pose"]
+ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov9-seg","yolo11", "yolov5-seg", "yolov8-seg", "rtdetr", "yolov8-pose"]
 
 loggertool = LoggerUtils()
 
@@ -445,8 +445,6 @@ class YOLOSHOWBASE:
     def checkSegName(self, modelname):
         if "yolov5" in modelname:
             return bool(re.match(r'yolov5.?-seg.*\.pt$', modelname))
-        elif "yolov7" in modelname:
-            return bool(re.match(r'yolov7.?-seg.*\.pt$', modelname))
         elif "yolov8" in modelname:
             return bool(re.match(r'yolov8.?-seg.*\.pt$', modelname))
         elif "yolov9" in modelname:
@@ -460,8 +458,6 @@ class YOLOSHOWBASE:
     def checkPoseName(self, modelname):
         if "yolov5" in modelname:
             return bool(re.match(r'yolov5.?-pose.*\.pt$', modelname))
-        elif "yolov7" in modelname:
-            return bool(re.match(r'yolov7.?-pose.*\.pt$', modelname))
         elif "yolov8" in modelname:
             return bool(re.match(r'yolov8.?-pose.*\.pt$', modelname))
         elif "yolov9" in modelname:
@@ -475,8 +471,6 @@ class YOLOSHOWBASE:
     def checkObbName(self, modelname):
         if "yolov5" in modelname:
             return bool(re.match(r'yolov5.?-obb.*\.pt$', modelname))
-        elif "yolov7" in modelname:
-            return bool(re.match(r'yolov7.?-obb.*\.pt$', modelname))
         elif "yolov8" in modelname:
             return bool(re.match(r'yolov8.?-obb.*\.pt$', modelname))
         elif "yolov9" in modelname:
@@ -535,10 +529,10 @@ class YOLOSHOWBASE:
     def saveResult(self):
         if (not self.yolov5_thread.res_status and not self.yolov7_thread.res_status
                 and not self.yolov8_thread.res_status and not self.yolov9_thread.res_status
-                and not self.yolov5seg_thread.res_status and not self.yolov8seg_thread.res_status
-                and not self.rtdetr_thread.res_status and not self.yolov8pose_thread.res_status
-                and not self.yolov11_thread.res_status and not self.yolov11pose_thread.res_status
-                and not self.yolov11seg_thread.res_status):
+                and not self.yolov9seg_thread.res_status and not self.yolov5seg_thread.res_status
+                and not self.yolov8seg_thread.res_status and not self.rtdetr_thread.res_status
+                and not self.yolov8pose_thread.res_status and not self.yolov11_thread.res_status
+                and not self.yolov11pose_thread.res_status and not self.yolov11seg_thread.res_status):
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f'{self.current_workpath}/config/save.json'
@@ -555,21 +549,19 @@ class YOLOSHOWBASE:
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=True)
-            elif "yolov7" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolov7_thread, folder=True)
+            elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=True)
             elif "yolov8" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
                     self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=True)
-            elif "yolov9" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=True)
-            elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=True)
             elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8seg_thread, folder=True)
-            elif "rtdetr" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=True)
             elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8pose_thread, folder=True)
+            elif "yolov9" in self.model_name and not self.checkSegName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=True)
+            elif "yolov9" in self.model_name and self.checkSegName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov9seg_thread, folder=True)
             elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
                     self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=True)
@@ -577,6 +569,8 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.yolov11seg_thread, folder=True)
             elif "yolo11" in self.model_name and self.checkPoseName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov11pose_thread, folder=True)
+            elif "rtdetr" in self.model_name:
+                self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=True)
         else:
             self.OutputDir, _ = QFileDialog.getSaveFileName(
                 self,  # 부모 창 객체
@@ -586,21 +580,19 @@ class YOLOSHOWBASE:
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=False)
-            elif "yolov7" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolov7_thread, folder=False)
+            elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=False)
             elif "yolov8" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
                     self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=False)
-            elif "yolov9" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=False)
-            elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=False)
             elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8seg_thread, folder=False)
-            elif "rtdetr" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=False)
             elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov8pose_thread, folder=False)
+            elif "yolov9" in self.model_name and not self.checkSegName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=False)
+            elif "yolov9" in self.model_name and self.checkSegName(self.model_name):
+                self.saveResultProcess(self.OutputDir, self.yolov9seg_thread, folder=False)
             elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
                     self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=False)
@@ -608,6 +600,9 @@ class YOLOSHOWBASE:
                 self.saveResultProcess(self.OutputDir, self.yolov11seg_thread, folder=False)
             elif "yolo11" in self.model_name and self.checkPoseName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov11pose_thread, folder=False)
+            elif "rtdetr" in self.model_name:
+                self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=False)
+
         config['save_path'] = self.OutputDir
         config_json = json.dumps(config, ensure_ascii=False, indent=2)
         with open(config_file, 'w', encoding='utf-8') as f:
@@ -766,96 +761,7 @@ class YOLOSHOWBASE:
 
     # YOLOv5, YOLOv7 및 YOLOv9를 수정하여 yolo.py 충돌 해결
     def solveYoloConflict(self, ptnamelst):
-        for ptname in ptnamelst:
-            ptbaseName = os.path.basename(ptname)
-            if "yolov5" in ptbaseName and not self.checkSegName(ptbaseName):
-                glo.set_value('yoloname', "yolov5")
-                self.reloadModel()
-                from models.yolo import Detect_YOLOV5
-                net = torch.load(ptname)
-                for _module_index in range(len(net['model'].model)):
-                    _module = net['model'].model[_module_index]
-                    _module_name = _module.__class__.__name__
-                    if _module_name == 'Detect':
-                        _yaml_lst = net['model'].yaml['backbone'] + net['model'].yaml['head']
-                        _ch = []
-                        _yaml_detect_layers = _yaml_lst[-1][0]
-                        for layer in _yaml_detect_layers:
-                            _ch.append(_yaml_lst[layer][-1][0])
-                        _anchors = _module.anchors
-                        _nc = _module.nc
-                        yolov5_detect = Detect_YOLOV5(anchors=_anchors, nc=_nc, ch=_ch)
-                        yolov5_detect.__dict__.update(_module.__dict__)
-                        for _new_param, _old_param in zip(yolov5_detect.parameters(), _module.parameters()):
-                            _new_param.data = _old_param.data.clone()
-                        net['model'].model[_module_index] = yolov5_detect
-                torch.save(net, ptname)
-            elif "yolov5" in ptbaseName and self.checkSegName(ptbaseName):
-                glo.set_value('yoloname', "yolov5-seg")
-                self.reloadModel()
-                from models.yolo import Segment_YOLOV5
-                net = torch.load(ptname)
-                for _module_index in range(len(net['model'].model)):
-                    _module = net['model'].model[_module_index]
-                    _module_name = _module.__class__.__name__
-                    if _module_name == 'Segment':
-                        _yaml_lst = net['model'].yaml['backbone'] + net['model'].yaml['head']
-                        _ch = []
-                        _yaml_seg_layers = _yaml_lst[-1][0]
-                        for layer in _yaml_seg_layers:
-                            _ch.append(_yaml_lst[layer][-1][0])
-                        _anchors = _module.anchors
-                        _nc = _module.nc
-                        yolov5_seg = Segment_YOLOV5(anchors=_anchors, nc=_nc, ch=_ch)
-                        _module.detect = yolov5_seg.detect
-                        yolov5_seg.__dict__.update(_module.__dict__)
-                        for _new_param, _old_param in zip(yolov5_seg.parameters(), _module.parameters()):
-                            _new_param.data = _old_param.data.clone()
-                        net['model'].model[_module_index] = yolov5_seg
-                torch.save(net, ptname)
-            elif "yolov7" in ptbaseName:
-                glo.set_value('yoloname', "yolov7")
-                self.reloadModel()
-                from models.yolo import Detect_YOLOV7
-                net = torch.load(ptname)
-                for _module_index in range(len(net['model'].model)):
-                    _module = net['model'].model[_module_index]
-                    _module_name = _module.__class__.__name__
-                    if _module_name == 'Detect':
-                        _yaml_lst = net['model'].yaml['backbone'] + net['model'].yaml['head']
-                        _ch = []
-                        _yaml_detect_layers = _yaml_lst[-1][0]
-                        for layer in _yaml_detect_layers:
-                            _ch.append(_yaml_lst[layer][-1][0])
-                        _anchors = _module.anchors
-                        _nc = _module.nc
-                        yolov7_detect = Detect_YOLOV7(anchors=_anchors, nc=_nc, ch=_ch)
-                        yolov7_detect.__dict__.update(_module.__dict__)
-                        for _new_param, _old_param in zip(yolov7_detect.parameters(), _module.parameters()):
-                            _new_param.data = _old_param.data.clone()
-                        net['model'].model[_module_index] = yolov7_detect
-                torch.save(net, ptname)
-            elif "yolov9" in ptbaseName:
-                glo.set_value('yoloname', "yolov9")
-                self.reloadModel()
-                from models.yolo import Detect_YOLOV9
-                net = torch.load(ptname)
-                for _module_index in range(len(net['model'].model)):
-                    _module = net['model'].model[_module_index]
-                    _module_name = _module.__class__.__name__
-                    if _module_name == 'Detect':
-                        _yaml_lst = net['model'].yaml['backbone'] + net['model'].yaml['head']
-                        _ch = []
-                        _yaml_detect_layers = _yaml_lst[-1][0]
-                        for layer in _yaml_detect_layers:
-                            _ch.append(_yaml_lst[layer][-1][0])
-                        _nc = _module.nc
-                        yolov9_detect = Detect_YOLOV9(nc=_nc, ch=_ch)
-                        for _new_param, _old_param in zip(yolov9_detect.parameters(), _module.parameters()):
-                            _new_param.data = _old_param.data.clone()
-                        net['model'].model[_module_index] = yolov9_detect
-                torch.save(net, ptname)
-        glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose")
+        glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov9-seg yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose")
         self.reloadModel()
 
     # 통계 결과를 수락하고 json에 기록
