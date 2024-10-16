@@ -8,20 +8,19 @@ import torch
 from PySide6.QtCore import QThread, Signal
 from pathlib import Path
 
-from yolocode.yolov8.data import load_inference_source
-from yolocode.yolov8.data.augment import classify_transforms, LetterBox
-from yolocode.yolov8.data.utils import IMG_FORMATS, VID_FORMATS
-from yolocode.yolov8.engine.predictor import STREAM_WARNING
-from yolocode.yolov8.engine.results import Results
-from models.common import AutoBackend
-from yolocode.yolov8.utils import callbacks, ops, LOGGER, colorstr, MACOS, WINDOWS
+from ultralytics.data import load_inference_source
+from ultralytics.data.augment import classify_transforms, LetterBox
+from ultralytics.data.utils import IMG_FORMATS, VID_FORMATS
+from ultralytics.engine.predictor import STREAM_WARNING
+from ultralytics.engine.results import Results
+from ultralytics.utils import callbacks, ops, LOGGER, MACOS, WINDOWS,DEFAULT_CFG
 from collections import defaultdict
-from yolocode.yolov8.utils.files import increment_path
-from yolocode.yolov8.utils.checks import check_imgsz
-from yolocode.yolov8.utils.torch_utils import select_device
+from ultralytics.utils.files import increment_path
+from ultralytics.utils.checks import check_imgsz
+from ultralytics.engine.predictor import BasePredictor
 
 
-class YOLOv8SegThread(QThread):
+class YOLOv8SegThread(QThread,BasePredictor):
     # 입출력 메시지
     send_input = Signal(np.ndarray)
     send_output = Signal(np.ndarray)
@@ -37,6 +36,7 @@ class YOLOv8SegThread(QThread):
 
     def __init__(self):
         super(YOLOv8SegThread, self).__init__()
+        BasePredictor.__init__(self, cfg=DEFAULT_CFG, overrides=None, _callbacks=None)
         # YOLOSHOW 인터페이스 매개변수 설정
         self.current_model_name = None  # The detection model name to use
         self.new_model_name = None  # Models that change in real time
@@ -168,7 +168,7 @@ class YOLOv8SegThread(QThread):
                 self.batch = next(datasets)
                 path, im0s, s = self.batch
                 self.vid_cap = self.dataset.cap if self.dataset.mode == "video" else None
-                # 原始图片送入 input框
+                # 원본 사진의 입력 항목
                 self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
                 count += 1
                 percent = 0  # 진행률 표시줄
@@ -266,19 +266,8 @@ class YOLOv8SegThread(QThread):
 
     def init_setup_model(self, model, verbose=True):
         """Initialize YOLO model with given parameters and set it to evaluation mode."""
-        self.model = AutoBackend(
-            model or self.model,
-            device=select_device(self.device, verbose=verbose),
-            dnn=self.dnn,
-            data=self.data,
-            fp16=self.half,
-            fuse=True,
-            verbose=verbose,
-        )
-
-        self.device = self.model.device  # update device
-        self.half = self.model.fp16  # update half
-        self.model.eval()
+        self.setup_model(self.new_model_name)  # 모델 설정
+        self.used_model_name = self.new_model_name
 
     def setup_source(self, source):
         """Sets up source and inference mode."""

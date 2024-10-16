@@ -318,14 +318,14 @@ if 'yolov7' in yolo_name:
 
 ### --- YOLOv9 Code --- ###
 if 'yolov9' in yolo_name:
-    from yolocode.yolov9.utils.downloads import attempt_download
     def attempt_load_YOLOV9(weights, device=None, inplace=True, fuse=True):
         # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
+        from yolocode.yolov9.utils.downloads import attempt_download
         from models.yolo import Detect, Model
 
         model = Ensemble()
         for w in weights if isinstance(weights, list) else [weights]:
-            ckpt = torch.load(attempt_download_YOLOV9(w), map_location='cpu')  # load
+            ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
             ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
             # Model compatibility updates

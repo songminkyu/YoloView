@@ -251,7 +251,7 @@ class ImplicitM(nn.Module):
         return self.implicit * x
 ### --- YOLOv5 Code --- ###
 if "yolov5" in yolo_name:
-    from yolocode.yolov8.utils.plotting import Annotator, colors, save_one_box
+    from ultralytics.utils.plotting import Annotator, colors, save_one_box
     from yolocode.yolov5.utils import TryExcept
     from yolocode.yolov5.utils.dataloaders import exif_transpose, letterbox
     from yolocode.yolov5.utils.general import (
@@ -1984,6 +1984,26 @@ if "yolov7" in yolo_name:
             self.__delattr__('rbr_1x1')
             if hasattr(self, 'rbr_identity'):
                 self.__delattr__('rbr_identity')
+
+
+    class SEBlock(nn.Module):
+
+        def __init__(self, input_channels, internal_neurons):
+            super(SEBlock, self).__init__()
+            self.down = nn.Conv2d(in_channels=input_channels, out_channels=internal_neurons, kernel_size=1, stride=1,
+                                  bias=True)
+            self.up = nn.Conv2d(in_channels=internal_neurons, out_channels=input_channels, kernel_size=1, stride=1,
+                                bias=True)
+            self.input_channels = input_channels
+
+        def forward(self, inputs):
+            x = F.avg_pool2d(inputs, kernel_size=inputs.size(3))
+            x = self.down(x)
+            x = F.relu(x)
+            x = self.up(x)
+            x = torch.sigmoid(x)
+            x = x.view(-1, self.input_channels, 1, 1)
+            return inputs * x
     class WindowAttention(nn.Module):
 
         def __init__(self, dim, window_size, num_heads, qkv_bias=True, qk_scale=None, attn_drop=0., proj_drop=0.):
@@ -4215,3 +4235,36 @@ if "yolov9" in yolo_name:
 ### --- YOLOv9 Code --- ###
 
 
+def drop_path(x, drop_prob: float = 0., training: bool = False, scale_by_keep: bool = True):
+    """Drop paths (Stochastic Depth) per sample (when applied in main path of residual blocks).
+
+    This is the same as the DropConnect impl I created for EfficientNet, etc networks, however,
+    the original name is misleading as 'Drop Connect' is a different form of dropout in a separate paper...
+    See discussion: https://github.com/tensorflow/tpu/issues/494#issuecomment-532968956 ... I've opted for
+    changing the layer and argument names to 'drop path' rather than mix DropConnect as a layer name and use
+    'survival rate' as the argument.
+
+    """
+    if drop_prob == 0. or not training:
+        return x
+    keep_prob = 1 - drop_prob
+    shape = (x.shape[0],) + (1,) * (x.ndim - 1)  # work with diff dim tensors, not just 2D ConvNets
+    random_tensor = x.new_empty(shape).bernoulli_(keep_prob)
+    if keep_prob > 0.0 and scale_by_keep:
+        random_tensor.div_(keep_prob)
+    return x * random_tensor
+
+
+class DropPath(nn.Module):
+    """Drop paths (Stochastic Depth) per sample  (when applied in main path of residual blocks).
+    """
+    def __init__(self, drop_prob: float = 0., scale_by_keep: bool = True):
+        super(DropPath, self).__init__()
+        self.drop_prob = drop_prob
+        self.scale_by_keep = scale_by_keep
+
+    def forward(self, x):
+        return drop_path(x, self.drop_prob, self.training, self.scale_by_keep)
+
+    def extra_repr(self):
+        return f'drop_prob={round(self.drop_prob,3):0.3f}'

@@ -23,7 +23,6 @@ from yolocode.yolov8.YOLOv8SegThread import YOLOv8SegThread
 from yolocode.yolov8.RTDETRThread import RTDETRThread
 from yolocode.yolov8.YOLOv8PoseThread import YOLOv8PoseThread
 from yolocode.yolov8.YOLOv8ObbThread import YOLOv8ObbThread
-from yolocode.yolov10.YOLOv10Thread import YOLOv10Thread
 from yoloshow.YOLOSHOWBASE import YOLOSHOWBASE
 
 GLOBAL_WINDOW_STATE = True
@@ -157,7 +156,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         # --- YOLOv9 QThread --- #
 
         # --- YOLOv10 QThread --- #
-        self.yolov10_thread = YOLOv10Thread()
+        self.yolov10_thread = YOLOv8Thread()
         self.initModel(self.yolov10_thread, "yolov10")
         # --- YOLOv10 QThread --- #
 
@@ -578,7 +577,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.initModel(self.yolov9_thread, "yolov9")
             self.runModel(True)
         elif yoloname == "yolov10":
-            self.yolov10_thread = YOLOv10Thread()
+            self.yolov10_thread = YOLOv8Thread()
             self.initModel(self.yolov10_thread, "yolov10")
             self.runModel(True)
         elif yoloname == "yolov5-seg":

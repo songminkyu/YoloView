@@ -7,19 +7,19 @@ import torch
 from PySide6.QtCore import QThread, Signal
 from pathlib import Path
 
-from yolocode.yolov8.data import load_inference_source
-from yolocode.yolov8.data.augment import classify_transforms, LetterBox
-from yolocode.yolov8.data.utils import IMG_FORMATS, VID_FORMATS
-from yolocode.yolov8.engine.predictor import STREAM_WARNING
-from yolocode.yolov8.engine.results import Results
-from yolocode.yolov8.utils import callbacks, ops, LOGGER, colorstr, MACOS, WINDOWS,DEFAULT_CFG
+from ultralytics.data import load_inference_source
+from ultralytics.data.augment import classify_transforms, LetterBox
+from ultralytics.data.utils import IMG_FORMATS, VID_FORMATS
+from ultralytics.engine.predictor import STREAM_WARNING
+from ultralytics.engine.results import Results
+from ultralytics.utils import callbacks, ops, LOGGER, colorstr, MACOS, WINDOWS,DEFAULT_CFG
 from collections import defaultdict
-from yolocode.yolov8.utils.files import increment_path
-from yolocode.yolov8.utils.checks import check_imgsz
-from yolocode.yolov8.utils.torch_utils import select_device
-from yolocode.yolov8 import YOLO
-from yolocode.yolov8.engine.predictor import BasePredictor
-from yolocode.yolov8.cfg import get_cfg, get_save_dir
+from ultralytics.utils.files import increment_path
+from ultralytics.utils.checks import check_imgsz
+from ultralytics.utils.torch_utils import select_device
+from ultralytics import YOLO
+from ultralytics.engine.predictor import BasePredictor
+from ultralytics.cfg import get_cfg, get_save_dir
 
 class YOLOv8Thread(QThread,BasePredictor):
     # 입출력 메시지

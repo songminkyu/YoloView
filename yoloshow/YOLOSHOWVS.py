@@ -21,7 +21,6 @@ from yolocode.yolov8.YOLOv8SegThread import YOLOv8SegThread
 from yolocode.yolov8.RTDETRThread import RTDETRThread
 from yolocode.yolov8.YOLOv8PoseThread import YOLOv8PoseThread
 from yolocode.yolov8.YOLOv8ObbThread import YOLOv8ObbThread
-from yolocode.yolov10.YOLOv10Thread import YOLOv10Thread
 
 GLOBAL_WINDOW_STATE = True
 WIDTH_LEFT_BOX_STANDARD = 80
@@ -184,8 +183,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # --- YOLOv9 QThread --- #
 
         # --- YOLOv10 QThread --- #
-        self.yolov10_thread1 = YOLOv10Thread()
-        self.yolov10_thread2 = YOLOv10Thread()
+        self.yolov10_thread1 = YOLOv8Thread()
+        self.yolov10_thread2 = YOLOv8Thread()
         self.initModel(self.yolov10_thread1, "yolov10", "left")
         self.initModel(self.yolov10_thread2, "yolov10", "right")
         # --- YOLOv10 QThread --- #
@@ -515,7 +514,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.yolov9_thread1 = YOLOv9Thread()
                 self.initModel(self.yolov9_thread1, "yolov9", "left")
             elif yoloname == "yolov10":
-                self.yolov10_thread1 = YOLOv10Thread()
+                self.yolov10_thread1 = YOLOv8Thread()
                 self.initModel(self.yolov10_thread1, "yolov10", "left")
             elif yoloname == "yolov5-seg":
                 self.yolov5seg_thread1 = YOLOv5SegThread()
@@ -562,7 +561,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.yolov9_thread2 = YOLOv9Thread()
                 self.initModel(self.yolov9_thread2, "yolov9", "right")
             elif yoloname == "yolov10":
-                self.yolov10_thread2 = YOLOv10Thread()
+                self.yolov10_thread2 = YOLOv8Thread()
                 self.initModel(self.yolov10_thread2, "yolov10", "right")
             elif yoloname == "yolov5-seg":
                 self.yolov5seg_thread2 = YOLOv5SegThread()
@@ -811,7 +810,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     self.yolov9_thread1 = YOLOv9Thread()
                     self.initModel(self.yolov9_thread1, "yolov9", "left")
                 elif "yolov10" in self.model_name1 and buttonStatus:
-                    self.yolov10_thread1 = YOLOv10Thread()
+                    self.yolov10_thread1 = YOLOv8Thread()
                     self.initModel(self.yolov10_thread1, "yolov10", "left")
                 elif "yolov5" in self.model_name1 and self.checkSegName(
                         self.model_name1) and buttonStatus:
@@ -866,7 +865,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     self.yolov9_thread2 = YOLOv9Thread()
                     self.initModel(self.yolov9_thread2, "yolov9", "right")
                 elif "yolov10" in self.model_name2 and buttonStatus:
-                    self.yolov10_thread2 = YOLOv10Thread()
+                    self.yolov10_thread2 = YOLOv8Thread()
                     self.initModel(self.yolov10_thread2, "yolov10", "right")
                 elif "yolov5" in self.model_name2 and self.checkSegName(
                         self.model_name2) and buttonStatus:
