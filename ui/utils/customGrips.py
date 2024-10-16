@@ -2,7 +2,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-# 拖动窗口 改变窗口大小
+# 창을 드래그하여 창 크기를 변경하세요.
 
 class CustomGrip(QWidget):
     def __init__(self, parent, position, disable_color = False):

@@ -45,10 +45,10 @@ class TableViewQWidget(QWidget):
         self.tableView.setBorderRadius(8)
 
         self.tableView.setWordWrap(False)
-        # 表格行数
+        # 테이블 행 수
         self.tableView.setRowCount(1000)
         self.tableView.setColumnCount(3)
-        # 表格列数
+        # 테이블 열 수
         self.Infos = infoList if infoList else list()
         info_count = 1
         for i, info in enumerate(self.Infos):

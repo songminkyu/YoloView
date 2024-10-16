@@ -28,7 +28,7 @@ class YOLOSHOWWindow(YOLOSHOW):
         self.animation_window = None
         self.drag = False
 
-        # 鼠标拖入事件
+        # 마우스 드래그 이벤트
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():  # 파일인지 확인
             event.acceptProposedAction()  # 드래그 앤 드롭 데이터 허용
@@ -135,7 +135,7 @@ class YOLOSHOWVSWindow(YOLOSHOWVS):
         self.right_grip = CustomGrip(self, Qt.RightEdge, True)
         self.top_grip = CustomGrip(self, Qt.TopEdge, True)
         self.bottom_grip = CustomGrip(self, Qt.BottomEdge, True)
-        self.setAcceptDrops(True) # ==> 设置窗口支持拖动（必须设置）
+        self.setAcceptDrops(True) # ==> 설정 창은 드래그를 지원합니다(설정해야 함).
         # --- 창을 드래그하여 창 크기를 변경하세요 --- #
         self.animation_window = None
 

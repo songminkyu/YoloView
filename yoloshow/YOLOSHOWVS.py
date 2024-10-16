@@ -1,7 +1,7 @@
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov7 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolo11 yolo11-seg yolo11-pose yolo11-obb")
+glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolo11 yolo11-seg yolo11-pose yolo11-obb")
 import json
 import os
 import shutil
@@ -427,7 +427,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self,  # 부모 창 객체
                 "Save Image/Video",  # 제목
                 save_path,  # 시작 디렉토리
-                "Image/Vide Type (*.jpg *.jpeg *.png *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 포함.
+                "Image/Vide Type (*.jpg *.jpeg *.png *.heic *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 포함.
             )
             if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov5_thread1, folder=False)

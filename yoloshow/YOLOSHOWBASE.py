@@ -228,7 +228,7 @@ class YOLOSHOWBASE:
             self,  # 부모 창 객체
             "Select your Image / Video",  # 제목
             file_path,  # 기본 열기 경로는 현재 경로
-            "Image / Video type (*.jpg *.jpeg *.png *.bmp *.dib *.jpe *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 있습니다.
+            "Image / Video type (*.jpg *.jpeg *.png *.heic *.bmp *.dib *.jpe *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 있습니다.
         )
         if file:
             self.inputPath = file
@@ -527,12 +527,12 @@ class YOLOSHOWBASE:
 
     # 결과 내보내기
     def saveResult(self):
-        if (not self.yolov5_thread.res_status and not self.yolov7_thread.res_status
-                and not self.yolov8_thread.res_status and not self.yolov9_thread.res_status
-                and not self.yolov9seg_thread.res_status and not self.yolov5seg_thread.res_status
-                and not self.yolov8seg_thread.res_status and not self.rtdetr_thread.res_status
-                and not self.yolov8pose_thread.res_status and not self.yolov11_thread.res_status
-                and not self.yolov11pose_thread.res_status and not self.yolov11seg_thread.res_status):
+        if (not self.yolov5_thread.res_status  and not self.yolov8_thread.res_status
+                and not self.yolov9_thread.res_status and not self.yolov9seg_thread.res_status
+                and not self.yolov5seg_thread.res_status and not self.yolov8seg_thread.res_status
+                and not self.rtdetr_thread.res_status and not self.yolov8pose_thread.res_status
+                and not self.yolov11_thread.res_status and not self.yolov11pose_thread.res_status
+                and not self.yolov11seg_thread.res_status):
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f'{self.current_workpath}/config/save.json'
@@ -761,7 +761,7 @@ class YOLOSHOWBASE:
 
     # YOLOv5, YOLOv7 및 YOLOv9를 수정하여 yolo.py 충돌 해결
     def solveYoloConflict(self, ptnamelst):
-        glo.set_value("yoloname", "yolov5 yolov7 yolov8 yolov9 yolov9-seg yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose")
+        glo.set_value("yoloname", "yolov5 yolov8 yolov9 yolov9-seg yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose")
         self.reloadModel()
 
     # 통계 결과를 수락하고 json에 기록
