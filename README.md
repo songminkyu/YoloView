@@ -29,7 +29,8 @@
 - [x] Support Oriented Bounding Boxes ( `YOLOv8` )
 - [x] Add `YOLOv10` Algorithm
 - [x] Support Dragging File Input
-- [x] Tracking & Counting ( `YOLOv8` )
+- [x] Tracking & Counting ( `YOLOv8` & `YOLO11`)
+- [x] `YOLO11` has additional features (obb,pose,deteced,segment,track)
 
 ## Functions
 
@@ -41,7 +42,7 @@ Choose Image / Video / Webcam / Folder (Batch) / IPCam in the menu bar on the le
 
 When the program is running to detect targets, you can change models / hyper Parameters
 
-1. Support changing model in `YOLOv5` / ` YOLOv7` / `YOLOv8` / `YOLOv9` / `RTDETR` / `YOLOv5-seg` / `YOLOv8-seg` / `YOLOv10` dynamically
+1. Support changing model in `YOLOv5` / ` YOLOv7` / `YOLOv8` / `YOLOv9` / `RTDETR` / `YOLOv5-seg` / `YOLOv8-seg` / `YOLOv10` / `YOLO11` dynamically
 2. Support changing `IOU` / `Confidence` / `Delay time ` / `line thickness` dynamically
 
 ### 3. Loading Model Automatically
@@ -52,7 +53,7 @@ If you need add the new `pt` file, please click `Import Model` button in `Settin
 
 **Notice :** 
 
-1. All `pt` files are named including `yolov5` / `yolov7` / `yolov8` / `yolov9` / `yolov10` / `rtdetr` .  (e.g. `yolov8-test.pt`)
+1. All `pt` files are named including `yolov5` / `yolov7` / `yolov8` / `yolov9` / `yolov10` / `yolo11` / `rtdetr` .  (e.g. `yolov8-test.pt`)
 2. If it is a `pt` file of  segmentation mode, please name it including `yolov5n-seg` / `yolov8s-seg` .  (e.g. `yolov8n-seg-test.pt`)
 3. If it is a `pt` file of  pose estimation mode, please name it including `yolov8n-pose` .  (e.g. `yolov8n-pose-test.pt`)
 4. If it is a `pt` file of  oriented bounding box mode, please name it including `yolov8n-obb` .  (e.g. `yolov8n-obb-test.pt`)
@@ -154,9 +155,9 @@ python main.py
 
 ## Reference
 
-### YOLO Algorithm
+### YOLO Supported Version
 
-[YOLOv5](https://github.com/ultralytics/yolov5)   [YOLOv7](https://github.com/WongKinYiu/yolov7)  [YOLOv8](https://github.com/ultralytics/ultralytics)  [YOLOv9](https://github.com/WongKinYiu/yolov9)  [YOLOv10](https://github.com/THU-MIG/yolov10)
+[YOLOv5](https://github.com/ultralytics/yolov5)  [YOLOv8](https://github.com/ultralytics/ultralytics)  [YOLOv9](https://github.com/ultralytics/ultralytics)  [YOLOv10](https://github.com/ultralytics/ultralytics)  [YOLO11](https://github.com/ultralytics/ultralytics)
 
 ### YOLO Graphical User Interface
 

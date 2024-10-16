@@ -29,7 +29,8 @@
 - [x] 지향형 경계 상자 지원(`YOLOv8`)
 - [x] `YOLOv10` 알고리즘 추가
 - [x] 드래그 파일 입력 지원
-- [x] 추적 및 계산 (`YOLOv8`)
+- [x] 추적(Track) 및 계산 (`YOLOv8` 및 `YOLO11`)
+- [x] `YOLOv11` 기능 추가 (obb,pose,deteced,segment,track)
 
 ## 함수
 
@@ -41,7 +42,7 @@
 
 프로그램이 대상을 감지하기 위해 실행 중일 때 모델/하이퍼 매개변수를 변경할 수 있습니다.
 
-1. `YOLOv5` / `YOLOv7` / `YOLOv8` / `YOLOv9` / `RTDETR` / `YOLOv5-seg` / `YOLOv8-seg` / `YOLOv10`에서 동적으로 모델을 변경하는 것을 지원합니다.
+1. `YOLOv5` / `YOLOv7` / `YOLOv8` / `YOLOv9` / `RTDETR` / `YOLOv5-seg` / `YOLOv8-seg` / `YOLOv10` / `YOLOv11` 에서 동적으로 모델을 변경하는 것을 지원합니다.
 2. `IOU` / `Confidence` / `Delay time` / `line thick`를 동적으로 변경하는 것을 지원합니다.
 
 ### 3. 모델을 자동으로 로드합니다.
@@ -52,7 +53,7 @@
 
 **알림:**
 
-1. 모든 `pt` 파일에는 `yolov5` / `yolov7` / `yolov8` / `yolov9` / `yolov10` / `rtdetr` 등의 이름이 지정됩니다. (예: `yolov8-test.pt`)
+1. 모든 `pt` 파일에는 `yolov5` / `yolov7` / `yolov8` / `yolov9` / `yolov10` / `yolo11` /`rtdetr` 등의 이름이 지정됩니다. (예: `yolov8-test.pt`)
 2. 분할 모드의 `pt` 파일인 경우 `yolov5n-seg` / `yolov8s-seg`를 포함하여 이름을 지정하세요. (예: `yolov8n-seg-test.pt`)
 3. 포즈 추정 모드의 `pt` 파일인 경우 `yolov8n-pose`를 포함하여 이름을 지정하세요. (예: `yolov8n-pose-test.pt`)
 4. 지향 바운딩 박스 모드의 `pt` 파일인 경우 `yolov8n-obb`를 포함하여 이름을 지정하세요. (예: `yolov8n-obb-test.pt`)
@@ -152,9 +153,9 @@ python main.py
 
 ## 참조
 
-### YOLO 알고리즘
+### YOLO 지원 버전
 
-[YOLOv5](https://github.com/ultralytics/yolov5) [YOLOv7](https://github.com/WongKinYiu/yolov7) [YOLOv8](https://github.com/ultralytics/ultralytics) [YOLOv9](https://github.com/WongKinYiu/yolov9) [YOLOv10](https://github.com/THU-MIG/yolov10)
+[YOLOv5](https://github.com/ultralytics/yolov5)  [YOLOv8](https://github.com/ultralytics/ultralytics)  [YOLOv9](https://github.com/ultralytics/ultralytics)  [YOLOv10](https://github.com/ultralytics/ultralytics)  [YOLO11](https://github.com/ultralytics/ultralytics)
 
 ### YOLO 그래픽 사용자 인터페이스
 
