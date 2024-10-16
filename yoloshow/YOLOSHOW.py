@@ -36,6 +36,7 @@ ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9","yolov9-seg", "yolov10","yolo11"
 class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
     def __init__(self):
         super().__init__()
+        self.model_initialized_trackmodel = False  # 초기화되지 않은 상태로 시작
         self.current_workpath = os.getcwd()
         self.inputPath = None
         self.allModelNames = ALL_MODEL_NAMES
@@ -406,6 +407,16 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         pt_list = os.listdir(f'{self.current_workpath}/ptfiles/')
         pt_list = [file for file in pt_list if file.endswith('.pt')]
         pt_list.sort(key=lambda x: os.path.getsize(f'{self.current_workpath}/ptfiles/' + x))
+
+        # yolov8/yolo11 이면 track 모드 UI 활성화
+        if not self.model_initialized_trackmodel:
+            if "yolov8" in self.model_name or "yolo11" in self.model_name:
+                self.ui.track_box.show()
+                self.ui.track_label.show()
+            else:
+                self.ui.track_box.hide()
+                self.ui.track_label.hide()
+            self.model_initialized_trackmodel = True # Track 모드 지원 여부 1번만 체크 
 
         if pt_list != self.pt_list:
             self.pt_list = pt_list
