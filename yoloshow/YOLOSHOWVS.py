@@ -470,12 +470,14 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
         # yolov8/yolo11 이면 track 모드 UI 활성화
         if not self.model_initialized_trackmodel:
-            if "yolov8" in self.model_name or "yolo11" in self.model_name:
+            model_names = [self.model_name1, self.model_name2]
+            if any(self.check_model_conditions(name) for name in model_names):
                 self.ui.track_box.show()
                 self.ui.track_label.show()
             else:
                 self.ui.track_box.hide()
                 self.ui.track_label.hide()
+
             self.model_initialized_trackmodel = True  # Track 모드 지원 여부 1번만 체크
 
         if pt_list != self.pt_list:
@@ -484,6 +486,12 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.ui.model_box1.addItems(self.pt_list)
             self.ui.model_box2.clear()
             self.ui.model_box2.addItems(self.pt_list)
+
+    def check_model_conditions(self, model_name):
+        return ("yolov8" in model_name or "yolo11" in model_name) and \
+            not self.checkSegName(model_name) and \
+            not self.checkPoseName(model_name) and \
+            not self.checkObbName(model_name)
 
     # 모델이 명명 요구 사항을 충족하는지 확인
     def checkModelName(self, modelname):
