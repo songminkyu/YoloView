@@ -21,6 +21,9 @@ from ultralytics import YOLO
 from ultralytics.engine.predictor import BasePredictor
 from ultralytics.cfg import get_cfg, get_save_dir
 
+from utils.image_save import ImageSaver
+
+
 class YOLOv8Thread(QThread,BasePredictor):
     # 입출력 메시지
     send_input = Signal(np.ndarray)
@@ -427,11 +430,8 @@ class YOLOv8Thread(QThread,BasePredictor):
         im0 = self.plotted_img
         suffix, fourcc = (".mp4", "avc1") if MACOS else (".avi", "WMV2") if WINDOWS else (".avi", "MJPG")
         if self.dataset.mode == "image":
-            root, ext = os.path.splitext(save_path)
-            if ext.lower() == '.heic':
-                # cv2.imwrite 에는 heic 확장자로 저장 안되는 문제로, 확장자를 png로 변경 하여 저장
-                save_path = root + '.png'
-            cv2.imwrite(save_path, im0)
+            image_saver = ImageSaver(im0)
+            image_saver.save_image(save_path)
             return save_path
 
         else:  # 'video' or 'stream'

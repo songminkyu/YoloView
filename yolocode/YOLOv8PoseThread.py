@@ -20,6 +20,8 @@ from ultralytics.utils.checks import check_imgsz
 from ultralytics.utils.torch_utils import select_device
 from ultralytics.engine.predictor import BasePredictor
 
+from utils.image_save import ImageSaver
+
 class YOLOv8PoseThread(QThread,BasePredictor):
     # 입출력 메시지
     send_input = Signal(np.ndarray)
@@ -228,7 +230,7 @@ class YOLOv8PoseThread(QThread,BasePredictor):
                             class_nums += 1
                             if label_name in self.labels_dict:
                                 self.labels_dict[label_name] += int(nums)
-                            else:  # 第一次出现的类别
+                            else:  # 카테고리의 첫 번째 발생
                                 self.labels_dict[label_name] = int(nums)
 
                     # Send test results
@@ -237,11 +239,9 @@ class YOLOv8PoseThread(QThread,BasePredictor):
                     self.send_target_num.emit(target_nums)
                     self.results_picture = self.labels_dict
 
-
                     if self.save_res:
                         save_path = str(self.save_path / p.name)  # im.jpg
                         self.res_path = self.save_preds(self.vid_cap, i ,save_path)
-
 
                     if self.speed_thres != 0:
                         time.sleep(self.speed_thres / 1000)  # delay , ms
@@ -249,14 +249,14 @@ class YOLOv8PoseThread(QThread,BasePredictor):
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
                     self.send_msg.emit('Finish Detection')
-                    # --- 发送图片和表格结果 --- #
-                    self.send_result_picture.emit(self.results_picture)  # 发送图片结果
+                    # --- 이미지 및 표 결과 보내기 --- #
+                    self.send_result_picture.emit(self.results_picture)  # 이미지 결과 보내기
                     for key, value in self.results_picture.items():
                         self.results_table.append([key, str(value)])
                     self.results_picture = dict()
-                    self.send_result_table.emit(self.results_table)  # 发送表格结果
+                    self.send_result_table.emit(self.results_table)  # 양식 결과 보내기
                     self.results_table = list()
-                    # --- 发送图片和表格结果 --- #
+                    # --- 이미지 및 표 결과 보내기 --- #
                     self.res_status = True
                     if self.vid_cap is not None:
                         self.vid_cap.release()
@@ -371,7 +371,8 @@ class YOLOv8PoseThread(QThread,BasePredictor):
         suffix, fourcc = (".mp4", "avc1") if MACOS else (".avi", "WMV2") if WINDOWS else (".avi", "MJPG")
         # Save imgs
         if self.dataset.mode == "image":
-            cv2.imwrite(save_path, im0)
+            image_saver = ImageSaver(im0)
+            image_saver.save_image(save_path)
             return save_path
 
         else:  # 'video' or 'stream'

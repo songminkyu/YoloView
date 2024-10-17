@@ -19,6 +19,8 @@ from ultralytics.utils.checks import check_imgsz
 from ultralytics.utils.torch_utils import select_device
 from ultralytics.engine.predictor import BasePredictor
 
+from utils.image_save import ImageSaver
+
 class RTDETRThread(QThread,BasePredictor):
     # 입출력 메시지
     send_input = Signal(np.ndarray)
@@ -459,7 +461,8 @@ class RTDETRThread(QThread,BasePredictor):
         im0 = self.plotted_img
         # Save imgs
         if self.dataset.mode == "image":
-            cv2.imwrite(save_path, im0)
+            image_saver = ImageSaver(im0)
+            image_saver.save_image(save_path)
         else:  # 'video' or 'stream'
             if self.vid_path[idx] != save_path:  # new video
                 self.vid_path[idx] = save_path

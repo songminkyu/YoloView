@@ -19,6 +19,7 @@ from ultralytics.utils.files import increment_path
 from ultralytics.utils.checks import check_imgsz
 from ultralytics.engine.predictor import BasePredictor
 
+from utils.image_save import ImageSaver
 
 class YOLOv8SegThread(QThread,BasePredictor):
     # 입출력 메시지
@@ -228,7 +229,7 @@ class YOLOv8SegThread(QThread,BasePredictor):
                             class_nums += 1
                             if label_name in self.labels_dict:
                                 self.labels_dict[label_name] += int(nums)
-                            else:  # 第一次出现的类别
+                            else:  # 카테고리의 첫 번째 발생
                                 self.labels_dict[label_name] = int(nums)
 
                     # Send test results
@@ -240,7 +241,6 @@ class YOLOv8SegThread(QThread,BasePredictor):
                     if self.save_res:
                         save_path = str(self.save_path / p.name)  # im.jpg
                         self.res_path = self.save_preds(self.vid_cap, i ,save_path)
-
 
                     if self.speed_thres != 0:
                         time.sleep(self.speed_thres / 1000)  # delay , ms
@@ -371,7 +371,8 @@ class YOLOv8SegThread(QThread,BasePredictor):
         suffix, fourcc = (".mp4", "avc1") if MACOS else (".avi", "WMV2") if WINDOWS else (".avi", "MJPG")
         # Save imgs
         if self.dataset.mode == "image":
-            cv2.imwrite(save_path, im0)
+            image_saver = ImageSaver(im0)
+            image_saver.save_image(save_path)
             return save_path
 
         else:  # 'video' or 'stream'
