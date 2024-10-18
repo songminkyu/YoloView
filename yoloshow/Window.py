@@ -140,7 +140,7 @@ class YOLOSHOWVSWindow(YOLOSHOWVS):
         self.animation_window = None
 
 
-    # 鼠标拖入事件
+    # 마우스 드래그 이벤트
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():  # 파일인지 확인
             event.acceptProposedAction()  # 드래그 앤 드롭 데이터 허용
