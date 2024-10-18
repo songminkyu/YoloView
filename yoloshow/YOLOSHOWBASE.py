@@ -297,9 +297,12 @@ class YOLOSHOWBASE:
             folder_path  # 시작 디렉토리
         )
         if FolderPath:
-            FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png", ".jpeg", ".bmp", ".dib", ".jpe", ".jp2"]
-            Foldername = [(FolderPath + "/" + filename) for filename in os.listdir(FolderPath) for jpgname in FileFormat
-                          if jpgname in filename]
+            FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png", ".heic", ".jpeg", ".bmp", ".dib", ".jpe", ".jp2"]
+            Foldername = [
+                os.path.join(FolderPath, filename)
+                for filename in os.listdir(FolderPath)
+                if os.path.splitext(filename)[1].lower() in FileFormat
+            ]
             # self.yolov5_thread.source = Foldername
             self.inputPath = Foldername
             self.showStatus('Loaded Folder：{}'.format(os.path.basename(FolderPath)))
