@@ -1,6 +1,20 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PySide6.QtCore import QThread
 
+'''
+중요 : matplotlib은 기본 대화형 GUI 백엔드인데 matplotlib.use('agg') 선언 해줌으로써 비대화형 백엔드로 전환되어, 메인쓰레드와
+UI전용 워커쓰레드간에 충돌을 피할수 있게 해주는 기능
+해줌. 
+1. matplotlib.use('agg') (AGG 백엔드)
+    AGG (Anti-Grain Geometry): 렌더링된 이미지를 파일에 저장하는 데 최적화된 백엔드입니다.
+    특징:
+        GUI와 상관없이 사용할 수 있는 비대화형 백엔드입니다.
+        주로 PNG, PDF, SVG 등 이미지 파일로 출력하기 위해 사용됩니다.
+        디스플레이 장치가 없는 환경(예: 서버, 배치 작업)에서 주로 사용됩니다.
+        속도가 빠르고 높은 품질의 이미지를 생성합니다.
+'''
 
 class PlottingThread(QThread):
     def __init__(self, result_statistic, workpath):
@@ -24,7 +38,7 @@ class PlottingThread(QThread):
 
         # 히스토그램 만들기
         plt.figure(figsize=(10, 6))  # 그래픽의 표시 크기 설정
-        bars = plt.bar(activities, values, color='skyblue')  # 绘制柱状图
+        bars = plt.bar(activities, values, color='skyblue')  # 막대 차트 그리기
 
         # 각 막대 위에 백분율 추가
         for bar in bars:
@@ -38,4 +52,5 @@ class PlottingThread(QThread):
 
         # 그래픽을 파일에 저장
         plt.savefig(self.workpath + r'\config\result.png')
+        matplotlib.use('Agg') # 중요 상단 주석을 읽어보세요
         plt.close()  # 중요: 그래픽을 닫아 메모리를 확보하세요
