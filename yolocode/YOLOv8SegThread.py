@@ -169,8 +169,6 @@ class YOLOv8SegThread(QThread,BasePredictor):
                 self.batch = next(datasets)
                 path, im0s, s = self.batch
                 self.vid_cap = self.dataset.cap if self.dataset.mode == "video" else None
-                # 원본 사진의 입력 항목
-                self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
                 count += 1
                 percent = 0  # 진행률 표시줄
                 # processBar 제어
@@ -232,7 +230,8 @@ class YOLOv8SegThread(QThread,BasePredictor):
                             else:  # 카테고리의 첫 번째 발생
                                 self.labels_dict[label_name] = int(nums)
 
-                    # Send test results
+                    # 원본 이미지 및 결과 이미지가 각각의 입력 상자로 전송됩니다.
+                    self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
                     self.send_output.emit(self.plotted_img)  # after detection
                     self.send_class_num.emit(class_nums)
                     self.send_target_num.emit(target_nums)
