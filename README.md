@@ -10,12 +10,6 @@
 
 ![](UI.png)
 
-## Demo Video
-
-`YOLOSHOW v1.x` : [YOLOSHOW-YOLOv9/YOLOv8/YOLOv7/YOLOv5/RTDETR GUI](https://www.bilibili.com/video/BV1BC411x7fW)
-
-`YOLOSHOW v2.x` : [YOLOSHOWv2.0-YOLOv9/YOLOv8/YOLOv7/YOLOv5/RTDETR GUI](https://www.bilibili.com/video/BV1ZD421E7m3)
-
 ## Todo List
 
 - [x] Add `YOLOv9` Algorithm
@@ -149,6 +143,50 @@ The MacBook is so expensive that I cannot afford it, please install `.ttf` by yo
 python main.py
 ```
 
+### 7. Pyinstaller 
+
+https://github.com/ultralytics/ultralytics/issues/1158
+https://github.com/ultralytics/ultralytics/issues/8772
+
+How to write the 2nd line of --add-data in shell
+
+You must explicitly declare the path where ultralytics' default.yaml is located and pack it.
+Otherwise, there will be a problem running it.
+
+* Before change
+
+
+    --add-data "{venv_absolute_path_to}ultralytics\cfg;ultralytics\cfg" ^
+
+* After change (absolute path)
+
+
+    ex) --add-data "C:Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+
+```shell
+pyinstaller --onefile --windowed ^
+--add-data "ui\YOLOSHOWUI_rc.py;ui" ^
+--add-data "ultralytics\cfg\default.yaml;ultralytics\cfg" ^
+--add-data "fonts;fonts" ^
+--add-data "images;images" ^
+--add-data "models;models" ^
+--add-data "ui;ui" ^
+--add-data "utils;utils" ^
+--add-data "yolocode;yolocode" ^
+--add-data "yoloshow;yoloshow" ^
+main.py
+```
+Next, once built, a main.exe will be created in the dist folder. Go to the top and copy the 'config', 'fonts', 'images', 'ptfiles', and 'runs' folders and paste them under the dist folder.
+
+    └─dist      (Parent Folder)
+    ├─  config  (folder)
+    ├─  fonts   (folder)
+    ├─  images  (folder)
+    ├─  ptfiles (folder)
+    ├─  runs    (folder)
+    └─  main.exe
+
+ Enjoy YOLO!!
 ## Frames
 
 [![Python](https://img.shields.io/badge/python-3776ab?style=for-the-badge&logo=python&logoColor=ffd343)](https://www.python.org/)[![Pytorch](https://img.shields.io/badge/PYtorch-test?style=for-the-badge&logo=pytorch&logoColor=white&color=orange)](https://pytorch.org/)[![Static Badge](https://img.shields.io/badge/Pyside6-test?style=for-the-badge&logo=qt&logoColor=white)](https://doc.qt.io/qtforpython-6/PySide6/QtWidgets/index.html)

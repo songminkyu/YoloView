@@ -10,12 +10,6 @@
 
 ![](UI.png)
 
-## 데모 영상
-
-`YOLOSHOW v1.x` : [YOLOSHOW-YOLOv9/YOLOv8/YOLOv7/YOLOv5/RTDETR GUI](https://www.bilibili.com/video/BV1BC411x7fW)
-
-`YOLOSHOW v2.x` : [YOLOSHOWv2.0-YOLOv9/YOLOv8/YOLOv7/YOLOv5/RTDETR GUI](https://www.bilibili.com/video/BV1ZD421E7m3)
-
 ## 할 일 목록
 
 - [x] `YOLOv9` 알고리즘 추가
@@ -146,6 +140,54 @@ MacBook이 너무 비싸서 살 수 없어요. `.ttf`를 직접 설치해 주세
 ```shell
 python main.py
 ```
+
+### 7. Pyinstaller 
+
+https://github.com/ultralytics/ultralytics/issues/1158
+https://github.com/ultralytics/ultralytics/issues/8772
+
+Python 가상 모듈에서 
+
+shell에 --add-data 2번째줄 작성 방법
+
+ultralytics의 default.yaml 위치한 경로를 명시적으로 선언 하여 패킹 해야함.
+그렇치 않으면 실행 하는데 문제가 생김.
+
+* 변경전
+
+
+    --add-data "{venv_path_to}ultralytics\cfg;ultralytics\cfg" ^
+
+* 변경 후 (절대경로)
+
+
+    --add-data "C:Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+
+```shell
+pyinstaller --onefile --windowed ^
+--add-data "ui\YOLOSHOWUI_rc.py;ui" ^
+--add-data "{venv_path_to}ultralytics\cfg;ultralytics\cfg" ^
+--add-data "fonts;fonts" ^
+--add-data "images;images" ^
+--add-data "models;models" ^
+--add-data "ui;ui" ^
+--add-data "utils;utils" ^
+--add-data "yolocode;yolocode" ^
+--add-data "yoloshow;yoloshow" ^
+main.py
+```
+다음으로 그리고 빌드 되면 dist 폴더에 main.exe 하나가 생기는데 상단으로 이동 하여, 
+'config', 'fonts' 'images' 'ptfiles' 'runs' 폴더를 복사해서 dist 폴더 밑에 붙혀넣기 한다. 
+
+    └─dist      (Parent Folder)
+    ├─  config  (folder)
+    ├─  fonts   (folder)
+    ├─  images  (folder)
+    ├─  ptfiles (folder)
+    ├─  runs    (folder)
+    └─  main.exe
+
+ Enjoy YOLO!!
 
 ## 프레임
 
