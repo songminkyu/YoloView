@@ -161,7 +161,7 @@ ultralytics의 default.yaml 위치한 경로를 명시적으로 선언 하여 �
 * 변경후  (절대 경로 필요)
 
 
-    ex) --add-data="C:Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
 
 ```shell
 

@@ -161,7 +161,7 @@ Otherwise, there will be a problem running it.
 * After change (absolute path)
 
 
-    ex) --add-data="C:Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
 
 ```shell
 
