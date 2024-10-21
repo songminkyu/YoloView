@@ -21,3 +21,6 @@ ultralytics
 colorlog
 Pyside6
 PySide6-Fluent-Widgets[full]
+
+# Packaging --------------------------------------
+Pyinstaller
