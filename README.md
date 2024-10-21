@@ -156,24 +156,25 @@ Otherwise, there will be a problem running it.
 * Before change
 
 
-    --add-data "{venv_absolute_path_to}ultralytics\cfg;ultralytics\cfg" ^
+    --add-data="{venv_absolute_path_to}ultralytics/cfg;ultralytics/cfg" ^
 
 * After change (absolute path)
 
 
-    ex) --add-data "C:Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    ex) --add-data="C:Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
 
 ```shell
+
 pyinstaller --onefile --windowed ^
---add-data "ui\YOLOSHOWUI_rc.py;ui" ^
---add-data "ultralytics\cfg\default.yaml;ultralytics\cfg" ^
---add-data "fonts;fonts" ^
---add-data "images;images" ^
---add-data "models;models" ^
---add-data "ui;ui" ^
---add-data "utils;utils" ^
---add-data "yolocode;yolocode" ^
---add-data "yoloshow;yoloshow" ^
+--add-data="ui/YOLOSHOWUI_rc.py;ui" ^
+--add-data="{venv_path_to}ultralytics/cfg;ultralytics/cfg" ^
+--add-data="fonts;fonts" ^
+--add-data="images;images" ^
+--add-data="models;models" ^
+--add-data="ui;ui" ^
+--add-data="utils;utils" ^
+--add-data="yolocode;yolocode" ^
+--add-data="yoloshow;yoloshow" ^
 main.py
 ```
 Next, once built, a main.exe will be created in the dist folder. Go to the top and copy the 'config', 'fonts', 'images', 'ptfiles', and 'runs' folders and paste them under the dist folder.

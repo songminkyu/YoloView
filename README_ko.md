@@ -153,27 +153,28 @@ shell에 --add-data 2번째줄 작성 방법
 ultralytics의 default.yaml 위치한 경로를 명시적으로 선언 하여 패킹 해야함.
 그렇치 않으면 실행 하는데 문제가 생김.
 
-* 변경전
+* 변경 전
 
 
-    --add-data "{venv_path_to}ultralytics\cfg;ultralytics\cfg" ^
+    --add-data="{venv_absolute_path_to}ultralytics/cfg;ultralytics/cfg" ^
 
-* 변경 후 (절대경로)
+* 변경후  (절대 경로 필요)
 
 
-    --add-data "C:Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    ex) --add-data="C:Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
 
 ```shell
+
 pyinstaller --onefile --windowed ^
---add-data "ui\YOLOSHOWUI_rc.py;ui" ^
---add-data "{venv_path_to}ultralytics\cfg;ultralytics\cfg" ^
---add-data "fonts;fonts" ^
---add-data "images;images" ^
---add-data "models;models" ^
---add-data "ui;ui" ^
---add-data "utils;utils" ^
---add-data "yolocode;yolocode" ^
---add-data "yoloshow;yoloshow" ^
+--add-data="ui/YOLOSHOWUI_rc.py;ui" ^
+--add-data="{venv_path_to}ultralytics/cfg;ultralytics/cfg" ^
+--add-data="fonts;fonts" ^
+--add-data="images;images" ^
+--add-data="models;models" ^
+--add-data="ui;ui" ^
+--add-data="utils;utils" ^
+--add-data="yolocode;yolocode" ^
+--add-data="yoloshow;yoloshow" ^
 main.py
 ```
 다음으로 그리고 빌드 되면 dist 폴더에 main.exe 하나가 생기는데 상단으로 이동 하여, 
