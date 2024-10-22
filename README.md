@@ -165,7 +165,7 @@ Otherwise, there will be a problem running it.
 
 ```shell
 
-pyinstaller --onefile --windowed ^
+pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
 --add-data="ui/YOLOSHOWUI_rc.py;ui" ^
 --add-data="{venv_path_to}ultralytics/cfg/default.yaml;ultralytics/cfg" ^
 --add-data="fonts;fonts" ^
@@ -177,14 +177,11 @@ pyinstaller --onefile --windowed ^
 --add-data="yoloshow;yoloshow" ^
 main.py
 ```
-Next, once built, a main.exe will be created in the dist folder. Go to the top and copy the 'config', 'fonts', 'images', 'ptfiles', and 'runs' folders and paste them under the dist folder.
+Next, once built, a main.exe will be created in the dist folder. Go to the top and copy the 'config', 'ptfiles' folders and paste them under the dist folder.
 
-    └─dist      (Parent Folder)
+     └─dist      (Parent Folder)
     ├─  config  (folder)
-    ├─  fonts   (folder)
-    ├─  images  (folder)
     ├─  ptfiles (folder)
-    ├─  runs    (folder)
     └─  main.exe
 
  Enjoy YOLO!!

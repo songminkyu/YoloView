@@ -165,7 +165,7 @@ ultralytics의 default.yaml 위치한 경로를 명시적으로 선언 하여 �
 
 ```shell
 
-pyinstaller --onefile --windowed ^
+pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
 --add-data="ui/YOLOSHOWUI_rc.py;ui" ^
 --add-data="{venv_path_to}ultralytics/cfg/default.yaml;ultralytics/cfg" ^
 --add-data="fonts;fonts" ^
@@ -178,14 +178,11 @@ pyinstaller --onefile --windowed ^
 main.py
 ```
 다음으로 그리고 빌드 되면 dist 폴더에 main.exe 하나가 생기는데 상단으로 이동 하여, 
-'config', 'fonts' 'images' 'ptfiles' 'runs' 폴더를 복사해서 dist 폴더 밑에 붙혀넣기 한다. 
+'config', 'ptfiles' 폴더를 복사해서 dist 폴더 밑에 붙혀넣기 한다. 
 
     └─dist      (Parent Folder)
     ├─  config  (folder)
-    ├─  fonts   (folder)
-    ├─  images  (folder)
     ├─  ptfiles (folder)
-    ├─  runs    (folder)
     └─  main.exe
 
  Enjoy YOLO!!
