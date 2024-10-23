@@ -112,6 +112,9 @@ class YOLOv8ObbThread(QThread,BasePredictor):
             self.setup_source(source)
             self.detect()
 
+        # --- 이미지 및 표 결과 보내기 --- #
+        self.result_picture_and_table()
+
     def detect(self, ):
         # warmup model
         if not self.done_warmup:
@@ -124,14 +127,6 @@ class YOLOv8ObbThread(QThread,BasePredictor):
         while True:
             if self.stop_dtc:
                 self.send_msg.emit('Stop Detection')
-                # --- 이미지 및 표 결과 보내기 --- #
-                self.send_result_picture.emit(self.results_picture)  # 이미지 결과 보내기
-                for key, value in self.results_picture.items():
-                    self.results_table.append([key, str(value)])
-                self.results_picture = dict()
-                self.send_result_table.emit(self.results_table)  # 결과 내보내기
-                self.results_table = list()
-                # --- 이미지 및 표 결과 보내기 --- #
                 # 리소스 해제
                 self.dataset.running = False  # stop flag for Thread
                 # self.dataset에 스레드가 있는지 확인
@@ -235,11 +230,16 @@ class YOLOv8ObbThread(QThread,BasePredictor):
                                 self.labels_dict[label_name] = int(nums)
 
                     # 원본 이미지 및 결과 이미지가 각각의 입력 상자로 전송됩니다.
+                    for key, value in self.labels_dict.items():
+                        if key in self.results_picture:
+                            self.results_picture[key] += value  # Accumulate the count
+                        else:
+                            self.results_picture[key] = value  # First occurrence
+
                     self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
                     self.send_output.emit(self.plotted_img)  # after detection
                     self.send_class_num.emit(class_nums)
                     self.send_target_num.emit(target_nums)
-                    self.results_picture = self.labels_dict
 
                     if self.save_res:
                         save_path = str(self.save_path / p.name)  # im.jpg
@@ -251,20 +251,25 @@ class YOLOv8ObbThread(QThread,BasePredictor):
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)
                     self.send_msg.emit('Finish Detection')
-                    # --- 이미지 및 표 결과 보내기 --- #
-                    self.send_result_picture.emit(self.results_picture)  # 이미지 결과 보내기
-                    for key, value in self.results_picture.items():
-                        self.results_table.append([key, str(value)])
-                    self.results_picture = dict()
-                    self.send_result_table.emit(self.results_table)  # 결과 내보내기
-                    self.results_table = list()
-                    # --- 이미지 및 표 결과 보내기 --- #
                     self.res_status = True
                     if self.vid_cap is not None:
                         self.vid_cap.release()
                     if isinstance(self.vid_writer[-1], cv2.VideoWriter):
                         self.vid_writer[-1].release()  # release final video writer
                     break
+
+    def result_picture_and_table(self):
+        # --- 이미지 및 표 결과 보내기 --- #
+        self.send_result_picture.emit(self.results_picture)  # 이미지 결과 보내기
+
+        # Convert the dictionary to a list for the table
+        for key, value in self.results_picture.items():
+            self.results_table.append([key, str(value)])
+
+        self.results_picture = dict()
+        self.send_result_table.emit(self.results_table)  # 결과 내보내기
+        self.results_table = list()
+        # --- 이미지 및 표 결과 보내기 --- #
 
     def init_setup_model(self, model, verbose=True):
         """Initialize YOLO model with given parameters and set it to evaluation mode."""
