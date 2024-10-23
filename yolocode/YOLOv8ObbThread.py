@@ -167,6 +167,11 @@ class YOLOv8ObbThread(QThread,BasePredictor):
                     self.send_msg.emit("Detecting: {}".format(self.source))
                 self.batch = next(datasets)
                 path, im0s, s = self.batch
+
+                if not im0s:
+                    self.send_msg.emit("No input images found for detection.")
+                    break
+
                 self.vid_cap = self.dataset.cap if self.dataset.mode == "video" else None
                 count += 1
                 percent = 0  # 진행률 표시줄

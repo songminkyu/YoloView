@@ -23,6 +23,7 @@ class PlottingThread(QThread):
         self.workpath = workpath
 
     def run(self):
+        matplotlib.use('Agg')  # 중요 상단 주석을 읽어보세요
         # 중국어 글꼴 설정
         plt.rcParams['font.sans-serif'] = ['SimHei']  # '심헤이'는 중국에서 흔히 볼 수 있는 볼드체입니다.
         plt.rcParams['axes.unicode_minus'] = False  # 음수 기호 '-'가 사각형으로 표시되는 문제 해결
@@ -52,5 +53,4 @@ class PlottingThread(QThread):
 
         # 그래픽을 파일에 저장
         plt.savefig(self.workpath + r'\config\result.png')
-        matplotlib.use('Agg') # 중요 상단 주석을 읽어보세요
         plt.close()  # 중요: 그래픽을 닫아 메모리를 확보하세요
