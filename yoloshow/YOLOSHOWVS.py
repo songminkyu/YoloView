@@ -41,8 +41,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # --- UI 로드 --- #
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setAttribute(Qt.WA_TranslucentBackground, True)  # 透明背景
-        self.setWindowFlags(Qt.FramelessWindowHint)  # 无头窗口
+        self.setAttribute(Qt.WA_TranslucentBackground, True)  # 투명한 배경
+        self.setWindowFlags(Qt.FramelessWindowHint)  # 헤드리스 창
         # --- UI 로드 --- #
 
         # 사이드바 초기화

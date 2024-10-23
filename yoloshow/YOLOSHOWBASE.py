@@ -428,7 +428,7 @@ class YOLOSHOWBASE:
             self.model_path = os.getcwd()
         file, _ = QFileDialog.getOpenFileName(
             self,  # 부모 창 객체
-            "Select your YOLO Model",  # 标题
+            "Select your YOLO Model",  # 제목
             self.model_path,  # 기본 열기 경로는 현재 경로.
             "Model File (*.pt)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 포함.
         )

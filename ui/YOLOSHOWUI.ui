@@ -97,9 +97,9 @@
 	border: 1px solid red;
 } */
 QPushButton#closeButton {
-    background-color: rgb(255, 59, 48); /* 红色 */
+    background-color: rgb(255, 59, 48); /* 빨간색 */
     border: none;
-    border-radius: 10px; /* 使按钮圆形 */
+    border-radius: 10px; /* 동그란 버튼 */
     min-width: 20px;
     max-width: 20px;
     min-height: 20px;
@@ -107,9 +107,9 @@ QPushButton#closeButton {
 }
 
 QPushButton#maximizeButton {
-    background-color: rgb(40, 205, 65); /* 黄色 */
+    background-color: rgb(40, 205, 65); /* 노란색 */
     border: none;
-    border-radius: 10px; /* 使按钮圆形 */
+    border-radius: 10px; /* 동그란 버튼 */
     min-width: 20px;
     max-width: 20px;
     min-height: 20px;
@@ -117,9 +117,9 @@ QPushButton#maximizeButton {
 }
 
 QPushButton#minimizeButton {
-    background-color: rgb(255, 214, 10); /* 绿色 */
+    background-color: rgb(255, 214, 10); /* 녹색 */
     border: none;
-    border-radius: 10px; /* 使按钮圆形 */
+    border-radius: 10px; /* 동그란 버튼 */
     min-width: 20px;
     max-width: 20px;
     min-height: 20px;

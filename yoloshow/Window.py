@@ -157,7 +157,7 @@ class YOLOSHOWVSWindow(YOLOSHOWVS):
                               FileFormat
                               if jpgname in filename]
                 self.inputPath = Foldername
-                self.showImg(self.inputPath[0], self.main_leftbox, 'path')  # 显示文件夹中第一张图片
+                self.showImg(self.inputPath[0], self.main_leftbox, 'path')  # 폴더의 첫 번째 사진 표시
                 self.showStatus('Loaded Folder：{}'.format(os.path.basename(file)))
             # 사진/비디오
             else:
