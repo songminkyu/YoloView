@@ -629,6 +629,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.runModel(True)
     # 예측 시작/일시 중지
     def runorContinue(self):
+        self.closeTableResult()
         if self.inputPath is not None:
             self.changeModel()
             self.runModel()
@@ -638,6 +639,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
     # 인식 중지
     def stopDetect(self):
+        self.closeTableResult()
         self.quitRunningModel(stop_status=True)
         self.ui.run_button.setChecked(False)
         self.ui.save_status_button.setEnabled(True)

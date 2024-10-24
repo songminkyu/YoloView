@@ -49,6 +49,7 @@ class YOLOSHOWBASE:
         self.result_statistic = None
         self.detect_result = None
         self.detect_errors = None
+        self.table_result = None
 
     # 왼쪽 메뉴바 초기화
     def initSiderWidget(self):
@@ -837,3 +838,16 @@ class YOLOSHOWBASE:
     def showTableResult(self):
         self.table_result = TableViewQWidget(infoList=self.detect_result, errorList=self.detect_errors)
         self.table_result.show()
+
+    # 테이블 결과 종료
+    def closeTableResult(self):
+        '''
+            중요!!!
+
+            결과 테이블 UI가 Visible 되어 있는 상태에서 Run 버튼을 여러번 클릭 할경우 UI 쓰레드랑 충돌
+            나는 문제로 죽는 현상 발생됨, Detected 시작/종료 될때 결과 테이블이 Visible이면 종료 되도록
+            해야함
+        '''
+        if isinstance(self.table_result, TableViewQWidget):
+            if self.table_result.isVisible():
+                self.table_result.close()
