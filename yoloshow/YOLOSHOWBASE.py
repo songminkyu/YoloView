@@ -48,6 +48,7 @@ class YOLOSHOWBASE:
         self.yolo_threads = None
         self.result_statistic = None
         self.detect_result = None
+        self.detect_errors = None
 
     # 왼쪽 메뉴바 초기화
     def initSiderWidget(self):
@@ -78,7 +79,7 @@ class YOLOSHOWBASE:
         model_thread.send_class_num.connect(lambda x: self.ui.Class_num.setText(str(x)))
         model_thread.send_target_num.connect(lambda x: self.ui.Target_num.setText(str(x)))
         model_thread.send_result_picture.connect(lambda x: self.setResultStatistic(x))
-        model_thread.send_result_table.connect(lambda x: self.setTableResult(x))
+        model_thread.send_result_table.connect(lambda x,y: self.setTableResult(x,y))
 
         return model_thread
 
@@ -828,10 +829,11 @@ class YOLOSHOWBASE:
         view.closed.connect(w.close)
 
     # 테이블 결과 목록 가져오기
-    def setTableResult(self, value):
-        self.detect_result = value
+    def setTableResult(self, results_table, results_error):
+        self.detect_result = results_table
+        self.detect_errors = results_error
 
     # 테이블 결과 표시
     def showTableResult(self):
-        self.table_result = TableViewQWidget(infoList=self.detect_result)
+        self.table_result = TableViewQWidget(infoList=self.detect_result, errorList=self.detect_errors)
         self.table_result.show()

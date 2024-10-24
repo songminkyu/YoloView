@@ -34,8 +34,7 @@ class YOLOv8PoseThread(QThread,BasePredictor):
     send_class_num = Signal(int)  # Number of categories detected
     send_target_num = Signal(int)  # Targets detected
     send_result_picture = Signal(dict)  # Send the result picture
-    send_result_table = Signal(list)    # Send the result table
-
+    send_result_table = Signal(list,list)  # Send the result table
 
     def __init__(self):
         super(YOLOv8PoseThread, self).__init__()
@@ -80,6 +79,7 @@ class YOLOv8PoseThread(QThread,BasePredictor):
         self.line_thickness = 3
         self.results_picture = dict()     # 결과 사진
         self.results_table = list()         # 결과표
+        self.results_error = list()  # detected가 실패한 파일 결과표
         self.callbacks = defaultdict(list, callbacks.default_callbacks)  # add callbacks
         callbacks.add_integration_callbacks(self)
 
@@ -166,6 +166,8 @@ class YOLOv8PoseThread(QThread,BasePredictor):
                 path, im0s, s = self.batch
 
                 if not im0s:
+                    file = self.dataset.files[0]
+                    self.results_error.append([os.path.basename(file), "No input images found for detection."])
                     self.send_msg.emit("No input images found for detection.")
                     break
 
@@ -269,8 +271,9 @@ class YOLOv8PoseThread(QThread,BasePredictor):
             self.results_table.append([key, str(value)])
 
         self.results_picture = dict()
-        self.send_result_table.emit(self.results_table)  # 결과 내보내기
+        self.send_result_table.emit(self.results_table, self.results_error)  # 결과 내보내기
         self.results_table = list()
+        self.results_error = list()
         # --- 이미지 및 표 결과 보내기 --- #
 
     def init_setup_model(self, model, verbose=True):

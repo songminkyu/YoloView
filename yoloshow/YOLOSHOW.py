@@ -42,6 +42,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.allModelNames = ALL_MODEL_NAMES
         self.result_statistic = None
         self.detect_result = None
+        self.detect_errors = None
 
         # --- UI 로드 --- #
         self.ui = Ui_MainWindow()
