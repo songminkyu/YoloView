@@ -4,29 +4,19 @@ import sys
 from PySide6.QtWidgets import QHeaderView
 from PySide6.QtCore import QModelIndex, Qt
 from PySide6.QtGui import QPalette
-from PySide6.QtWidgets import QApplication, QStyleOptionViewItem, QTableWidget, QTableWidgetItem, QWidget, QHBoxLayout
+from PySide6.QtWidgets import (
+    QApplication, QStyleOptionViewItem, QTableWidget, QTableWidgetItem,
+    QWidget, QHBoxLayout, QLabel, QVBoxLayout
+)
 
-from qfluentwidgets import TableWidget, isDarkTheme, setTheme, Theme, TableView, TableItemDelegate, setCustomStyleSheet
+from qfluentwidgets import (
+    TableWidget, isDarkTheme, setTheme, Theme, TableView,
+    TableItemDelegate, setCustomStyleSheet
+)
 
 
 class TableViewDelegate(TableItemDelegate):
     """ Custom table item delegate """
-
-    def initStyleOption(self, option: QStyleOptionViewItem, index: QModelIndex):
-        super().initStyleOption(option, index)
-        if index.column() != 1:
-            return
-
-        if isDarkTheme():
-            option.palette.setColor(QPalette.Text, Qt.white)
-            option.palette.setColor(QPalette.HighlightedText, Qt.white)
-        else:
-            option.palette.setColor(QPalette.Text, Qt.black)
-            option.palette.setColor(QPalette.HighlightedText, Qt.black)
-
-
-class TableViewDelegate(TableItemDelegate):
-    """Custom table item delegate"""
 
     def initStyleOption(self, option: QStyleOptionViewItem, index: QModelIndex):
         super().initStyleOption(option, index)
@@ -47,7 +37,16 @@ class TableViewQWidget(QWidget):
         self.setWindowTitle("Result Statistics")
         self.hBoxLayout = QHBoxLayout(self)
 
-        # Original table for successful detections
+        # Result Table Title
+        self.resultLabel = QLabel("[ Result Table ]")
+        resultTitleFont = self.resultLabel.font()
+        resultTitleFont.setPointSize(11)
+        self.resultLabel.setFont(resultTitleFont)
+        self.resultLayout = QVBoxLayout()
+        self.resultLayout.addWidget(self.resultLabel)
+        self.resultLayout.addSpacing(10)
+
+        # Result Table
         self.tableView = TableWidget(self)
         self.tableView.setItemDelegate(TableViewDelegate(self.tableView))
         self.tableView.setSelectRightClickedRow(True)
@@ -70,7 +69,18 @@ class TableViewQWidget(QWidget):
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableView.setSortingEnabled(True)
 
-        # New table for failed detections and error messages
+        self.resultLayout.addWidget(self.tableView)
+
+        # Error Table Title
+        self.errorLabel = QLabel("[ Error Table ]")
+        errorTitleFont = self.errorLabel.font()
+        errorTitleFont.setPointSize(11)
+        self.errorLabel.setFont(errorTitleFont)
+        self.errorLayout = QVBoxLayout()
+        self.errorLayout.addWidget(self.errorLabel)
+        self.errorLayout.addSpacing(10)
+
+        # Error Table
         self.errorTableView = TableWidget(self)
         self.errorTableView.setItemDelegate(TableViewDelegate(self.errorTableView))
         self.errorTableView.setSelectRightClickedRow(True)
@@ -96,13 +106,15 @@ class TableViewQWidget(QWidget):
         self.errorTableView.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.errorTableView.setSortingEnabled(True)
 
+        self.errorLayout.addWidget(self.errorTableView)
+
         # Adjust layout to place tables side by side
         self.hBoxLayout.setContentsMargins(20, 10, 20, 10)
-        self.hBoxLayout.addWidget(self.tableView)
-        self.hBoxLayout.addWidget(self.errorTableView)
+        self.hBoxLayout.addLayout(self.resultLayout)
+        self.hBoxLayout.addLayout(self.errorLayout)
         self.resize(1100, 550)
 
-        # Style adjustments
+        #  Style adjustments
         self.setStyleSheet("TableViewQWidget{background: rgb(255, 255, 255)} ")
 
 if __name__ == "__main__":
