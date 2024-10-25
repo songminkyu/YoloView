@@ -88,7 +88,6 @@ class YOLOv8PoseThread(QThread,BasePredictor):
         if not self.model:
             self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
             self.init_setup_model(self.new_model_name)
-            self.used_model_name = self.new_model_name
 
         source = str(self.source)
         # 입력 소스 유형 결정
@@ -280,7 +279,7 @@ class YOLOv8PoseThread(QThread,BasePredictor):
         """Initialize YOLO model with given parameters and set it to evaluation mode."""
         self.setup_model(self.new_model_name)  # 모델 설정
         self.used_model_name = self.new_model_name
-        self.model.to(self.device)
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     def setup_source(self, source):
         """Sets up source and inference mode."""

@@ -94,7 +94,6 @@ class YOLOv8Thread(QThread,BasePredictor):
         if not self.model:
             self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
             self.init_setup_model(self.new_model_name)
-            self.used_model_name = self.new_model_name
 
         source = str(self.source)
         # 입력 소스 유형 결정
