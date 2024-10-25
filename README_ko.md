@@ -173,6 +173,7 @@ pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
 --add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 --add-data="fonts;fonts" ^
 --add-data="images;images" ^
+--add-data="images/newsize;images/newsize" ^
 --add-data="models;models" ^
 --add-data="ui;ui" ^
 --add-data="utils;utils" ^
