@@ -278,7 +278,6 @@ class RTDETRThread(QThread,BasePredictor):
         """Initialize YOLO model with given parameters and set it to evaluation mode."""
         self.setup_model(self.new_model_name)  # 모델 설정
         self.used_model_name = self.new_model_name
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     def setup_source(self, source):
         """Sets up source and inference mode."""
