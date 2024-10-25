@@ -156,18 +156,21 @@ ultralytics의 default.yaml 위치한 경로를 명시적으로 선언 하여 �
 * 변경 전
 
 
-    --add-data="{venv_absolute_path_to}ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    --add-data="{venv_absolute_path_to}ultralytics\cfg\default.yaml;ultralytics\cfg" ^
+    --add-data="{venv_path_to}ultralytics\cfg\solutions\default.yaml;ultralytics\cfg\solutions" ^
 
 * 변경후  (절대 경로 필요)
 
 
-    ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    ex) --add-data="C:\Users\user\Dev_yolov8\Lib\site-packages\ultralytics\cfg\default.yaml;ultralytics/cfg" ^
+    ex) --add-data="C:\Users\user\Dev_yolov8\Lib\site-packages\ultralytics\cfg\solutions/default.yaml;ultralytics/cfg/solutions" ^
 
 ```shell
 
 pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
 --add-data="ui/YOLOSHOWUI_rc.py;ui" ^
---add-data="{venv_path_to}ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+--add-data="{venv_path_to}ultralytics\cfg\default.yaml;ultralytics/cfg" ^
+--add-data="{venv_path_to}ultralytics\cfg\solutions\default.yaml;ultralytics/cfg/solutions" ^
 --add-data="fonts;fonts" ^
 --add-data="images;images" ^
 --add-data="models;models" ^

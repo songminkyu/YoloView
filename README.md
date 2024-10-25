@@ -157,17 +157,20 @@ Otherwise, there will be a problem running it.
 
 
     --add-data="{venv_absolute_path_to}ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    --add-data="{venv_path_to}ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 
 * After change (absolute path)
 
 
     ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 
 ```shell
 
 pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
 --add-data="ui/YOLOSHOWUI_rc.py;ui" ^
 --add-data="{venv_path_to}ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+--add-data="{venv_path_to}ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 --add-data="fonts;fonts" ^
 --add-data="images;images" ^
 --add-data="models;models" ^
