@@ -54,13 +54,10 @@ class RTDETRThread(QThread,BasePredictor):
         self.parent_workpath = None  # parent work path
 
         # YOLOv8 매개변수 설정
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        if self.device == 'cuda':
-            torch.cuda.set_device(0)
-
         self.model = None
         self.data = 'yolocode/yolov8/cfg/datasets/coco.yaml'  # data_dict
         self.imgsz = 640
+        self.device = None
         self.dataset = None
         self.task = 'detect'
         self.dnn = False
