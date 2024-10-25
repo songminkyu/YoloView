@@ -156,8 +156,8 @@ Otherwise, there will be a problem running it.
 * Before change
 
 
-    --add-data="{venv_absolute_path_to}ultralytics/cfg/default.yaml;ultralytics/cfg" ^
-    --add-data="{venv_path_to}ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
+    --add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+    --add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 
 * After change (absolute path)
 
@@ -169,8 +169,8 @@ Otherwise, there will be a problem running it.
 
 pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
 --add-data="ui/YOLOSHOWUI_rc.py;ui" ^
---add-data="{venv_path_to}ultralytics/cfg/default.yaml;ultralytics/cfg" ^
---add-data="{venv_path_to}ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
+--add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+--add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 --add-data="fonts;fonts" ^
 --add-data="images;images" ^
 --add-data="models;models" ^
