@@ -1,7 +1,9 @@
+import json
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from PySide6.QtCore import QThread
+from PySide6.QtCore import QThread, Signal
+from PySide6.QtWidgets import QWidget
 
 '''
 중요 : matplotlib은 기본 대화형 GUI 백엔드인데 matplotlib.use('agg') 선언 해줌으로써 비대화형 백엔드로 전환되어, 메인쓰레드와
@@ -17,38 +19,70 @@ UI전용 워커쓰레드간에 충돌을 피할수 있게 해주는 기능
 '''
 
 class PlottingThread(QThread):
-    def __init__(self, result_statistic, workpath):
+    # Signal to send processed data to the main GUI thread
+    plot_data_ready = Signal(dict)
+
+    def __init__(self, result_statistic):
         super().__init__()
         self.result_statistic = result_statistic
-        self.workpath = workpath
 
     def run(self):
-        matplotlib.use('Agg')  # 중요 상단 주석을 읽어보세요
-        plt.rcParams['axes.unicode_minus'] = False  # 음수 기호 '-'가 사각형으로 표시되는 문제 해결
-
-        # 합계를 계산하다
+        # Calculate percentages in the background thread
         total = sum(self.result_statistic.values())
-        # 각 범주의 비율 계산
         percentages = {k: (v / total * 100) for k, v in self.result_statistic.items()}
 
-        # 데이터 준비
+        # Emit signal with calculated percentages
+        self.plot_data_ready.emit(percentages)
+
+
+class PlotWindow(QWidget):
+    def __init__(self, workpath):
+        super().__init__()
+        self.workpath = workpath
+        self.result_statistic = {}
+        # Placeholder for the PlottingThread
+        self.plot_thread = None
+
+    def startResultStatistic(self, value):
+        # Write JSON data to file
+        with open('config/result.json', 'w', encoding='utf-8') as file:
+            json.dump(value, file, ensure_ascii=False, indent=4)
+
+        # Update the result statistics and start the thread
+        self.result_statistic = value
+        self.startPlotThread()
+
+    def startPlotThread(self):
+        if self.plot_thread is not None:
+            # Clean up any previous thread if it's running
+            self.plot_thread.quit()
+            self.plot_thread.wait()
+
+        # Create and start a new PlottingThread
+        self.plot_thread = PlottingThread(self.result_statistic)
+        self.plot_thread.plot_data_ready.connect(self.plot_data)  # Connect the signal to plot_data method
+        self.plot_thread.start()
+
+    def plot_data(self, percentages):
+        # Plotting handled in the main thread
         activities = list(percentages.keys())
         values = list(percentages.values())
 
-        # 히스토그램 만들기
-        plt.figure(figsize=(10, 6))  # 그래픽의 표시 크기 설정
-        bars = plt.bar(activities, values, color='skyblue')  # 막대 차트 그리기
+        plt.rcParams['axes.unicode_minus'] = False # 마이너스 기호 깨짐 방지
 
-        # 각 막대 위에 백분율 추가
+        plt.figure(figsize=(10, 6))
+        bars = plt.bar(activities, values, color='skyblue')
+
+        # Annotate bars
         for bar in bars:
             yval = bar.get_height()
             plt.text(bar.get_x() + bar.get_width() / 2, yval + 0.5, f'{yval:.2f}%', ha='center', va='bottom')
 
-        # 제목 및 태그 추가
+        # Add title and labels
         plt.title('Detection results target category statistical proportion')
         plt.xlabel('Target Category')
         plt.ylabel('Percentage (%)')
 
-        # 그래픽을 파일에 저장
+        # Save the plot to a file
         plt.savefig(self.workpath + r'\config\result.png')
-        plt.close()  # 중요: 그래픽을 닫아 메모리를 확보하세요
+        plt.close()

@@ -1,6 +1,6 @@
 from ui.utils.AcrylicFlyout import AcrylicFlyoutView, AcrylicFlyout
 from ui.utils.TableView import TableViewQWidget
-from ui.utils.drawFigure import PlottingThread
+from ui.utils.drawFigure import PlotWindow
 from utils import glo
 
 glo._init()
@@ -44,6 +44,8 @@ loggertool = LoggerUtils()
 class YOLOSHOWBASE:
     def __init__(self):
         super().__init__()
+        self.statistic_plot = None
+        self.current_workpath = None
         self.inputPath = None
         self.yolo_threads = None
         self.result_statistic = None
@@ -769,13 +771,10 @@ class YOLOSHOWBASE:
 
     # 통계 결과를 수락하고 json에 기록
     def setResultStatistic(self, value):
-        # JSON 파일에 쓰기
-        with open('config/result.json', 'w', encoding='utf-8') as file:
-            json.dump(value, file, ensure_ascii=False, indent=4)
         # --- 통계 결과 얻기 + 히스토그램 그리기 --- #
         self.result_statistic = value
-        self.plot_thread = PlottingThread(self.result_statistic, self.current_workpath)
-        self.plot_thread.start()
+        self.statistic_plot = PlotWindow(self.current_workpath)
+        self.statistic_plot.startResultStatistic(self.result_statistic)
         # --- 통계 결과 얻기 + 히스토그램 그리기 --- #
 
     # 막대 차트 결과 표시
