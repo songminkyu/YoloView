@@ -1,28 +1,16 @@
 import ast
 import contextlib
-import importlib
 import json
 import math
 import numpy as np
-import os
-import pandas as pd
 import platform
-import requests
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import warnings
 import zipfile
 from collections import OrderedDict, namedtuple
-from copy import copy
 from pathlib import Path
 from PIL import Image
-from torch.cuda import amp
-from torch.nn.modules.utils import _pair
-from torchvision.ops import DeformConv2d
-from urllib.parse import urlparse
-from typing import Optional
-from IPython.display import display
 import cv2
 from utils import glo
 
