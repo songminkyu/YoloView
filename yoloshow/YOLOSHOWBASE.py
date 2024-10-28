@@ -24,7 +24,7 @@ from qfluentwidgets import RoundMenu, MenuAnimationType, Action
 import importlib
 from ui.utils.rtspDialog import CustomMessageBox
 
-from models import common, yolo, experimental
+from models import common, yolo
 from ui.utils.webCamera import Camera, WebcamThread
 
 GLOBAL_WINDOW_STATE = True
@@ -695,7 +695,6 @@ class YOLOSHOWBASE:
     def reloadModel(self):
         importlib.reload(common)
         importlib.reload(yolo)
-        importlib.reload(experimental)
 
     # 하이퍼파라미터 튜닝
     def changeValue(self, x, flag):
