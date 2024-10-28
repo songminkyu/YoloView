@@ -24,9 +24,6 @@ class PlottingThread(QThread):
 
     def run(self):
         matplotlib.use('Agg')  # 중요 상단 주석을 읽어보세요
-
-        # 중국어 글꼴 설정
-        plt.rcParams['font.sans-serif'] = ['SimHei']  # '심헤이'는 중국에서 흔히 볼 수 있는 볼드체입니다.
         plt.rcParams['axes.unicode_minus'] = False  # 음수 기호 '-'가 사각형으로 표시되는 문제 해결
 
         # 합계를 계산하다
