@@ -110,6 +110,12 @@ cd {프로그램의 위치 program}
 ```shell
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+
+ultralytics 루트 다운로드
+```
+library_update.bat 실행
+```
+
 ### 4. Pyside6 Resource 빌드 (절대경로)
 
 리소스 변경이 되었다면 아래 명령어를 실행 해야함. 
@@ -146,31 +152,12 @@ python main.py
 https://github.com/ultralytics/ultralytics/issues/1158
 https://github.com/ultralytics/ultralytics/issues/8772
 
-Python 가상 모듈에서 
-
-shell에 --add-data 2번째줄 작성 방법
-
-ultralytics의 default.yaml 위치한 경로를 명시적으로 선언 하여 패킹 해야함.
-그렇치 않으면 실행 하는데 문제가 생김.
-
-* 변경 전
-
-
-    --add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
-    --add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
-
-* 변경후  (절대 경로 필요)
-
-
-    ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
-    ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
-
 ```shell
-
 pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
+--collect-data=ultralytics ^
+--add-data="ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+--add-data="ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 --add-data="ui/YOLOSHOWUI_rc.py;ui" ^
---add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
---add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 --add-data="fonts;fonts" ^
 --add-data="images;images" ^
 --add-data="images/newsize;images/newsize" ^
@@ -182,11 +169,12 @@ pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
 main.py
 ```
 다음으로 그리고 빌드 되면 dist 폴더에 main.exe 하나가 생기는데 상단으로 이동 하여, 
-'config', 'ptfiles' 폴더를 복사해서 dist 폴더 밑에 붙혀넣기 한다. 
+'config', 'ptfiles' 'images' 폴더를 복사해서 dist 폴더 밑에 붙혀넣기 한다. 
 
     └─dist      (Parent Folder)
     ├─  config  (folder)
     ├─  ptfiles (folder)
+    ├─  images  (folder)
     └─  main.exe
 
  Enjoy YOLO!!

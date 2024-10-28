@@ -111,6 +111,11 @@ Install dependency package of program
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
+ultralytics root download
+```
+Run library_update.bat
+```
+
 ### 4. Pyside6 Resource Build (Absolute Path)
 
 If the resource has changed, you must run the command below.
@@ -148,29 +153,12 @@ python main.py
 https://github.com/ultralytics/ultralytics/issues/1158
 https://github.com/ultralytics/ultralytics/issues/8772
 
-How to write the 2nd line of --add-data in shell
-
-You must explicitly declare the path where ultralytics' default.yaml is located and pack it.
-Otherwise, there will be a problem running it.
-
-* Before change
-
-
-    --add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
-    --add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
-
-* After change (absolute path)
-
-
-    ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
-    ex) --add-data="C:/Users/user/Dev_yolov8/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
-
 ```shell
-
 pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
+--collect-data=ultralytics ^
+--add-data="ultralytics/cfg/default.yaml;ultralytics/cfg" ^
+--add-data="ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 --add-data="ui/YOLOSHOWUI_rc.py;ui" ^
---add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/default.yaml;ultralytics/cfg" ^
---add-data="{venv_absolute_path_to}/Lib/site-packages/ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 --add-data="fonts;fonts" ^
 --add-data="images;images" ^
 --add-data="images/newsize;images/newsize" ^
@@ -181,11 +169,13 @@ pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
 --add-data="yoloshow;yoloshow" ^
 main.py
 ```
-Next, once built, a main.exe will be created in the dist folder. Go to the top and copy the 'config', 'ptfiles' folders and paste them under the dist folder.
+Next, once built, a main.exe will be created in the dist folder. Go to the top and copy the 'config', 'ptfiles' 'images' 
+folders and paste them under the dist folder.
 
      └─dist      (Parent Folder)
     ├─  config  (folder)
     ├─  ptfiles (folder)
+    ├─  images (folder)
     └─  main.exe
 
  Enjoy YOLO!!

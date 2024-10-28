@@ -17,7 +17,6 @@ psutil  # system utilization
 thop  # FLOPs computation
 albumentations>=1.0.3
 pycocotools  # COCO mAP
-ultralytics
 colorlog
 Pyside6
 PySide6-Fluent-Widgets[full]
