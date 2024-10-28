@@ -2,7 +2,7 @@
 
 ## 소개
 
-***YOLOSHOW***는 `YOLOv5` `YOLOv7` `YOLOv8` `YOLOv9` `YOLOv10` `RT-DETR` 알고리즘이 내장된 그래픽 사용자 인터페이스(GUI) 애플리케이션입니다.
+***YoloView***는 Ultralytics 기반의 `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `RT-DETR` 모델을 지원하는 사용자 인터페이스 (GUI) 애플리케이션 입니다.
 
 <p align="center"> 
   <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/main/README.md"> English</a> &nbsp; | &nbsp; 한국어</a>

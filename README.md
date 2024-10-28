@@ -2,7 +2,7 @@
 
 ## Introduction
 
-***YOLOSHOW*** is a graphical user interface (GUI) application embed with`YOLOv5` `YOLOv7` `YOLOv8` `YOLOv9` `YOLOv10` `RT-DETR` algorithm. 
+***YoloView*** is a user interface (GUI) application that supports Ultralytics-based `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `RT-DETR` models. 
 
  <p align="center"> 
   English &nbsp; | &nbsp; <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/main/README_ko.md">한국어</a>
@@ -63,11 +63,11 @@ If you need Save results, please click `Save Mode` before detection. Then you ca
 
 ### 6. Support Object Detection, Instance Segmentation and Pose Estimation 
 
-From ***YOLOSHOW v3.0***，our work supports both Object Detection , Instance Segmentation, Pose Estimation and Oriented Bounding Box. Meanwhile, it also supports task switching between different versions，such as switching from `YOLOv5` Object Detection task to `YOLOv8` Instance Segmentation task.
+From ***YoloView v3.5***，our work supports both Object Detection , Instance Segmentation, Pose Estimation and Oriented Bounding Box. Meanwhile, it also supports task switching between different versions，such as switching from `YOLOv5` Object Detection task to `YOLOv8` Instance Segmentation task.
 
 ### 7. Support Model Comparison among Object Detection,  Instance Segmentation, Pose Estimation and Oriented Bounding Box
 
-From ***YOLOSHOW v3.0***，our work supports compare model performance among Object Detection, Instance Segmentation, Pose Estimation and Oriented Bounding Box.
+From ***YoloView v3.5***，our work supports compare model performance among Object Detection, Instance Segmentation, Pose Estimation and Oriented Bounding Box.
 
 ## Preparation
 
