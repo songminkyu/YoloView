@@ -487,6 +487,11 @@ class YOLOSHOWBASE:
         elif "yolo11" in modelname:
             return bool(re.match(r'yolo11.?-obb.*\.pt$', modelname))
 
+    def checkNasName(self, modelname):
+        if "yolo_nas" in modelname:
+            return bool(re.match(r'yolo_nas_[sml]\.pt$', modelname))
+        return False
+
     # 실행 중인 모델 중지
     def quitRunningModel(self, stop_status=False):
         self.initThreads()
