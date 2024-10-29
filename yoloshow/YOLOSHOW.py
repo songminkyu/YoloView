@@ -1,7 +1,7 @@
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolo11-seg yolo11-pose yolo11-obb")
+glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolo_nas yolov8-pose yolov8-obb yolo11-seg yolo11-pose yolo11-obb")
 
 import json
 import os
@@ -19,7 +19,9 @@ from yolocode.YOLOv8SegThread import YOLOv8SegThread
 from yolocode.RTDETRThread import RTDETRThread
 from yolocode.YOLOv8PoseThread import YOLOv8PoseThread
 from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
+from yolocode.YOLONasThread import YOLONasThread
 from yoloshow.YOLOSHOWBASE import YOLOSHOWBASE
+
 
 GLOBAL_WINDOW_STATE = True
 WIDTH_LEFT_BOX_STANDARD = 80
@@ -29,7 +31,7 @@ UI_FILE_PATH = "ui/YOLOSHOWUI.ui"
 
 KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting']
 ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9","yolov9-seg", "yolov10","yolo11", "yolov5-seg", "yolov8-seg", "rtdetr",
-                   "yolov8-pose", "yolov8-obb", "yolo11-seg", "yolo11-pose", "yolo11-obb"]
+                   "yolov8-pose", "yolov8-obb", "yolo11-seg", "yolo11-pose", "yolo11-obb","yolo11-obb","yolo_nas"]
 
 
 # # YOLOSHOW 윈도우 클래스는 UI 파일과 Ui_mainWindow를 동적으로 로드합니다.
@@ -203,6 +205,11 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.initModel(self.yolov11obb_thread, "yolo11-obb")
         # --- YOLOv11-Obb QThread --- #
 
+        # --- YOLO_Nas QThread --- #
+        self.yolo_nas_thread = YOLONasThread()
+        self.initModel(self.yolo_nas_thread, "yolo_nas")
+        # --- YOLO_Nas QThread --- #
+
         self.initThreads()
 
         # --- 하이퍼파라미터 조정 --- #
@@ -234,7 +241,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.yolo_threads = [self.yolov5_thread, self.yolov9seg_thread, self.yolov9_thread, self.yolov10_thread,
                              self.yolov5seg_thread, self.yolov8_thread, self.yolov8seg_thread, self.yolov8pose_thread,
                              self.yolov8obb_thread, self.yolov11_thread,self.yolov11seg_thread, self.yolov11pose_thread,
-                             self.yolov11obb_thread, self.rtdetr_thread,]
+                             self.yolov11obb_thread, self.rtdetr_thread, self.yolo_nas_thread]
 
     def selectedTrackMode(self):
         self.updateTrackMode(self.yolov8_thread,'yolov8')
@@ -248,7 +255,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                 and not self.yolov8_thread.res_status and not self.yolov8seg_thread.res_status
                 and not self.yolov8pose_thread.res_status and not self.yolov8obb_thread.res_status
                 and not self.yolov11_thread.res_status and not self.yolov11seg_thread.res_status
-                and not self.yolov11pose_thread.res_status and not self.yolov11obb_thread.res_status):
+                and not self.yolov11pose_thread.res_status and not self.yolov11obb_thread.res_status
+                and not self.yolo_nas_thread.res_status):
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f'{self.current_workpath}/config/save.json'
@@ -293,6 +301,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                 self.saveResultProcess(self.OutputDir, self.yolov11obb_thread, folder=True)
             elif "rtdetr" in self.model_name:
                 self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=True)
+            elif "yolo_nas" in self.model_name:
+                self.saveResultProcess(self.OutputDir, self.yolo_nas_thread, folder=True)
         else:
             self.OutputDir, _ = QFileDialog.getSaveFileName(
                 self,  # 부모 창 객체
@@ -330,6 +340,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                 self.saveResultProcess(self.OutputDir, self.yolov11pose_thread, folder=False)
             elif "yolo11" in self.model_name and self.checkObbName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov11obb_thread, folder=False)
+            elif "yolo_nas" in self.model_name:
+                self.saveResultProcess(self.OutputDir, self.yolo_nas_thread, folder=False)
 
         config['save_path'] = self.OutputDir
         config_json = json.dumps(config, ensure_ascii=False, indent=2)
@@ -465,6 +477,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                     self.stopOtherModelProcess(self.yolov11obb_thread, current_yoloname)
                 elif yoloname == "rtdetr" and self.rtdetr_thread.isRunning():
                     self.stopOtherModelProcess(self.rtdetr_thread, current_yoloname)
+                elif yoloname == "yolo_nas" and self.yolo_nas_thread.isRunning():
+                    self.stopOtherModelProcess(self.yolo_nas_thread, current_yoloname)
 
     def changeModelProcess(self, yolo_thread, yoloname):
         # yolov8 이면 track 모드 UI 활성화
@@ -516,6 +530,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.changeModelProcess(self.yolov11obb_thread, "yolo11-obb")
         elif "rtdetr" in self.model_name:
             self.changeModelProcess(self.rtdetr_thread, "rtdetr")
+        elif "yolo_nas" in self.model_name:
+            self.changeModelProcess(self.yolo_nas_thread, "yolo_nas")
         else:
             self.stopOtherModel()
 
@@ -564,6 +580,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.runModelProcess(self.yolov11obb_thread)
         elif "rtdetr" in self.model_name:
             self.runModelProcess(self.rtdetr_thread)
+        elif "yolo_nas" in self.model_name:
+            self.runModelProcess(self.yolo_nas_thread)
         else:
             self.showStatus('The current model is not supported')
             if self.ui.run_button.isChecked():
@@ -626,6 +644,10 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         elif yoloname == "rtdetr":
             self.rtdetr_thread = RTDETRThread()
             self.initModel(self.rtdetr_thread, "rtdetr")
+            self.runModel(True)
+        elif yoloname == "yolo_nas":
+            self.yolo_nas_thread = YOLONasThread()
+            self.initModel(self.yolo_nas_thread, "yolo_nas")
             self.runModel(True)
     # 예측 시작/일시 중지
     def runorContinue(self):
