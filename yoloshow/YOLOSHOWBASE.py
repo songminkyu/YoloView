@@ -4,7 +4,7 @@ from ui.utils.drawFigure import PlotWindow
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolo_nas yolov8-pose yolov8-obb")
+glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
 
 from utils.logger import LoggerUtils
 import re
@@ -35,7 +35,7 @@ WIDTH_SETTING_BAR = 300
 WIDTH_LOGO = 60
 WINDOW_SPLIT_BODY = 20
 KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting']
-ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov9-seg","yolo11", "yolov5-seg", "yolov8-seg", "rtdetr", "yolo_nas", "yolov8-pose"]
+ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov9-seg","yolo11", "yolov5-seg", "yolov8-seg", "rtdetr", "yolov8-pose"]
 
 loggertool = LoggerUtils()
 

@@ -1,7 +1,7 @@
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolo_nas yolov8-pose yolov8-obb yolo11 yolo11-seg yolo11-pose yolo11-obb")
+glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov10 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolo11 yolo11-seg yolo11-pose yolo11-obb")
 import json
 import os
 import shutil
@@ -17,14 +17,13 @@ from yolocode.YOLOv8SegThread import YOLOv8SegThread
 from yolocode.RTDETRThread import RTDETRThread
 from yolocode.YOLOv8PoseThread import YOLOv8PoseThread
 from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
-from yolocode.YOLONasThread import YOLONasThread
 
 GLOBAL_WINDOW_STATE = True
 WIDTH_LEFT_BOX_STANDARD = 80
 WIDTH_LEFT_BOX_EXTENDED = 180
 WIDTH_LOGO = 60
 UI_FILE_PATH = "ui/YOLOSHOWUIVS.ui"
-ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov10", "yolov5-seg", "yolov8-seg", "rtdetr", "yolo_nas",
+ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov10", "yolov5-seg", "yolov8-seg", "rtdetr",
                    "yolov8-pose", "yolov8-obb", "yolo11","yolo11-seg","yolo11-pose", "yolo11-obb"]
 
 
@@ -247,12 +246,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.initModel(self.yolov11obb_thread2, "yolo11-obb", "right")
         # --- YOLOv11-Obb QThread --- #
 
-        # --- YOLO_Nas QThread --- #
-        self.yolo_nas_thread1 = YOLONasThread()
-        self.yolo_nas_thread2 = YOLONasThread()
-        self.initModel(self.yolo_nas_thread1, "yolo_nas", "left")
-        self.initModel(self.yolo_nas_thread2, "yolo_nas", "right")
-        # --- YOLO_Nas QThread --- #
 
         self.initThreads()
 
@@ -273,7 +266,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                              self.yolov10_thread1, self.yolov10_thread2, self.yolov5seg_thread1, self.yolov5seg_thread2,
                              self.yolov8_thread1, self.yolov8_thread2, self.yolov8seg_thread1, self.yolov8seg_thread2,
                              self.rtdetr_thread1, self.rtdetr_thread2, self.yolov8pose_thread1, self.yolov8pose_thread2,
-                             self.yolov8obb_thread1, self.yolov8obb_thread2, self.yolo_nas_thread1, self.yolo_nas_thread2,
+                             self.yolov8obb_thread1, self.yolov8obb_thread2,
                              self.yolov11_thread1, self.yolov11_thread2, self.yolov11seg_thread1, self.yolov11seg_thread2,
                              self.yolov11pose_thread1, self.yolov11pose_thread2]
 
@@ -376,14 +369,14 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                           and not self.yolov8_thread1.res_status and not self.yolov8seg_thread1.res_status and not self.yolov8pose_thread1.res_status
                           and not self.yolov8obb_thread1.res_status
                           and not self.yolov11_thread1.res_status and not self.yolov11seg_thread1.res_status and not self.yolov11pose_thread1.res_status
-                          and not self.yolov11obb_thread1.res_status and not self.yolo_nas_thread1.res_status)
+                          and not self.yolov11obb_thread1.res_status)
         thread2_status = (not self.yolov5_thread2.res_status
                           and not self.yolov9_thread2.res_status and not self.yolov10_thread2 and not self.yolov5seg_thread2.res_status
                           and not self.rtdetr_thread2.res_status
                           and not self.yolov8_thread2.res_status and not self.yolov8seg_thread2.res_status and not self.yolov8pose_thread2.res_status
                           and not self.yolov8obb_thread2.res_status
                           and not self.yolov11_thread2.res_status and not self.yolov11seg_thread2.res_status and not self.yolov11pose_thread2.res_status
-                          and not self.yolov11obb_thread2.res_status and not self.yolo_nas_thread2.res_status)
+                          and not self.yolov11obb_thread2.res_status)
         self.model_name = self.model_name1
 
         # 기본적으로 왼쪽 모델의 검출 결과가 저장.
@@ -430,8 +423,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.saveResultProcess(self.OutputDir, self.yolov11pose_thread1, folder=True)
             elif "yolo11" in self.model_name and self.checkObbName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov11obb_thread1, folder=True)
-            elif "yolo_nas" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolo_nas_thread1, folder=True)
         else:
             self.OutputDir, _ = QFileDialog.getSaveFileName(
                 self,  # 부모 창 객체
@@ -467,9 +458,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.saveResultProcess(self.OutputDir, self.yolov11pose_thread1, folder=False)
             elif "yolo11" in self.model_name and self.checkObbName(self.model_name):
                 self.saveResultProcess(self.OutputDir, self.yolov11obb_thread1, folder=False)
-            elif "yolo_nas" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolo_nas_thread1, folder=False)
-
         config['save_path'] = self.OutputDir
         config_json = json.dumps(config, ensure_ascii=False, indent=2)
         with open(config_file, 'w', encoding='utf-8') as f:
@@ -556,9 +544,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             elif yoloname == "yolo11-obb":
                 self.yolov8obb_thread1 = YOLOv8ObbThread()
                 self.initModel(self.yolov8obb_thread1, "yolo11-obb", "left")
-            elif yoloname == "yolo_nas":
-                self.yolo_nas_thread1 = YOLONasThread()
-                self.initModel(self.yolo_nas_thread1, "yolo_nas", "left")
 
             self.ui.run_button.setChecked(True)
             self.ContinueAnotherModel(mode="right")
@@ -603,9 +588,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             elif yoloname == "yolo11-obb":
                 self.yolov8obb_thread2 = YOLOv8ObbThread()
                 self.initModel(self.yolov8obb_thread2, "yolo11-obb", "right")
-            elif yoloname == "yolo_nas":
-                self.yolo_nas_thread2 = YOLONasThread()
-                self.initModel(self.yolo_nas_thread2, "yolo_nas", "right")
 
             self.ui.run_button.setChecked(True)
             self.ContinueAnotherModel(mode="left")
@@ -661,9 +643,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     elif yoloname == "yolo11-obb" and self.yolov11obb_thread1.isRunning():
                         self.PauseAnotherModel(mode="right")
                         self.stopOtherModelProcess(self.yolov11obb_thread1, current_yoloname)
-                    elif yoloname == "yolo_nas" and self.yolo_nas_thread1.isRunning():
-                        self.PauseAnotherModel(mode="right")
-                        self.stopOtherModelProcess(self.yolo_nas_thread1, current_yoloname)
                 else:
                     if yoloname == "yolov5" and self.yolov5_thread2.isRunning():
                         self.PauseAnotherModel(mode="left")
@@ -704,9 +683,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                     elif yoloname == "yolo11-obb" and self.yolov11obb_thread2.isRunning():
                         self.PauseAnotherModel(mode="left")
                         self.stopOtherModelProcess(self.yolov11obb_thread2, current_yoloname)
-                    elif yoloname == "yolo_nas" and self.yolo_nas_thread2.isRunning():
-                        self.PauseAnotherModel(mode="left")
-                        self.stopOtherModelProcess(self.yolo_nas_thread2, current_yoloname)
 
     def PauseAnotherModelProcess(self, yolo_thread):
         yolo_thread.quit()
@@ -758,8 +734,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 elif "yolo11" in self.model_name1 and self.checkObbName(
                         self.model_name1) and self.yolov11obb_thread1.isRunning():
                     self.PauseAnotherModelProcess(self.yolov11obb_thread1)
-                elif "yolo_nas" in self.model_name1 and self.yolo_nas_thread1.isRunning():
-                    self.PauseAnotherModelProcess(self.yolo_nas_thread1)
             else:
                 if "yolov5" in self.model_name2 and not self.checkSegName(
                         self.model_name2) and self.yolov5_thread2.isRunning():
@@ -801,8 +775,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 elif "yolo11" in self.model_name2 and self.checkObbName(
                         self.model_name2) and self.yolov11obb_thread2.isRunning():
                     self.PauseAnotherModelProcess(self.yolov11obb_thread2)
-                elif "yolo_nas" in self.model_name2 and self.yolo_nas_thread2.isRunning():
-                    self.PauseAnotherModelProcess(self.yolo_nas_thread2)
 
     # 다른 모델로 계속 진행
     def ContinueAnotherModel(self, mode=None):
@@ -858,9 +830,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 elif "yolov11" in self.model_name1 and self.checkObbName(self.model_name1) and buttonStatus:
                     self.yolov8obb_thread1 = YOLOv8ObbThread()
                     self.initModel(self.yolov8obb_thread1, "yolo11-obb", "left")
-                elif "yolo_nas" in self.model_name1 and buttonStatus:
-                    self.yolo_nas_thread1 = YOLONasThread()
-                    self.initModel(self.yolo_nas_thread1, "yolo_nas", "left")
             else:
                 if "yolov5" in self.model_name2 and not self.checkSegName(
                         self.model_name2) and buttonStatus:
@@ -912,9 +881,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 elif "yolo11" in self.model_name2 and self.checkObbName(self.model_name2) and buttonStatus:
                     self.yolov11obb_thread2 = YOLOv8ObbThread()
                     self.initModel(self.yolov11obb_thread2, "yolo11-obb", "right")
-                elif "yolo_nas" in self.model_name2 and buttonStatus:
-                    self.yolo_nas_thread2 = YOLONasThread()
-                    self.initModel(self.yolo_nas_thread2, "yolo_nas", "right")
 
     def changeModelProcess(self, yolo_thread, yoloname, mode=None):
 
@@ -973,8 +939,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.changeModelProcess(self.yolov8pose_thread1, "yolo11-pose", "left")
             elif "yolo11" in self.model_name1 and self.checkObbName(self.model_name1):
                 self.changeModelProcess(self.yolov8obb_thread1, "yolo11-obb", "left")
-            elif "yolo_nas" in self.model_name1:
-                self.changeModelProcess(self.yolo_nas_thread1, "yolo_nas", "left")
             else:
                 self.stopOtherModel(mode="left")
         else:
@@ -1009,8 +973,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.changeModelProcess(self.yolov11pose_thread2, "yolo11-pose", "right")
             elif "yolo11" in self.model_name2 and self.checkObbName(self.model_name2):
                 self.changeModelProcess(self.yolov11obb_thread2, "yolo11-obb", "right")
-            elif "yolo_nas" in self.model_name2:
-                self.changeModelProcess(self.yolo_nas_thread2, "yolo_nas", "right")
             else:
                 self.stopOtherModel(mode="right")
 
@@ -1055,8 +1017,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.runRightModelProcess(self.yolov11pose_thread2, "start")
             elif "yolo11" in self.model_name2 and self.checkObbName(self.model_name2):
                 self.runRightModelProcess(self.yolov11obb_thread2, "start")
-            elif "yolo_nas" in self.model_name2:
-                self.runRightModelProcess(self.yolo_nas_thread2, "start")
         elif mode == "pause":
             if "yolov5" in self.model_name2 and not self.checkSegName(self.model_name2):
                 self.runRightModelProcess(self.yolov5_thread2, "pause")
@@ -1086,8 +1046,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.runRightModelProcess(self.yolov11pose_thread2, "pause")
             elif "yolo11" in self.model_name2 and self.checkObbName(self.model_name2):
                 self.runRightModelProcess(self.yolov11obb_thread2, "pause")
-            elif "yolo_nas" in self.model_name2:
-                self.runRightModelProcess(self.yolo_nas_thread2, "pause")
 
     def runModelProcess(self, yolo_thread):
         yolo_thread.source = self.inputPath
@@ -1142,8 +1100,6 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.runModelProcess(self.yolov11pose_thread1)
         elif "yolo11" in self.model_name1 and self.checkObbName(self.model_name1):
             self.runModelProcess(self.yolov11obb_thread1)
-        elif "yolo_nas" in self.model_name1:
-            self.runModelProcess(self.yolo_nas_thread1)
 
     # 예측 시작/일시 중지
     def runorContinue(self):
