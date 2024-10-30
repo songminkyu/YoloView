@@ -475,7 +475,6 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.data_path = p
         result = results[idx]
         log_string += result.verbose()
-        result = results[idx]
         # Add bbox to image
         plot_args = {
             "line_width": self.line_thickness,

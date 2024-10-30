@@ -409,10 +409,11 @@ class YOLOv8SegThread(QThread,BasePredictor):
         """Write inference results to a file or directory."""
         p, im,_ = batch
         log_string = ""
+        if len(im.shape) == 3:
+            im = im[None]  # expand for batch dim
         self.data_path = p
         result = results[idx]
         log_string += result.verbose()
-        result = results[idx]
         # Add bbox to image
         plot_args = {
             "line_width": self.line_thickness,
