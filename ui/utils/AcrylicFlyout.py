@@ -545,7 +545,7 @@ class ResultChartView(QMainWindow):
 
         # Adjust layout to prevent clipping
         self.figure.tight_layout()
-        self.figure.subplots_adjust(left=0.19,bottom=0.07)
+        self.figure.subplots_adjust(left=0.22,bottom=0.07)
         # Draw the canvas
         self.canvas.draw()
 
