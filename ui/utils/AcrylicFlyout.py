@@ -3,13 +3,19 @@ from typing import Union
 from PySide6.QtCore import QPoint, Qt, QRect, QRectF, Signal, QSize, QMargins, QPropertyAnimation, QObject, \
     QParallelAnimationGroup, QEasingCurve
 from PySide6.QtGui import QPixmap, QPainter, QColor, QPainterPath, QIcon, QImage, QCursor, QFont
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QApplication, QGraphicsDropShadowEffect, QFrame
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QHBoxLayout, QApplication, QGraphicsDropShadowEffect,
+                               QFrame,QMainWindow, QScrollArea, QTableWidgetItem, QHeaderView, QSplitter)
+
+from qfluentwidgets import TableWidget, TableItemDelegate
 from qfluentwidgets import  FluentIconBase, FlyoutAnimationType, \
     FlyoutAnimationManager, drawIcon, isDarkTheme, ImageLabel, TransparentToolButton, FluentIcon, FluentStyleSheet, \
     TextWrap
 from qfluentwidgets.common.screen import getCurrentScreenGeometry
 from qfluentwidgets.components.material import AcrylicWidget
-
+import numpy as np
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
 
 class IconWidget(QWidget):
 
@@ -414,3 +420,140 @@ class AcrylicFlyout(Flyout):
         self.aniManager.exec(pos)
 
 
+class ResultChartView(QMainWindow):
+    def __init__(self, result_data, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Detection Results Chart")
+        self.setFixedSize(1200, 750)  # Set window size
+
+        # Set background color to white
+        self.setStyleSheet("background-color: white;")
+
+        # Create a central widget and main layout
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        main_layout = QHBoxLayout(central_widget)  # Main layout to hold chart and table side by side
+
+        # Create a QSplitter to divide chart and table horizontally with a 6:4 ratio
+        splitter = QSplitter(Qt.Horizontal)
+
+        # Chart area
+        chart_widget = QWidget()
+        chart_layout = QVBoxLayout(chart_widget)
+
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+
+        # Create a figure and canvas for the chart
+        self.figure = Figure(figsize=(8, 12))  # Adjust figure size for horizontal bar chart
+        self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        # Set the canvas as the scrollable widget
+        scroll_area.setWidget(self.canvas)
+
+        # Add toolbar and chart to the layout
+        chart_layout.addWidget(self.toolbar)
+        chart_layout.addWidget(scroll_area)
+
+        # Add the chart widget to the splitter
+        splitter.addWidget(chart_widget)
+
+        # Table area
+        table_widget_container = QWidget()
+        table_layout = QVBoxLayout(table_widget_container)
+
+        # Add a title label for the table
+        table_title = QLabel("[ Result Table ]")
+        table_title.setAlignment(Qt.AlignCenter)
+        table_title.setStyleSheet("font-size: 16px; font-weight: bold; margin: 10px 0;")
+
+        # Create the styled table widget using qfluentwidgets
+        self.table_widget = TableWidget(self)
+        self.table_widget.setItemDelegate(TableItemDelegate(self.table_widget))
+        self.table_widget.setSelectRightClickedRow(True)
+        self.table_widget.setBorderVisible(True)
+        self.table_widget.setBorderRadius(8)
+        self.table_widget.setRowCount(len(result_data))
+        self.table_widget.setColumnCount(4)
+        self.table_widget.setHorizontalHeaderLabels(["Index", "Class", "Frequency", "Percent"])
+        self.table_widget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_widget.verticalHeader().setVisible(False)  # Hide row numbers
+
+        # Populate the table with data
+        self.populate_table(result_data)
+
+        # Add the title and table to the layout
+        table_layout.addWidget(table_title)
+        table_layout.addWidget(self.table_widget)
+
+        # Add the table widget container to the splitter
+        splitter.addWidget(table_widget_container)
+
+        # Set initial size ratio between chart and table
+        splitter.setStretchFactor(0, 4)  # Chart area takes 4 parts
+        splitter.setStretchFactor(1, 6)  # Table area takes 6 parts
+
+        # Add the splitter to the main layout
+        main_layout.addWidget(splitter)
+
+        # Center the window on the parent
+        self.center_on_parent()
+        # Plot the data
+        self.plot_result_statics(result_data)
+
+    def populate_table(self, result_data):
+        total = sum(result_data.values())
+
+        for i, (cls, freq) in enumerate(result_data.items()):
+            percent = (freq / total) * 100
+            self.table_widget.setItem(i, 0, QTableWidgetItem(str(i + 1)))  # Index
+            self.table_widget.setItem(i, 1, QTableWidgetItem(cls))  # Class
+            self.table_widget.setItem(i, 2, QTableWidgetItem(str(freq)))  # Frequency
+            self.table_widget.setItem(i, 3, QTableWidgetItem(f"{percent:.2f}%"))  # Percent
+
+    def plot_result_statics(self, result_data):
+        categories = list(result_data.keys())
+        values = list(result_data.values())
+        total = sum(values)
+        percentages = [(value / total) * 100 for value in values]
+
+        # Clear the figure and create a new plot
+        self.figure.clear()
+        ax = self.figure.add_subplot(111)
+
+        # Plot horizontal bars with customized positions
+        y_positions = np.arange(len(categories))
+        bars = ax.barh(y_positions, percentages, color='skyblue')
+        ax.set_title("Detection Results Target Category Statistical Proportion")
+        ax.set_ylabel("Target Category")
+        ax.set_xlabel("Percentage (%)")
+
+        # Set y-ticks to custom positions with category labels
+        ax.set_yticks(y_positions)
+        ax.set_yticklabels(categories)
+
+        # Add percentages next to or inside the bars based on bar length
+        for bar, percentage in zip(bars, percentages):
+            xval = bar.get_width()
+            if xval > 10:  # If bar is long, place text inside the bar
+                ax.text(xval - 1, bar.get_y() + bar.get_height() / 2, f"{percentage:.2f}%",
+                        ha="right", va="center", color="red", fontsize=8)
+            else:  # Place text outside for shorter bars
+                ax.text(xval + 0.5, bar.get_y() + bar.get_height() / 2, f"{percentage:.2f}%",
+                        ha="left", va="center", color="black", fontsize=8)
+
+        # Adjust layout to prevent clipping
+        self.figure.tight_layout()
+        self.figure.subplots_adjust(left=0.19,bottom=0.07)
+        # Draw the canvas
+        self.canvas.draw()
+
+    def center_on_parent(self):
+        if self.parent():
+            # Get parent window geometry
+            parent_geometry = self.parent().frameGeometry()
+            parent_center = parent_geometry.center()
+
+            # Move the window to the center of the parent
+            self.move(parent_center - self.rect().center())

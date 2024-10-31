@@ -3,7 +3,6 @@ from utils import glo
 
 glo._init()
 glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
-
 from utils.logger import LoggerUtils
 import re
 import socket
@@ -14,7 +13,7 @@ import os
 import shutil
 import cv2
 import numpy as np
-from ui.utils.AcrylicFlyout import AcrylicFlyoutView, AcrylicFlyout
+from ui.utils.AcrylicFlyout import ResultChartView
 from ui.utils.TableView import TableViewQWidget
 from ui.utils.drawFigure import PlotWindow
 from PySide6.QtGui import QPixmap, QImage
@@ -734,48 +733,14 @@ class YOLOSHOWBASE:
         # JSON 파일 읽기
         with open(self.current_workpath + r'\config\result.json', 'r', encoding='utf-8') as file:
             self.result_statistic = json.load(file)
-        if self.result_statistic:
-            # 한국어 키를 사용하여 새 사전 만들기
-            result_str = ""
-            for index, (key, value) in enumerate(self.result_statistic.items()):
-                result_str += f"{key}:{value}x \t"
-                if (index + 1) % 4 == 0:
-                    result_str += "\n"
 
-            view = AcrylicFlyoutView(
-                title='Detected Target Category Distribution (Percentage)',
-                content=result_str,
-                image=self.current_workpath + r'\config\result.png',
-                isClosable=True
-            )
+        if self.result_statistic:
+            # Display chart in a new window
+            self.chart_view = ResultChartView(self.result_statistic, self)
+            self.chart_view.show()
 
         else:
-            view = AcrylicFlyoutView(
-                title='Result Statistics',
-                content="No completed target detection results detected, please execute the detection task first!",
-                isClosable=True
-            )
-
-        # 글꼴 크기 수정
-        view.titleLabel.setStyleSheet("""font-size: 30px; 
-                                            color: black; 
-                                            font-weight: bold; 
-                                            font-family: 'KaiTi';
-                                        """)
-        view.contentLabel.setStyleSheet("""font-size: 25px; 
-                                            color: black; 
-                                            font-family: 'KaiTi';""")
-        # 이미지 크기 수정
-        width = self.ui.rightbox_main.width() // 2.5
-        height = self.ui.rightbox_main.height() // 2.5
-        view.imageLabel.setFixedSize(width, height)
-        # adjust layout (optional)
-        view.widgetLayout.insertSpacing(1, 5)
-        view.widgetLayout.addSpacing(5)
-
-        # show view
-        w = AcrylicFlyout.make(view, self.ui.rightbox_play, self)
-        view.closed.connect(w.close)
+            print("No completed target detection results detected, please execute the detection task first!")
 
     # 테이블 결과 목록 가져오기
     def setTableResult(self, results_table, results_error):
