@@ -8,7 +8,7 @@
   English &nbsp; | &nbsp; <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/main/README_ko.md">한국어</a>
  </p>
 
-![](UI.png)
+![](assest/Yoloview-screen.png)
 
 ## Todo List
 

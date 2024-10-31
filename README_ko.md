@@ -8,7 +8,7 @@
   <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/main/README.md"> English</a> &nbsp; | &nbsp; 한국어</a>
  </p>
 
-![](UI.png)
+![](assest/Yoloview-screen.png)
 
 ## 할 일 목록
 
