@@ -392,7 +392,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             else:
                 self.stopOtherModel(mode="right")
             # yolov8,9,10,11 이면 track 모드 UI 활성화
-            self.showTrackStatus(self.model_name1)
+            self.showTrackStatus(self.model_name2)
 
     def runRightModelProcess(self, model_name, mode="start"):
         yolo_thread = self.yolo_threads.get(model_name)
