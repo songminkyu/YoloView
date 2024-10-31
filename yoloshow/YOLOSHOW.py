@@ -67,6 +67,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
         # --- PT 모델 자동 로드/동적으로 변경 --- #
         self.pt_Path = f"{self.current_workpath}/ptfiles/"
+        os.makedirs(self.pt_Path, exist_ok=True)
         self.pt_list = os.listdir(f'{self.current_workpath}/ptfiles/')
         self.pt_list = [file for file in self.pt_list if file.endswith('.pt')]
         self.pt_list.sort(key=lambda x: os.path.getsize(f'{self.current_workpath}/ptfiles/' + x))
