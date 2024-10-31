@@ -1,45 +1,30 @@
 from utils import glo
-
-glo._init()
-glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolo11-seg yolo11-pose yolo11-obb")
-
 import json
 import os
-import shutil
 from ui.YOLOSHOWUI import Ui_MainWindow
-from PySide6.QtGui import QPixmap, QImage, QMouseEvent, QGuiApplication, QColor
-from PySide6.QtWidgets import QMessageBox, QFileDialog, QMainWindow, QWidget, QApplication, QGraphicsBlurEffect, \
-    QGraphicsDropShadowEffect, QMenu, QFrame, QPushButton
-from PySide6.QtUiTools import QUiLoader, loadUiType
-from PySide6.QtCore import QFile, QTimer, Qt, QEventLoop, QThread, QPropertyAnimation, QEasingCurve, \
-    QParallelAnimationGroup, QPoint, Signal
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QFileDialog, QMainWindow
+from yoloshow.YOLOThreadPool import YOLOThreadPool
+from PySide6.QtCore import QTimer, Qt
 from PySide6 import QtCore, QtGui
-from yolocode.YOLOv8Thread import YOLOv8Thread
-from yolocode.YOLOv8SegThread import YOLOv8SegThread
-from yolocode.RTDETRThread import RTDETRThread
-from yolocode.YOLOv8PoseThread import YOLOv8PoseThread
-from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
-from yoloshow.YOLOSHOWBASE import YOLOSHOWBASE
+from yoloshow.YOLOSHOWBASE import YOLOSHOWBASE, MODEL_THREAD_CLASSES
 
 GLOBAL_WINDOW_STATE = True
 WIDTH_LEFT_BOX_STANDARD = 80
 WIDTH_LEFT_BOX_EXTENDED = 200
 WIDTH_LOGO = 60
 UI_FILE_PATH = "ui/YOLOSHOWUI.ui"
-
 KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting']
-ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9","yolov9-seg", "yolov10","yolo11", "yolov5-seg", "yolov8-seg", "rtdetr",
-                   "yolov8-pose", "yolov8-obb", "yolo11-seg", "yolo11-pose", "yolo11-obb"]
 
 
 # # YOLOSHOW 윈도우 클래스는 UI 파일과 Ui_mainWindow를 동적으로 로드합니다.
 class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
     def __init__(self):
         super().__init__()
+        self.current_model = None
         self.model_initialized_trackmodel = False  # 초기화되지 않은 상태로 시작
         self.current_workpath = os.getcwd()
         self.inputPath = None
-        self.allModelNames = ALL_MODEL_NAMES
         self.result_statistic = None
         self.detect_result = None
         self.detect_errors = None
@@ -133,76 +118,6 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.Model_label.setText(str(self.model_name).replace(".pt", ""))
         # --- 상태 표시줄 초기화 --- #
 
-        # --- YOLOv5 QThread --- #
-        self.yolov5_thread = YOLOv8Thread()
-        self.initModel(self.yolov5_thread, "yolov5")
-        # --- YOLOv5 QThread --- #
-
-        # --- YOLOv8 QThread --- #
-        self.yolov8_thread = YOLOv8Thread()
-        self.initModel(self.yolov8_thread, "yolov8")
-        # --- YOLOv8 QThread --- #
-
-        # --- YOLOv9 QThread --- #
-        self.yolov9_thread = YOLOv8Thread()
-        self.initModel(self.yolov9_thread, "yolov9")
-        # --- YOLOv9 QThread --- #
-
-        # --- YOLOv9-Seg QThread --- #
-        self.yolov9seg_thread = YOLOv8SegThread()
-        self.initModel(self.yolov9seg_thread, "yolov9-seg")
-        # --- YOLOv9-Seg QThread --- #
-
-        # --- YOLOv10 QThread --- #
-        self.yolov10_thread = YOLOv8Thread()
-        self.initModel(self.yolov10_thread, "yolov10")
-        # --- YOLOv10 QThread --- #
-
-        # --- YOLOv5-Seg QThread --- #
-        self.yolov5seg_thread = YOLOv8SegThread()
-        self.initModel(self.yolov5seg_thread, "yolov5-seg")
-        # --- YOLOv5-Seg QThread --- #
-
-        # --- YOLOv8-Seg QThread --- #
-        self.yolov8seg_thread = YOLOv8SegThread()
-        self.initModel(self.yolov8seg_thread, "yolov8-seg")
-        # --- YOLOv8-Seg QThread --- #
-
-        # --- RT-DETR QThread --- #
-        self.rtdetr_thread = RTDETRThread()
-        self.initModel(self.rtdetr_thread, "rtdetr")
-        # --- RT-DETR QThread --- #
-
-        # --- YOLOv8-Pose QThread --- #
-        self.yolov8pose_thread = YOLOv8PoseThread()
-        self.initModel(self.yolov8pose_thread, "yolov8-pose")
-        # --- YOLOv8-Pose QThread --- #
-
-        # --- YOLOv8-Obb QThread --- #
-        self.yolov8obb_thread = YOLOv8ObbThread()
-        self.initModel(self.yolov8obb_thread, "yolov8-obb")
-        # --- YOLOv8-Obb QThread --- #
-
-        # --- YOLOv11 QThread --- #
-        self.yolov11_thread = YOLOv8Thread()
-        self.initModel(self.yolov11_thread, "yolo11")
-        # --- YOLOv11 QThread --- #
-
-        # --- YOLOv11-Seg QThread --- #
-        self.yolov11seg_thread = YOLOv8SegThread()
-        self.initModel(self.yolov11seg_thread, "yolo11-seg")
-        # --- YOLOv11-Seg QThread --- #
-
-        # --- YOLOv11-Pose QThread --- #
-        self.yolov11pose_thread = YOLOv8PoseThread()
-        self.initModel(self.yolov11pose_thread, "yolo11-pose")
-        # --- YOLOv11-Pose QThread --- #
-
-        # --- YOLOv11-Obb QThread --- #
-        self.yolov11obb_thread = YOLOv8ObbThread()
-        self.initModel(self.yolov11obb_thread, "yolo11-obb")
-        # --- YOLOv11-Obb QThread --- #
-
         self.initThreads()
 
         # --- 하이퍼파라미터 조정 --- #
@@ -231,31 +146,28 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         # --- MessageBar Init --- #
 
     def initThreads(self):
-        self.yolo_threads = [self.yolov5_thread, self.yolov9seg_thread, self.yolov9_thread, self.yolov10_thread,
-                             self.yolov5seg_thread, self.yolov8_thread, self.yolov8seg_thread, self.yolov8pose_thread,
-                             self.yolov8obb_thread, self.yolov11_thread,self.yolov11seg_thread, self.yolov11pose_thread,
-                             self.yolov11obb_thread, self.rtdetr_thread,]
+        self.yolo_threads = YOLOThreadPool()
+        # 현재 모델 설정
+        model_name = self.checkCurrentModel()
+        if model_name:
+            self.yolo_threads.set(model_name, MODEL_THREAD_CLASSES[model_name]())
+            self.initModel(yoloname=model_name)
 
     def selectedTrackMode(self):
-        self.updateTrackMode(self.yolov8_thread,'yolov8')
-        self.updateTrackMode(self.yolov11_thread, 'yolo11')
+        model_name = self.checkCurrentModel()
+        yolo_thread = self.yolo_threads.get(model_name)
+        self.updateTrackMode(yolo_thread)
 
     #결과 내보내기
     def saveResult(self):
-        if (not self.yolov5_thread.res_status and not self.yolov9_thread.res_status
-                and not self.yolov9seg_thread and not self.yolov10_thread.res_status
-                and not self.yolov5seg_thread.res_status and not self.rtdetr_thread.res_status
-                and not self.yolov8_thread.res_status and not self.yolov8seg_thread.res_status
-                and not self.yolov8pose_thread.res_status and not self.yolov8obb_thread.res_status
-                and not self.yolov11_thread.res_status and not self.yolov11seg_thread.res_status
-                and not self.yolov11pose_thread.res_status and not self.yolov11obb_thread.res_status):
+        if not any(thread.res_status for thread in self.yolo_threads.threads_pool.values()):
             self.showStatus("Please select the Image/Video before starting detection...")
             return
         config_file = f'{self.current_workpath}/config/save.json'
-        config = json.load(open(config_file, 'r', encoding='utf-8'))
-        save_path = config['save_path']
-        if not os.path.exists(save_path):
-            save_path = os.getcwd()
+        with open(config_file, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+
+        save_path = config.get('save_path', os.getcwd())
         is_folder = isinstance(self.inputPath, list)
         if is_folder:
             self.OutputDir = QFileDialog.getExistingDirectory(
@@ -263,36 +175,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                 "Save Results in new Folder",  # 제목
                 save_path,  #시작 디렉토리
             )
-            if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=True)
-            elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=True)
-            elif "yolov8" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                    self.model_name) and not self.checkObbName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=True)
-            elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov8pose_thread, folder=True)
-            elif "yolov8" in self.model_name and self.checkObbName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov8obb_thread, folder=True)
-            elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov8seg_thread, folder=True)
-            elif "yolov9" in self.model_name and not self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=True)
-            elif "yolov9" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov9seg_thread, folder=True)
-            elif "yolov10" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolov10_thread, folder=True)
-            elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                    self.model_name) and not self.checkObbName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=True)
-            elif "yolo11" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11seg_thread, folder=True)
-            elif "yolo11" in self.model_name and self.checkPoseName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11pose_thread, folder=True)
-            elif "yolo11" in self.model_name and self.checkObbName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11obb_thread, folder=True)
-            elif "rtdetr" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=True)
+            current_model_name = self.checkCurrentModel()
+            self.saveResultProcess(self.OutputDir, current_model_name, folder=True)
         else:
             self.OutputDir, _ = QFileDialog.getSaveFileName(
                 self,  # 부모 창 객체
@@ -300,108 +184,14 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
                 save_path,  #시작 디렉토리
                 "Image/Vide Type (*.jpg *.jpeg *.png *.heic *.bmp *.dib  *.jpe  *.jp2 *.mp4)"  # 유형 필터 항목을 선택하고 필터 내용은 괄호 안에 포함.
             )
-            if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov5_thread, folder=False)
-            elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov5seg_thread, folder=False)
-            elif "yolov8" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                    self.model_name) and not self.checkObbName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov8_thread, folder=False)
-            elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov8seg_thread, folder=False)
-            elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov8pose_thread, folder=False)
-            elif "yolov8" in self.model_name and self.checkObbName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov8obb_thread, folder=False)
-            elif "yolov9" in self.model_name and not self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov9_thread, folder=False)
-            elif "yolov9" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov9seg_thread, folder=False)
-            elif "yolov10" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.yolov10_thread, folder=False)
-            elif "rtdetr" in self.model_name:
-                self.saveResultProcess(self.OutputDir, self.rtdetr_thread, folder=False)
-            elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                    self.model_name) and not self.checkObbName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11_thread, folder=False)
-            elif "yolo11" in self.model_name and self.checkSegName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11seg_thread, folder=False)
-            elif "yolo11" in self.model_name and self.checkPoseName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11pose_thread, folder=False)
-            elif "yolo11" in self.model_name and self.checkObbName(self.model_name):
-                self.saveResultProcess(self.OutputDir, self.yolov11obb_thread, folder=False)
+            current_model_name = self.checkCurrentModel()
+            self.saveResultProcess(self.OutputDir, current_model_name, folder=False)
 
         config['save_path'] = self.OutputDir
         config_json = json.dumps(config, ensure_ascii=False, indent=2)
         with open(config_file, 'w', encoding='utf-8') as f:
             f.write(config_json)
 
-    # 테스트 결과 내보내기 --- 프로세스 코드
-    def saveResultProcess(self, outdir, yolo_thread, folder):
-        if folder:
-            try:
-                output_dir = os.path.dirname(yolo_thread.res_path)
-                if os.path.exists(output_dir):
-                    for filename in os.listdir(output_dir):
-                        source_path = os.path.join(output_dir, filename)
-                        destination_path = os.path.join(outdir, filename)
-                        if os.path.isfile(source_path):
-                            shutil.copy(source_path, destination_path)
-                    self.showStatus('Saved Successfully in {}'.format(outdir))
-                else:
-                    self.showStatus('Please wait for the result to be generated')
-            except Exception as err:
-                self.showStatus(f"Error occurred while saving the result: {err}")
-        else:
-            try:
-                if os.path.exists(yolo_thread.res_path):
-                    shutil.copy(yolo_thread.res_path, outdir)
-                    self.showStatus('Saved Successfully in {}'.format(outdir))
-                else:
-                    self.showStatus('Please wait for the result to be generated')
-            except Exception as err:
-                self.showStatus(f"Error occurred while saving the result: {err}")
-
-    # 로드 설정 표시줄
-    def loadConfig(self):
-        config_file = 'config/setting.json'
-        iou = 0.45
-        conf = 0.25
-        delay = 10
-        line_thickness = 3
-        if not os.path.exists(config_file):
-            iou = 0.45
-            conf = 0.25
-            delay = 10
-            line_thickness = 3
-            new_config = {"iou": iou,
-                          "conf": conf,
-                          "delay": delay,
-                          "line_thickness": line_thickness,
-                          }
-            new_json = json.dumps(new_config, ensure_ascii=False, indent=2)
-            with open(config_file, 'w', encoding='utf-8') as f:
-                f.write(new_json)
-        else:
-            config = json.load(open(config_file, 'r', encoding='utf-8'))
-            if len(config) != 4:
-                iou = 0.45
-                conf = 0.25
-                delay = 10
-                line_thickness = 3
-            else:
-                iou = config['iou']
-                conf = config['conf']
-                delay = config['delay']
-                line_thickness = config['line_thickness']
-        self.ui.iou_spinbox.setValue(iou)
-        self.ui.iou_slider.setValue(int(iou * 100))
-        self.ui.conf_spinbox.setValue(conf)
-        self.ui.conf_slider.setValue(int(conf * 100))
-        self.ui.speed_spinbox.setValue(delay)
-        self.ui.speed_slider.setValue(delay)
-        self.ui.line_spinbox.setValue(line_thickness)
-        self.ui.line_slider.setValue(line_thickness)
 
     # pt 모델을 model_box에 로드
     def loadModels(self):
@@ -411,15 +201,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
         # yolov8/yolo11 이면 track 모드 UI 활성화
         if not self.model_initialized_trackmodel:
-            if ("yolov8" in self.model_name or "yolo11" in self.model_name) and \
-                    not self.checkSegName(self.model_name) and \
-                    not self.checkPoseName(self.model_name) and \
-                    not self.checkObbName(self.model_name):
-                self.ui.track_box.show()
-                self.ui.track_label.show()
-            else:
-                self.ui.track_box.hide()
-                self.ui.track_label.hide()
+            current_model_name = self.checkCurrentModel()
+            self.showTrackStatus(self.model_name)
             self.model_initialized_trackmodel = True # Track 모드 지원 여부 1번만 체크
 
         if pt_list != self.pt_list:
@@ -427,105 +210,53 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.ui.model_box.clear()
             self.ui.model_box.addItems(self.pt_list)
 
-    def stopOtherModelProcess(self, yolo_thread, current_yoloname):
-        yolo_thread.quit()
-        yolo_thread.stop_dtc = True
+    def stopOtherModelProcess(self, model_name, current_yoloname):
+        yolo_thread = self.yolo_threads.get(model_name)
         yolo_thread.finished.connect(lambda: self.resignModel(current_yoloname))
+        yolo_thread.stop_dtc = True
+        self.yolo_threads.stop_thread(model_name)
 
     # 다른 모델 중지
     def stopOtherModel(self, current_yoloname=None):
-        modelname = self.allModelNames
-        for yoloname in modelname:
-            if yoloname != current_yoloname:
-                if yoloname == "yolov5" and self.yolov5_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov5_thread, current_yoloname)
-                elif yoloname == "yolov5-seg" and self.yolov5seg_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov5seg_thread, current_yoloname)
-                elif yoloname == "yolov8" and self.yolov8_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov8_thread, current_yoloname)
-                elif yoloname == "yolov8-seg" and self.yolov8seg_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov8seg_thread, current_yoloname)
-                elif yoloname == "yolov8-pose" and self.yolov8pose_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov8pose_thread, current_yoloname)
-                elif yoloname == "yolov8-obb" and self.yolov8obb_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov8obb_thread, current_yoloname)
-                elif yoloname == "yolov9" and self.yolov9_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov9_thread, current_yoloname)
-                elif yoloname == "yolov9-seg" and self.yolov9seg_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov9seg_thread, current_yoloname)
-                elif yoloname == "yolov10" and self.yolov10_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov10_thread, current_yoloname)
-                elif yoloname == "yolo11" and self.yolov11_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov11_thread, current_yoloname)
-                elif yoloname == "yolo11-seg" and self.yolov11seg_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov11seg_thread, current_yoloname)
-                elif yoloname == "yolo11-pose" and self.yolov11pose_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov11pose_thread, current_yoloname)
-                elif yoloname == "yolo11-obb" and self.yolov11obb_thread.isRunning():
-                    self.stopOtherModelProcess(self.yolov11obb_thread, current_yoloname)
-                elif yoloname == "rtdetr" and self.rtdetr_thread.isRunning():
-                    self.stopOtherModelProcess(self.rtdetr_thread, current_yoloname)
+        for model_name in self.yolo_threads.threads_pool.keys():
+            if not current_yoloname or model_name == current_yoloname:
+                continue
+            if self.yolo_threads.get(model_name).isRunning():
+                self.stopOtherModelProcess(model_name, current_yoloname)
 
-    def changeModelProcess(self, yolo_thread, yoloname):
-        # yolov8 이면 track 모드 UI 활성화
-        if yoloname == 'yolov8' or yoloname == 'yolo11':
-            self.ui.track_box.show()
-            self.ui.track_label.show()
-        else:
-            self.ui.track_box.hide()
-            self.ui.track_label.hide()
-
-        yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box.currentText()
-        # Common 및 Yolo 모듈 오버로드
-        glo.set_value('yoloname', yoloname)
+    # 모델 다시 로드
+    def resignModel(self, model_name):
+        glo.set_value('yoloname', model_name)
         self.reloadModel()
-        # 다른 모델 중지
-        self.stopOtherModel(yoloname)
+        self.yolo_threads.set(model_name, MODEL_THREAD_CLASSES[model_name]())
+        self.initModel(yoloname=model_name)
+        self.runModel(True)
 
     # 모델 변경
     def changeModel(self):
         self.model_name = self.ui.model_box.currentText()
         self.ui.Model_label.setText(str(self.model_name).replace(".pt", ""))  # 상태 표시줄 표시 수정
-        if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
-            self.changeModelProcess(self.yolov5_thread, "yolov5")
-        elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
-            self.changeModelProcess(self.yolov5seg_thread, "yolov5-seg")
-        elif "yolov8" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                self.model_name) and not self.checkObbName(self.model_name):
-            self.changeModelProcess(self.yolov8_thread, "yolov8")
-        elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
-            self.changeModelProcess(self.yolov8seg_thread, "yolov8-seg")
-        elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
-            self.changeModelProcess(self.yolov8pose_thread, "yolov8-pose")
-        elif "yolov8" in self.model_name and self.checkObbName(self.model_name):
-            self.changeModelProcess(self.yolov8obb_thread, "yolov8-obb")
-        elif "yolov9" in self.model_name and not self.checkSegName(self.model_name):
-            self.changeModelProcess(self.yolov9_thread, "yolov9")
-        elif "yolov9" in self.model_name and self.checkSegName(self.model_name):
-            self.changeModelProcess(self.yolov9seg_thread, "yolov9-seg")
-        elif "yolov10" in self.model_name:
-            self.changeModelProcess(self.yolov10_thread, "yolov10")
-        elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                self.model_name) and not self.checkObbName(self.model_name):
-            self.changeModelProcess(self.yolov11_thread, "yolo11")
-        elif "yolo11" in self.model_name and self.checkSegName(self.model_name):
-            self.changeModelProcess(self.yolov11seg_thread, "yolo11-seg")
-        elif "yolo11" in self.model_name and self.checkPoseName(self.model_name):
-            self.changeModelProcess(self.yolov11pose_thread, "yolo11-pose")
-        elif "yolo11" in self.model_name and self.checkObbName(self.model_name):
-            self.changeModelProcess(self.yolov11obb_thread, "yolo11-obb")
-        elif "rtdetr" in self.model_name:
-            self.changeModelProcess(self.rtdetr_thread, "rtdetr")
+        current_model_name = self.checkCurrentModel()
+        if not current_model_name:
+            return
+        # 다른 모델 중지
+        self.stopOtherModel(current_model_name)
+        yolo_thread = self.yolo_threads.get(current_model_name)
+        if yolo_thread is not None:
+            yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box.currentText()
         else:
-            self.stopOtherModel()
+            self.yolo_threads.set(current_model_name, MODEL_THREAD_CLASSES[current_model_name]())
+            self.initModel(yoloname=current_model_name)
 
-    def runModelProcess(self, yolo_thread):
+        self.showTrackStatus(self.model_name)
+
+    def runModelProcess(self, yolo_name):
+        yolo_thread = self.yolo_threads.get(yolo_name)
         yolo_thread.source = self.inputPath
         yolo_thread.stop_dtc = False
         if self.ui.run_button.isChecked():
             yolo_thread.is_continue = True
-            if not yolo_thread.isRunning():
-                yolo_thread.start()
+            self.yolo_threads.start_thread(yolo_name)
         else:
             yolo_thread.is_continue = False
             self.showStatus('Pause Detection')
@@ -534,99 +265,15 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.save_status_button.setEnabled(False)
         if runbuttonStatus:
             self.ui.run_button.setChecked(True)
-        if "yolov5" in self.model_name and not self.checkSegName(self.model_name):
-            self.runModelProcess(self.yolov5_thread)
-        elif "yolov5" in self.model_name and self.checkSegName(self.model_name):
-            self.runModelProcess(self.yolov5seg_thread)
-        elif "yolov8" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                self.model_name) and not self.checkObbName(self.model_name):
-            self.runModelProcess(self.yolov8_thread)
-        elif "yolov8" in self.model_name and self.checkPoseName(self.model_name):
-            self.runModelProcess(self.yolov8pose_thread)
-        elif "yolov8" in self.model_name and self.checkSegName(self.model_name):
-            self.runModelProcess(self.yolov8seg_thread)
-        elif "yolov8" in self.model_name and self.checkObbName(self.model_name):
-            self.runModelProcess(self.yolov8obb_thread)
-        elif "yolov9" in self.model_name and not self.checkSegName(self.model_name):
-            self.runModelProcess(self.yolov9_thread)
-        elif "yolov9" in self.model_name and self.checkSegName(self.model_name):
-            self.runModelProcess(self.yolov9seg_thread)
-        elif "yolov10" in self.model_name:
-            self.runModelProcess(self.yolov10_thread)
-        elif "yolo11" in self.model_name and not self.checkSegName(self.model_name) and not self.checkPoseName(
-                self.model_name) and not self.checkObbName(self.model_name):
-            self.runModelProcess(self.yolov11_thread)
-        elif "yolo11" in self.model_name and self.checkSegName(self.model_name):
-            self.runModelProcess(self.yolov11seg_thread)
-        elif "yolo11" in self.model_name and self.checkPoseName(self.model_name):
-            self.runModelProcess(self.yolov11pose_thread)
-        elif "yolo11" in self.model_name and self.checkObbName(self.model_name):
-            self.runModelProcess(self.yolov11obb_thread)
-        elif "rtdetr" in self.model_name:
-            self.runModelProcess(self.rtdetr_thread)
+        current_model_name = self.checkCurrentModel()
+        if current_model_name is not None:
+            self.runModelProcess(current_model_name)
         else:
             self.showStatus('The current model is not supported')
             if self.ui.run_button.isChecked():
                 self.ui.run_button.setChecked(False)
 
-    # 모델 다시 로드
-    def resignModel(self, yoloname):
-        if yoloname == "yolov5":
-            self.yolov5_thread = YOLOv8Thread()
-            self.initModel(self.yolov5_thread, "yolov5")
-            self.runModel(True)
-        elif yoloname == "yolov5-seg":
-            self.yolov5seg_thread = YOLOv8SegThread()
-            self.initModel(self.yolov5seg_thread, "yolov5-seg")
-            self.runModel(True)
-        elif yoloname == "yolov8":
-            self.yolov8_thread = YOLOv8Thread()
-            self.initModel(self.yolov8_thread, "yolov8")
-            self.runModel(True)
-        elif yoloname == "yolov8-seg":
-            self.yolov8seg_thread = YOLOv8SegThread()
-            self.initModel(self.yolov8seg_thread, "yolov8-seg")
-            self.runModel(True)
-        elif yoloname == "yolov8-pose":
-            self.yolov8pose_thread = YOLOv8PoseThread()
-            self.initModel(self.yolov8pose_thread, "yolov8-pose")
-            self.runModel(True)
-        elif yoloname == "yolov8-obb":
-            self.yolov8obb_thread = YOLOv8ObbThread()
-            self.initModel(self.yolov8obb_thread, "yolov8-obb")
-            self.runModel(True)
-        elif yoloname == "yolov9":
-            self.yolov9_thread = YOLOv8Thread()
-            self.initModel(self.yolov9_thread, "yolov9")
-            self.runModel(True)
-        elif yoloname == "yolov9-seg":
-            self.yolov9seg_thread = YOLOv8SegThread()
-            self.initModel(self.yolov9seg_thread, "yolov9-seg")
-            self.runModel(True)
-        elif yoloname == "yolov10":
-            self.yolov10_thread = YOLOv8Thread()
-            self.initModel(self.yolov10_thread, "yolov10")
-            self.runModel(True)
-        elif yoloname == "yolo11":
-            self.yolov11_thread = YOLOv8Thread() # YOLOv8로 YoloV11 모델 호출 하기위해.
-            self.initModel(self.yolov11_thread, "yolo11")
-            self.runModel(True)
-        elif yoloname == "yolo11-seg":
-            self.yolov11seg_thread = YOLOv8SegThread()
-            self.initModel(self.yolov11seg_thread, "yolo11-seg")
-            self.runModel(True)
-        elif yoloname == "yolo11-pose":
-            self.yolov11pose_thread = YOLOv8PoseThread()
-            self.initModel(self.yolov11pose_thread, "yolo11-pose")
-            self.runModel(True)
-        elif yoloname == "yolo11-obb":
-            self.yolov11obb_thread = YOLOv8ObbThread()
-            self.initModel(self.yolov11obb_thread, "yolo11-obb")
-            self.runModel(True)
-        elif yoloname == "rtdetr":
-            self.rtdetr_thread = RTDETRThread()
-            self.initModel(self.rtdetr_thread, "rtdetr")
-            self.runModel(True)
+    
     # 예측 시작/일시 중지
     def runorContinue(self):
         self.closeTableResult()

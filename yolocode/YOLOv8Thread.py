@@ -111,9 +111,10 @@ class YOLOv8Thread(QThread,BasePredictor):
             self.save_path.mkdir(parents=True, exist_ok=True)  # make dir
 
         if self.is_folder:
-            for source in self.source:
+            for index, source in enumerate(self.source):
+                is_folder_last = True if index + 1 == len(self.source) else False
                 self.setup_source(source)
-                self.detect()
+                self.detect(is_folder_last=is_folder_last)
         else:
             self.setup_source(source)
             self.detect()
@@ -121,7 +122,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         # --- 이미지 및 표 결과 보내기 --- #
         self.result_picture_and_table()
 
-    def detect(self, ):
+    def detect(self, is_folder_last=False):
 
         # warmup model
         if not self.done_warmup:
@@ -260,6 +261,9 @@ class YOLOv8Thread(QThread,BasePredictor):
 
                     if self.speed_thres != 0:
                         time.sleep(self.speed_thres / 1000)  # delay , ms
+
+                if self.is_folder and not is_folder_last:
+                    break
 
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)

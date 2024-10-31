@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QLabel
 from PySide6.QtCore import Signal
-
+from YOLOSHOW import *
 
 # class LabelMouse(QLabel):
 #     double_clicked = Signal()

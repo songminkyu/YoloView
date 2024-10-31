@@ -60,7 +60,7 @@ class YOLOv8ObbThread(QThread,BasePredictor):
         self.imgsz = 640
         self.device = None
         self.dataset = None
-        self.task = 'detect'
+        self.task = 'obb'
         self.dnn = False
         self.half = False
         self.agnostic_nms = False
@@ -70,7 +70,7 @@ class YOLOv8ObbThread(QThread,BasePredictor):
         self.vid_path, self.vid_writerm, self.vid_cap = None, None, None
         self.batch = None
         self.batchsize = 1
-        self.project = 'runs/detect'
+        self.project = 'runs/obb'
         self.name = 'exp'
         self.exist_ok = False
         self.vid_stride = 1  # 비디오 프레임 속도
@@ -105,9 +105,10 @@ class YOLOv8ObbThread(QThread,BasePredictor):
             self.save_path.mkdir(parents=True, exist_ok=True)  # make dir
 
         if self.is_folder:
-            for source in self.source:
+            for index, source in enumerate(self.source):
+                is_folder_last = True if index + 1 == len(self.source) else False
                 self.setup_source(source)
-                self.detect()
+                self.detect(is_folder_last=is_folder_last)
         else:
             self.setup_source(source)
             self.detect()
@@ -115,7 +116,7 @@ class YOLOv8ObbThread(QThread,BasePredictor):
         # --- 이미지 및 표 결과 보내기 --- #
         self.result_picture_and_table()
 
-    def detect(self, ):
+    def detect(self, is_folder_last=False):
         # warmup model
         if not self.done_warmup:
             self.model.warmup(imgsz=(1 if self.model.pt or self.model.triton else self.dataset.bs, 3, *self.imgsz))
@@ -249,6 +250,9 @@ class YOLOv8ObbThread(QThread,BasePredictor):
 
                     if self.speed_thres != 0:
                         time.sleep(self.speed_thres / 1000)  # delay , ms
+
+                if self.is_folder and not is_folder_last:
+                    break
 
                 if percent == self.progress_value and not self.webcam:
                     self.send_progress.emit(0)

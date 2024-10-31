@@ -1,5 +1,3 @@
-from sympy import false
-
 from utils import glo
 import json
 import os
@@ -26,7 +24,6 @@ class YOLOSHOWWindow(YOLOSHOW):
         self.setAcceptDrops(True)  # ==> 설정 창은 드래그를 지원합니다(설정해야 함).
         # --- 창을 드래그하여 창 크기를 변경하세요 --- #
         self.animation_window = None
-        self.drag = False
 
         # 마우스 드래그 이벤트
     def dragEnterEvent(self, event):

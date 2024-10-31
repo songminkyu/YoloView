@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1500, 839)
+        MainWindow.resize(1550, 839)
         MainWindow.setStyleSheet(u"")
         self.mainWindow = QWidget(MainWindow)
         self.mainWindow.setObjectName(u"mainWindow")
@@ -245,9 +245,9 @@ class Ui_MainWindow(object):
         self.logo.setSizePolicy(sizePolicy)
         self.logo.setMinimumSize(QSize(60, 60))
         self.logo.setMaximumSize(QSize(60, 60))
-        self.logo.setStyleSheet(u"image: url(:/leftbox/images/yolo_icon.png);\n"
-"border:2px solid rgba(0,0,0,5%);\n"
-"border-radius: 10%;\n"
+        self.logo.setStyleSheet(u"image: url(:/leftbox/images/yolo.png);\n"
+"border:2px solid rgba(0,0,0,15%);\n"
+"border-radius: 15%;\n"
 "")
         self.logo.setFrameShape(QFrame.StyledPanel)
         self.logo.setFrameShadow(QFrame.Raised)
@@ -1169,7 +1169,7 @@ class Ui_MainWindow(object):
         self.run_button.setObjectName(u"run_button")
         self.run_button.setMinimumSize(QSize(0, 30))
         self.run_button.setMaximumSize(QSize(16777215, 30))
-        self.run_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.run_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.run_button.setMouseTracking(True)
         self.run_button.setStyleSheet(u"QPushButton{\n"
 "background-repeat: no-repeat;\n"
@@ -1180,7 +1180,7 @@ class Ui_MainWindow(object):
 "\n"
 "}")
         icon = QIcon()
-        icon.addFile(u":/rightbox/images/newsize/play.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/rightbox/images/newsize/play.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.run_button.setIcon(icon)
         self.run_button.setIconSize(QSize(20, 20))
         self.run_button.setCheckable(True)
@@ -1215,7 +1215,7 @@ class Ui_MainWindow(object):
         self.stop_button.setObjectName(u"stop_button")
         self.stop_button.setMinimumSize(QSize(0, 30))
         self.stop_button.setMaximumSize(QSize(16777215, 30))
-        self.stop_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.stop_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.stop_button.setStyleSheet(u"QPushButton{\n"
 "background-image: url(:/rightbox/images/newsize/stop.png);\n"
 "background-repeat: no-repeat;\n"
@@ -1333,7 +1333,7 @@ class Ui_MainWindow(object):
         font3.setBold(True)
         font3.setItalic(False)
         self.ToggleBotton_6.setFont(font3)
-        self.ToggleBotton_6.setCursor(QCursor(Qt.ArrowCursor))
+        self.ToggleBotton_6.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.ToggleBotton_6.setMouseTracking(True)
         self.ToggleBotton_6.setFocusPolicy(Qt.StrongFocus)
         self.ToggleBotton_6.setContextMenuPolicy(Qt.DefaultContextMenu)
@@ -1395,7 +1395,7 @@ class Ui_MainWindow(object):
 "            image: url(:/setting /images/newsize/box_up.png);\n"
 " }\n"
 "")
-        self.model_box.setProperty("minimumContentsLength", 0)
+        self.model_box.setProperty(u"minimumContentsLength", 0)
 
         self.verticalLayout_21.addWidget(self.model_box)
 
@@ -1419,7 +1419,7 @@ class Ui_MainWindow(object):
         self.ToggleBotton_2.setMinimumSize(QSize(0, 30))
         self.ToggleBotton_2.setMaximumSize(QSize(16777215, 30))
         self.ToggleBotton_2.setFont(font3)
-        self.ToggleBotton_2.setCursor(QCursor(Qt.ArrowCursor))
+        self.ToggleBotton_2.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.ToggleBotton_2.setMouseTracking(True)
         self.ToggleBotton_2.setFocusPolicy(Qt.StrongFocus)
         self.ToggleBotton_2.setContextMenuPolicy(Qt.DefaultContextMenu)
@@ -1455,7 +1455,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_16.setContentsMargins(8, 0, 10, 0)
         self.iou_spinbox = QDoubleSpinBox(self.frame_3)
         self.iou_spinbox.setObjectName(u"iou_spinbox")
-        self.iou_spinbox.setCursor(QCursor(Qt.PointingHandCursor))
+        self.iou_spinbox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.iou_spinbox.setStyleSheet(u"QDoubleSpinBox {\n"
 "border: 0px solid lightgray;\n"
 "border-radius: 2px;\n"
@@ -1491,7 +1491,7 @@ class Ui_MainWindow(object):
 
         self.iou_slider = QSlider(self.frame_3)
         self.iou_slider.setObjectName(u"iou_slider")
-        self.iou_slider.setCursor(QCursor(Qt.PointingHandCursor))
+        self.iou_slider.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.iou_slider.setStyleSheet(u"QSlider::groove:horizontal {\n"
 "border: none;\n"
 "height: 10px;\n"
@@ -1542,7 +1542,7 @@ class Ui_MainWindow(object):
         self.ToggleBotton_3.setMinimumSize(QSize(0, 30))
         self.ToggleBotton_3.setMaximumSize(QSize(16777215, 30))
         self.ToggleBotton_3.setFont(font3)
-        self.ToggleBotton_3.setCursor(QCursor(Qt.ArrowCursor))
+        self.ToggleBotton_3.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.ToggleBotton_3.setMouseTracking(True)
         self.ToggleBotton_3.setFocusPolicy(Qt.StrongFocus)
         self.ToggleBotton_3.setContextMenuPolicy(Qt.DefaultContextMenu)
@@ -1578,7 +1578,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_17.setContentsMargins(8, 0, 10, 0)
         self.conf_spinbox = QDoubleSpinBox(self.frame)
         self.conf_spinbox.setObjectName(u"conf_spinbox")
-        self.conf_spinbox.setCursor(QCursor(Qt.PointingHandCursor))
+        self.conf_spinbox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.conf_spinbox.setStyleSheet(u"QDoubleSpinBox {\n"
 "border: 0px solid lightgray;\n"
 "border-radius: 2px;\n"
@@ -1614,7 +1614,7 @@ class Ui_MainWindow(object):
 
         self.conf_slider = QSlider(self.frame)
         self.conf_slider.setObjectName(u"conf_slider")
-        self.conf_slider.setCursor(QCursor(Qt.PointingHandCursor))
+        self.conf_slider.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.conf_slider.setStyleSheet(u"QSlider::groove:horizontal {\n"
 "border: none;\n"
 "height: 10px;\n"
@@ -1665,7 +1665,7 @@ class Ui_MainWindow(object):
         self.ToggleBotton_4.setMinimumSize(QSize(0, 30))
         self.ToggleBotton_4.setMaximumSize(QSize(16777215, 30))
         self.ToggleBotton_4.setFont(font3)
-        self.ToggleBotton_4.setCursor(QCursor(Qt.ArrowCursor))
+        self.ToggleBotton_4.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.ToggleBotton_4.setMouseTracking(True)
         self.ToggleBotton_4.setFocusPolicy(Qt.StrongFocus)
         self.ToggleBotton_4.setContextMenuPolicy(Qt.DefaultContextMenu)
@@ -1734,7 +1734,7 @@ class Ui_MainWindow(object):
 
         self.speed_slider = QSlider(self.frame_2)
         self.speed_slider.setObjectName(u"speed_slider")
-        self.speed_slider.setCursor(QCursor(Qt.PointingHandCursor))
+        self.speed_slider.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.speed_slider.setStyleSheet(u"QSlider::groove:horizontal {\n"
 "border: none;\n"
 "height: 10px;\n"
@@ -1786,7 +1786,7 @@ class Ui_MainWindow(object):
         self.ToggleBotton_5.setMinimumSize(QSize(0, 30))
         self.ToggleBotton_5.setMaximumSize(QSize(16777215, 30))
         self.ToggleBotton_5.setFont(font3)
-        self.ToggleBotton_5.setCursor(QCursor(Qt.ArrowCursor))
+        self.ToggleBotton_5.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.ToggleBotton_5.setMouseTracking(True)
         self.ToggleBotton_5.setFocusPolicy(Qt.StrongFocus)
         self.ToggleBotton_5.setContextMenuPolicy(Qt.DefaultContextMenu)
@@ -1821,7 +1821,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_21.setContentsMargins(8, 0, 10, 0)
         self.line_spinbox = QDoubleSpinBox(self.frame_5)
         self.line_spinbox.setObjectName(u"line_spinbox")
-        self.line_spinbox.setCursor(QCursor(Qt.PointingHandCursor))
+        self.line_spinbox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.line_spinbox.setStyleSheet(u"QDoubleSpinBox {\n"
 "border: 0px solid lightgray;\n"
 "border-radius: 2px;\n"
@@ -1858,7 +1858,7 @@ class Ui_MainWindow(object):
 
         self.line_slider = QSlider(self.frame_5)
         self.line_slider.setObjectName(u"line_slider")
-        self.line_slider.setCursor(QCursor(Qt.PointingHandCursor))
+        self.line_slider.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.line_slider.setStyleSheet(u"QSlider::groove:horizontal {\n"
 "border: none;\n"
 "height: 10px;\n"
@@ -1936,7 +1936,7 @@ class Ui_MainWindow(object):
 
         self.save_status_button = QCheckBox(self.frame_4)
         self.save_status_button.setObjectName(u"save_status_button")
-        self.save_status_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.save_status_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.save_status_button.setStyleSheet(u"QCheckBox {\n"
 "color: white;\n"
 "font: 700 13pt \"Nirmala UI\";\n"
@@ -2061,7 +2061,7 @@ class Ui_MainWindow(object):
         self.message_bar.setText(QCoreApplication.translate("MainWindow", u"Message Bar ... ", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.ToggleBotton_6.setText(QCoreApplication.translate("MainWindow", u"Model", None))
-        self.model_box.setProperty("placeholderText", "")
+        self.model_box.setProperty(u"placeholderText", "")
         self.ToggleBotton_2.setText(QCoreApplication.translate("MainWindow", u"IOU", None))
         self.ToggleBotton_3.setText(QCoreApplication.translate("MainWindow", u"Confidence", None))
         self.ToggleBotton_4.setText(QCoreApplication.translate("MainWindow", u"Delay(ms)", None))
