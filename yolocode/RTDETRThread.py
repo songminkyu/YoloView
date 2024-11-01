@@ -104,10 +104,11 @@ class RTDETRThread(QThread,BasePredictor):
             self.save_path.mkdir(parents=True, exist_ok=True)  # make dir
 
         if self.is_folder:
+            total_count = len(self.source)
             for index, source in enumerate(self.source):
                 is_folder_last = True if index + 1 == len(self.source) else False
                 self.setup_source(source)
-                self.detect(is_folder_last=is_folder_last)
+                self.detect(is_folder_last=is_folder_last,index=index + 1, total_count=total_count)
         else:
             self.setup_source(source)
             self.detect()
@@ -115,7 +116,7 @@ class RTDETRThread(QThread,BasePredictor):
         # --- 이미지 및 표 결과 보내기 --- #
         self.result_picture_and_table()
 
-    def detect(self, is_folder_last=False):
+    def detect(self, is_folder_last=False, index=0, total_count=0):
         # warmup model
         if not self.done_warmup:
             self.model.warmup(imgsz=(1 if self.model.pt or self.model.triton else self.dataset.bs, 3, *self.imgsz))
@@ -155,7 +156,7 @@ class RTDETRThread(QThread,BasePredictor):
                 elif self.webcam and not self.is_url:
                     self.send_msg.emit("Detecting Webcam: Camera_{}".format(self.source))
                 elif self.is_folder:
-                    self.send_msg.emit("Detecting Folder: {}".format(os.path.dirname(self.source[0])))
+                    self.send_msg.emit("Detecting Folder: ({} / {}) {}".format(index, total_count, os.path.dirname(self.source[0])))
                 elif self.is_url:
                     self.send_msg.emit("Detecting URL: {}".format(self.source))
                 else:
