@@ -16,6 +16,7 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+from matplotlib import rcParams
 
 class IconWidget(QWidget):
 
@@ -513,7 +514,7 @@ class ResultChartView(QMainWindow):
             percent_item = QTableWidgetItem(f"{percent:.2f}%")
 
             # Set color based on percentage
-            if percent > 20:
+            if percent > 10:
                 # Set font color to red
                 index_item.setForeground(QColor("red"))
                 class_item.setForeground(QColor("red"))
@@ -538,14 +539,16 @@ class ResultChartView(QMainWindow):
         total = sum(values)
         percentages = [(value / total) * 100 for value in values]
 
-        # Clear the figure and create a new plot
+        # Clear the figure and enable constrained layout
         self.figure.clear()
+        self.figure.set_constrained_layout(True)  # Enables automatic layout adjustment without extra padding
+
         ax = self.figure.add_subplot(111)
 
-        # Plot horizontal bars with customized positions
+        # Plot horizontal bars
         y_positions = np.arange(len(categories))
         bars = ax.barh(y_positions, percentages, color='skyblue')
-        ax.set_title("Detection Results Target Category Statistical Proportion")
+        ax.set_title("[ Detection Results Target Category Statistical Proportion ]",fontsize=11)
         ax.set_ylabel("Target Category")
         ax.set_xlabel("Percentage (%)")
 
@@ -556,16 +559,20 @@ class ResultChartView(QMainWindow):
         # Add percentages next to or inside the bars based on bar length
         for bar, percentage in zip(bars, percentages):
             xval = bar.get_width()
-            if xval > 20:  # If bar is long, place text inside the bar
+            if xval > 10:  # If bar is long, place text inside the bar
                 ax.text(xval - 1, bar.get_y() + bar.get_height() / 2, f"{percentage:.2f}%",
                         ha="right", va="center", color="red", fontsize=8)
             else:  # Place text outside for shorter bars
                 ax.text(xval + 0.5, bar.get_y() + bar.get_height() / 2, f"{percentage:.2f}%",
                         ha="left", va="center", color="black", fontsize=8)
 
-        # Adjust layout to prevent clipping
-        self.figure.tight_layout()
-        self.figure.subplots_adjust(left=0.22,bottom=0.07)
+        # Remove any default padding by adjusting rcParams if necessary
+        rcParams.update({
+            'figure.autolayout': False,
+            'axes.titlepad': 0,
+            'axes.labelpad': 0,
+        })
+
         # Draw the canvas
         self.canvas.draw()
 
