@@ -507,10 +507,30 @@ class ResultChartView(QMainWindow):
 
         for i, (cls, freq) in enumerate(result_data.items()):
             percent = (freq / total) * 100
-            self.table_widget.setItem(i, 0, QTableWidgetItem(str(i + 1)))  # Index
-            self.table_widget.setItem(i, 1, QTableWidgetItem(cls))  # Class
-            self.table_widget.setItem(i, 2, QTableWidgetItem(str(freq)))  # Frequency
-            self.table_widget.setItem(i, 3, QTableWidgetItem(f"{percent:.2f}%"))  # Percent
+            index_item = QTableWidgetItem(str(i + 1))
+            class_item = QTableWidgetItem(cls)
+            freq_item = QTableWidgetItem(str(freq))
+            percent_item = QTableWidgetItem(f"{percent:.2f}%")
+
+            # Set color based on percentage
+            if percent > 20:
+                # Set font color to red
+                index_item.setForeground(QColor("red"))
+                class_item.setForeground(QColor("red"))
+                freq_item.setForeground(QColor("red"))
+                percent_item.setForeground(QColor("red"))
+            else:
+                # Set font color to black
+                index_item.setForeground(QColor("black"))
+                class_item.setForeground(QColor("black"))
+                freq_item.setForeground(QColor("black"))
+                percent_item.setForeground(QColor("black"))
+
+            # Add items to table
+            self.table_widget.setItem(i, 0, index_item)
+            self.table_widget.setItem(i, 1, class_item)
+            self.table_widget.setItem(i, 2, freq_item)
+            self.table_widget.setItem(i, 3, percent_item)
 
     def plot_result_statics(self, result_data):
         categories = list(result_data.keys())
@@ -536,7 +556,7 @@ class ResultChartView(QMainWindow):
         # Add percentages next to or inside the bars based on bar length
         for bar, percentage in zip(bars, percentages):
             xval = bar.get_width()
-            if xval > 10:  # If bar is long, place text inside the bar
+            if xval > 20:  # If bar is long, place text inside the bar
                 ax.text(xval - 1, bar.get_y() + bar.get_height() / 2, f"{percentage:.2f}%",
                         ha="right", va="center", color="red", fontsize=8)
             else:  # Place text outside for shorter bars
