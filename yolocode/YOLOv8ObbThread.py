@@ -102,7 +102,8 @@ class YOLOv8ObbThread(QThread,BasePredictor):
         self.screenshot = source.lower().startswith("screen")
         # 입력 소스가 폴더인지 확인하고, 목록이면 폴더인지 확인합니다.
         self.is_folder = isinstance(self.source, list)
-        if self.save_res:
+
+        if self.save_res or self.save_label:
             self.save_path = increment_path(Path(self.project) / self.name, exist_ok=self.exist_ok)  # increment run
             self.save_path.mkdir(parents=True, exist_ok=True)  # make dir
 
@@ -253,6 +254,10 @@ class YOLOv8ObbThread(QThread,BasePredictor):
                     if self.save_res:
                         save_path = str(self.save_path / p.name)  # im.jpg
                         self.res_path = self.save_preds(self.vid_cap, i, save_path)
+
+                    if self.save_label and self.dataset.mode == "image":
+                        self.txt_path = self.save_path / "labels" / p.stem
+                        self.results[i].save_txt(f"{self.txt_path}.txt")
 
                     if self.speed_thres != 0:
                         time.sleep(self.speed_thres / 1000)  # delay , ms
