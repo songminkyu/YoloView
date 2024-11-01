@@ -514,7 +514,7 @@ class ResultChartView(QMainWindow):
             percent_item = QTableWidgetItem(f"{percent:.2f}%")
 
             # Set color based on percentage
-            if percent > 10:
+            if percent > 20:
                 # Set font color to red
                 index_item.setForeground(QColor("red"))
                 class_item.setForeground(QColor("red"))
@@ -559,7 +559,7 @@ class ResultChartView(QMainWindow):
         # Add percentages next to or inside the bars based on bar length
         for bar, percentage in zip(bars, percentages):
             xval = bar.get_width()
-            if xval > 10:  # If bar is long, place text inside the bar
+            if xval > 20:  # If bar is long, place text inside the bar
                 ax.text(xval - 1, bar.get_y() + bar.get_height() / 2, f"{percentage:.2f}%",
                         ha="right", va="center", color="red", fontsize=8)
             else:  # Place text outside for shorter bars
