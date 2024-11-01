@@ -95,6 +95,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.save_json_button.clicked.connect(self.saveJson)
         self.ui.save_button.clicked.connect(self.saveResult)
         self.ui.save_button.setEnabled(False)
+        self.ui.save_json_button.hide()
         # --- 모델 가져오기, 결과 내보내기 --- #
 
         # --- 영상, 사진 미리보기 --- #
