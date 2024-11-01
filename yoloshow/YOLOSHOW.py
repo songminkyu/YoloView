@@ -91,6 +91,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         # --- 모델 가져오기, 결과 내보내기 --- #
         self.ui.import_button.clicked.connect(self.importModel)
         self.ui.save_status_button.clicked.connect(self.saveStatus)
+        self.ui.save_label_button.clicked.connect(self.saveLabel)
+        self.ui.save_json_button.clicked.connect(self.saveJson)
         self.ui.save_button.clicked.connect(self.saveResult)
         self.ui.save_button.setEnabled(False)
         # --- 모델 가져오기, 결과 내보내기 --- #

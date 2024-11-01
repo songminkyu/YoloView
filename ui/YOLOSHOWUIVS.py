@@ -31,28 +31,28 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1550, 844)
         MainWindow.setStyleSheet(u"QMainWindow#MainWindow{\n"
-"	border:none;\n"
-"}")
+                                 "	border:none;\n"
+                                 "}")
         self.mainWindow = QWidget(MainWindow)
         self.mainWindow.setObjectName(u"mainWindow")
         self.mainWindow.setStyleSheet(u"QWidget#mainWindow{\n"
-"	border:none;\n"
-"}")
+                                      "	border:none;\n"
+                                      "}")
         self.verticalLayout_4 = QVBoxLayout(self.mainWindow)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.mainBody = QFrame(self.mainWindow)
         self.mainBody.setObjectName(u"mainBody")
         self.mainBody.setStyleSheet(u"QFrame#mainBody{\n"
-"	border: 0px solid rgba(0, 0, 0, 40%);\n"
-"	border-bottom:none;\n"
-"	border-bottom-left-radius: 0;\n"
-"	border-bottom-right-radius: 0;\n"
-"	border-radius:30%;\n"
-"/*	\n"
-"	background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #B5FFFC, stop:0.2 #e0c3fc, stop:1 #FFDEE9);\n"
-"*/\n"
-"	background-color:white;\n"
-"}")
+                                    "	border: 0px solid rgba(0, 0, 0, 40%);\n"
+                                    "	border-bottom:none;\n"
+                                    "	border-bottom-left-radius: 0;\n"
+                                    "	border-bottom-right-radius: 0;\n"
+                                    "	border-radius:30%;\n"
+                                    "/*	\n"
+                                    "	background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #B5FFFC, stop:0.2 #e0c3fc, stop:1 #FFDEE9);\n"
+                                    "*/\n"
+                                    "	background-color:white;\n"
+                                    "}")
         self.mainBody.setFrameShape(QFrame.StyledPanel)
         self.mainBody.setFrameShadow(QFrame.Raised)
         self.verticalLayout = QVBoxLayout(self.mainBody)
@@ -70,38 +70,38 @@ class Ui_MainWindow(object):
         self.left_top.setObjectName(u"left_top")
         self.left_top.setMaximumSize(QSize(150, 16777215))
         self.left_top.setStyleSheet(u"/* QFrame#left_top{\n"
-"	border: 1px solid red;\n"
-"} */\n"
-"QPushButton#closeButton {\n"
-"    background-color: rgb(255, 59, 48); /* \u7ea2\u8272 */\n"
-"    border: none;\n"
-"    border-radius: 10px; /* \u4f7f\u6309\u94ae\u5706\u5f62 */\n"
-"    min-width: 20px;\n"
-"    max-width: 20px;\n"
-"    min-height: 20px;\n"
-"    max-height: 20px;\n"
-"}\n"
-"\n"
-"QPushButton#maximizeButton {\n"
-"    background-color: rgb(40, 205, 65); /* \u9ec4\u8272 */\n"
-"    border: none;\n"
-"    border-radius: 10px; /* \u4f7f\u6309\u94ae\u5706\u5f62 */\n"
-"    min-width: 20px;\n"
-"    max-width: 20px;\n"
-"    min-height: 20px;\n"
-"    max-height: 20px;\n"
-"}\n"
-"\n"
-"QPushButton#minimizeButton {\n"
-"    background-color: rgb(255, 214, 10); /* \u7eff\u8272 */\n"
-"    border: none;\n"
-"    border-radius: 10px; /* \u4f7f\u6309\u94ae\u5706\u5f62 */\n"
-"    min-width: 20px;\n"
-"    max-width: 20px;\n"
-"    min-height: 20px;\n"
-"    max-height: 20px;\n"
-"}\n"
-"")
+                                    "	border: 1px solid red;\n"
+                                    "} */\n"
+                                    "QPushButton#closeButton {\n"
+                                    "    background-color: rgb(255, 59, 48); /* \u7ea2\u8272 */\n"
+                                    "    border: none;\n"
+                                    "    border-radius: 10px; /* \u4f7f\u6309\u94ae\u5706\u5f62 */\n"
+                                    "    min-width: 20px;\n"
+                                    "    max-width: 20px;\n"
+                                    "    min-height: 20px;\n"
+                                    "    max-height: 20px;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QPushButton#maximizeButton {\n"
+                                    "    background-color: rgb(40, 205, 65); /* \u9ec4\u8272 */\n"
+                                    "    border: none;\n"
+                                    "    border-radius: 10px; /* \u4f7f\u6309\u94ae\u5706\u5f62 */\n"
+                                    "    min-width: 20px;\n"
+                                    "    max-width: 20px;\n"
+                                    "    min-height: 20px;\n"
+                                    "    max-height: 20px;\n"
+                                    "}\n"
+                                    "\n"
+                                    "QPushButton#minimizeButton {\n"
+                                    "    background-color: rgb(255, 214, 10); /* \u7eff\u8272 */\n"
+                                    "    border: none;\n"
+                                    "    border-radius: 10px; /* \u4f7f\u6309\u94ae\u5706\u5f62 */\n"
+                                    "    min-width: 20px;\n"
+                                    "    max-width: 20px;\n"
+                                    "    min-height: 20px;\n"
+                                    "    max-height: 20px;\n"
+                                    "}\n"
+                                    "")
         self.left_top.setFrameShape(QFrame.StyledPanel)
         self.left_top.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_2 = QHBoxLayout(self.left_top)
@@ -111,38 +111,38 @@ class Ui_MainWindow(object):
         self.closeButton = QPushButton(self.left_top)
         self.closeButton.setObjectName(u"closeButton")
         self.closeButton.setStyleSheet(u"QPushButton:hover{\n"
-"	background-color:rgb(139, 29, 31);\n"
-"	border-image: url(:/leftbox/images/newsize/close.png);\n"
-"}\n"
-"QPushButton:pressed {\n"
-"	background-color: rgb(232, 59, 35);\n"
-"}")
+                                       "	background-color:rgb(139, 29, 31);\n"
+                                       "	border-image: url(:/leftbox/images/newsize/close.png);\n"
+                                       "}\n"
+                                       "QPushButton:pressed {\n"
+                                       "	background-color: rgb(232, 59, 35);\n"
+                                       "}")
 
         self.horizontalLayout_2.addWidget(self.closeButton)
 
         self.minimizeButton = QPushButton(self.left_top)
         self.minimizeButton.setObjectName(u"minimizeButton")
         self.minimizeButton.setStyleSheet(u"QPushButton:hover{\n"
-"	background-color:rgb(139, 29, 31);\n"
-"	border-image: url(:/leftbox/images/newsize/min.png);\n"
-"}\n"
-"QPushButton:pressed {\n"
-"	background-color:  rgb(255, 214, 5);\n"
-"}\n"
-"\n"
-"")
+                                          "	background-color:rgb(139, 29, 31);\n"
+                                          "	border-image: url(:/leftbox/images/newsize/min.png);\n"
+                                          "}\n"
+                                          "QPushButton:pressed {\n"
+                                          "	background-color:  rgb(255, 214, 5);\n"
+                                          "}\n"
+                                          "\n"
+                                          "")
 
         self.horizontalLayout_2.addWidget(self.minimizeButton)
 
         self.maximizeButton = QPushButton(self.left_top)
         self.maximizeButton.setObjectName(u"maximizeButton")
         self.maximizeButton.setStyleSheet(u"QPushButton:hover{\n"
-"	background-color:rgb(139, 29, 31);\n"
-"	border-image: url(:/leftbox/images/newsize/max.png);\n"
-"}\n"
-"QPushButton:pressed {\n"
-"	background-color: rgb(40, 205, 60);\n"
-"}")
+                                          "	background-color:rgb(139, 29, 31);\n"
+                                          "	border-image: url(:/leftbox/images/newsize/max.png);\n"
+                                          "}\n"
+                                          "QPushButton:pressed {\n"
+                                          "	background-color: rgb(40, 205, 60);\n"
+                                          "}")
 
         self.horizontalLayout_2.addWidget(self.maximizeButton)
 
@@ -152,13 +152,13 @@ class Ui_MainWindow(object):
         self.right_top = QFrame(self.topbox)
         self.right_top.setObjectName(u"right_top")
         self.right_top.setStyleSheet(u"QLabel#title{\n"
-"    background-color: none;\n"
-"	font-size: 22px;\n"
-"	font-family: \"Shojumaru\";\n"
-"}\n"
-"Spacer{\n"
-"	border:none;\n"
-"}")
+                                     "    background-color: none;\n"
+                                     "	font-size: 22px;\n"
+                                     "	font-family: \"Shojumaru\";\n"
+                                     "}\n"
+                                     "Spacer{\n"
+                                     "	border:none;\n"
+                                     "}")
         self.right_top.setFrameShape(QFrame.StyledPanel)
         self.right_top.setFrameShadow(QFrame.Raised)
         self.horizontalLayout = QHBoxLayout(self.right_top)
@@ -187,15 +187,15 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.mainbox.sizePolicy().hasHeightForWidth())
         self.mainbox.setSizePolicy(sizePolicy)
         self.mainbox.setStyleSheet(u"QFrame#mainbox{\n"
-"	border: 1px solid rgba(0, 0, 0, 15%);\n"
-"   /*\n"
-"	background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #B5FFFC, stop:0.2 #e0c3fc, stop:1 #FFDEE9);\n"
-"	 */\n"
-"	border-bottom-left-radius: 0;\n"
-"	border-bottom-right-radius: 0;\n"
-"	border-radius:30%;\n"
-"}\n"
-"")
+                                   "	border: 1px solid rgba(0, 0, 0, 15%);\n"
+                                   "   /*\n"
+                                   "	background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #B5FFFC, stop:0.2 #e0c3fc, stop:1 #FFDEE9);\n"
+                                   "	 */\n"
+                                   "	border-bottom-left-radius: 0;\n"
+                                   "	border-bottom-right-radius: 0;\n"
+                                   "	border-radius:30%;\n"
+                                   "}\n"
+                                   "")
         self.mainBox = QHBoxLayout(self.mainbox)
         self.mainBox.setSpacing(0)
         self.mainBox.setObjectName(u"mainBox")
@@ -211,13 +211,13 @@ class Ui_MainWindow(object):
         self.leftBox.setMinimumSize(QSize(180, 0))
         self.leftBox.setMaximumSize(QSize(80, 16777215))
         self.leftBox.setStyleSheet(u"QFrame#leftBox  {\n"
-"    /*background-color: rgba(255, 255, 255, 80%);*/\n"
-"    border: 0px solid rgba(0, 0, 0, 40%);\n"
-"	border-top:none;\n"
-"	border-bottom:none;\n"
-"	border-left:none;\n"
-"}\n"
-"")
+                                   "    /*background-color: rgba(255, 255, 255, 80%);*/\n"
+                                   "    border: 0px solid rgba(0, 0, 0, 40%);\n"
+                                   "	border-top:none;\n"
+                                   "	border-bottom:none;\n"
+                                   "	border-left:none;\n"
+                                   "}\n"
+                                   "")
         self.leftBox.setFrameShape(QFrame.StyledPanel)
         self.leftBox.setFrameShadow(QFrame.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.leftBox)
@@ -243,10 +243,10 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.logo.sizePolicy().hasHeightForWidth())
         self.logo.setSizePolicy(sizePolicy)
         self.logo.setStyleSheet(u"image: url(:/leftbox/images/yolo.png);\n"
-"border:2px solid rgba(0,0,0,15%);\n"
-"border-radius: 15%;\n"
-"\n"
-"")
+                                "border:2px solid rgba(0,0,0,15%);\n"
+                                "border-radius: 15%;\n"
+                                "\n"
+                                "")
         self.logo.setFrameShape(QFrame.StyledPanel)
         self.logo.setFrameShadow(QFrame.Raised)
 
@@ -255,13 +255,13 @@ class Ui_MainWindow(object):
         self.top_intro = QFrame(self.leftbox_top)
         self.top_intro.setObjectName(u"top_intro")
         self.top_intro.setStyleSheet(u"QLabel{\n"
-"	color: black;\n"
-"	font: 600 italic 9pt \"Segoe UI\";\n"
-"	font-weight: bold;\n"
-"}\n"
-"QFrame{\n"
-"	border:none;\n"
-"}")
+                                     "	color: black;\n"
+                                     "	font: 600 italic 9pt \"Segoe UI\";\n"
+                                     "	font-weight: bold;\n"
+                                     "}\n"
+                                     "QFrame{\n"
+                                     "	border:none;\n"
+                                     "}")
         self.top_intro.setFrameShape(QFrame.StyledPanel)
         self.top_intro.setFrameShadow(QFrame.Raised)
         self.verticalLayout_20 = QVBoxLayout(self.top_intro)
@@ -293,72 +293,72 @@ class Ui_MainWindow(object):
         self.leftbox_bottom.setMinimumSize(QSize(0, 0))
         self.leftbox_bottom.setMaximumSize(QSize(16777215, 16777215))
         self.leftbox_bottom.setStyleSheet(u"QPushButton#src_menu{\n"
-"	background-image: url(:/leftbox/images/newsize/menu.png);\n"
-"}\n"
-"QPushButton#src_folder{\n"
-"	background-image: url(:/leftbox/images/newsize/folder.png);\n"
-"\n"
-"}\n"
-"QPushButton#src_camera{\n"
-"	background-image: url(:/leftbox/images/newsize/security-camera.png);\n"
-"}\n"
-"QPushButton#src_img{\n"
-"	background-image: url(:/leftbox/images/newsize/gallery.png);\n"
-"}\n"
-"QPushButton#src_webcam{\n"
-"	background-image: url(:/leftbox/images/newsize/photo-camera.png);\n"
-"}\n"
-"QPushButton#src_setting{\n"
-"	background-image:url(:/leftbox/images/newsize/setting.png);\n"
-"}\n"
-"QPushButton#src_singlemode{\n"
-"	background-image:url(:/leftbox/images/newsize/single.png);\n"
-"}\n"
-"QPushButton#src_result{\n"
-"	background-image:url(:/leftbox/images/newsize/statistics.png);\n"
-"}\n"
-"QPushButton#src_table{\n"
-"	background-image:url(:/leftbox/images/newsize/table.png);\n"
-"}\n"
-"QPushButton{\n"
-"	border:none;\n"
-"	text-align: center;\n"
-"	background-repeat: no-repeat;\n"
-"	background-position:"
-                        " left center;\n"
-"	border-left: 23px solid transparent;\n"
-"	color: rgba(0, 0, 0, 199);\n"
-"	font: 12pt \"Times New Roman\";\n"
-"	font-weight: bold;\n"
-"	padding-left: 15px;\n"
-"}\n"
-"QFrame#cameraBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}\n"
-"QFrame#folderBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}\n"
-"QFrame#imgBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}\n"
-"QFrame#menuBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}\n"
-"QFrame#webcamBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}\n"
-"QFrame#manageBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}\n"
-"QFrame#singleBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}\n"
-"QFrame#resultBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}\n"
-"QFrame#tableBox:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}")
+                                          "	background-image: url(:/leftbox/images/newsize/menu.png);\n"
+                                          "}\n"
+                                          "QPushButton#src_folder{\n"
+                                          "	background-image: url(:/leftbox/images/newsize/folder.png);\n"
+                                          "\n"
+                                          "}\n"
+                                          "QPushButton#src_camera{\n"
+                                          "	background-image: url(:/leftbox/images/newsize/security-camera.png);\n"
+                                          "}\n"
+                                          "QPushButton#src_img{\n"
+                                          "	background-image: url(:/leftbox/images/newsize/gallery.png);\n"
+                                          "}\n"
+                                          "QPushButton#src_webcam{\n"
+                                          "	background-image: url(:/leftbox/images/newsize/photo-camera.png);\n"
+                                          "}\n"
+                                          "QPushButton#src_setting{\n"
+                                          "	background-image:url(:/leftbox/images/newsize/setting.png);\n"
+                                          "}\n"
+                                          "QPushButton#src_singlemode{\n"
+                                          "	background-image:url(:/leftbox/images/newsize/single.png);\n"
+                                          "}\n"
+                                          "QPushButton#src_result{\n"
+                                          "	background-image:url(:/leftbox/images/newsize/statistics.png);\n"
+                                          "}\n"
+                                          "QPushButton#src_table{\n"
+                                          "	background-image:url(:/leftbox/images/newsize/table.png);\n"
+                                          "}\n"
+                                          "QPushButton{\n"
+                                          "	border:none;\n"
+                                          "	text-align: center;\n"
+                                          "	background-repeat: no-repeat;\n"
+                                          "	background-position:"
+                                          " left center;\n"
+                                          "	border-left: 23px solid transparent;\n"
+                                          "	color: rgba(0, 0, 0, 199);\n"
+                                          "	font: 12pt \"Times New Roman\";\n"
+                                          "	font-weight: bold;\n"
+                                          "	padding-left: 15px;\n"
+                                          "}\n"
+                                          "QFrame#cameraBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}\n"
+                                          "QFrame#folderBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}\n"
+                                          "QFrame#imgBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}\n"
+                                          "QFrame#menuBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}\n"
+                                          "QFrame#webcamBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}\n"
+                                          "QFrame#manageBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}\n"
+                                          "QFrame#singleBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}\n"
+                                          "QFrame#resultBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}\n"
+                                          "QFrame#tableBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
+                                          "}")
         self.leftbox_bottom.setFrameShape(QFrame.StyledPanel)
         self.leftbox_bottom.setFrameShadow(QFrame.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.leftbox_bottom)
@@ -563,34 +563,34 @@ class Ui_MainWindow(object):
         self.rightBox.setSizePolicy(sizePolicy)
         self.rightBox.setMinimumSize(QSize(0, 0))
         self.rightBox.setStyleSheet(u"QFrame#rightBox{\n"
-"	margin-top: -1px;\n"
-"	margin-right: -1px;\n"
-"	margin-bottom: -1px;\n"
-"    background-color:  #ffffff;\n"
-"    border: 1px solid rgba(0, 0, 0, 15%);\n"
-"	border-radius: 30%;\n"
-"	background-color: rgb(245, 249, 254);\n"
-"}\n"
-"QFrame#rightbox_top{\n"
-"	border:2px solid rgb(255, 255, 255);\n"
-"	border-radius:15%;\n"
-"	background-color: rgb(238, 242, 255);\n"
-"}\n"
-"\n"
-"QFrame#main_leftbox{\n"
-"	border:2px solid rgb(255, 255, 255);\n"
-"	border-radius:15%;\n"
-"	background-color: rgb(238, 242, 255);\n"
-"}\n"
-"QFrame#main_rightbox{\n"
-"	border:2px solid rgb(255, 255, 255);\n"
-"	border-radius:15%;\n"
-"	background-color: rgb(238, 242, 255);\n"
-"}\n"
-"/*QFrame#rightbox_bottom{\n"
-"	border:2px solid rgb(255, 255, 255);\n"
-"	border-radius:10%;\n"
-"}*/")
+                                    "	margin-top: -1px;\n"
+                                    "	margin-right: -1px;\n"
+                                    "	margin-bottom: -1px;\n"
+                                    "    background-color:  #ffffff;\n"
+                                    "    border: 1px solid rgba(0, 0, 0, 15%);\n"
+                                    "	border-radius: 30%;\n"
+                                    "	background-color: rgb(245, 249, 254);\n"
+                                    "}\n"
+                                    "QFrame#rightbox_top{\n"
+                                    "	border:2px solid rgb(255, 255, 255);\n"
+                                    "	border-radius:15%;\n"
+                                    "	background-color: rgb(238, 242, 255);\n"
+                                    "}\n"
+                                    "\n"
+                                    "QFrame#main_leftbox{\n"
+                                    "	border:2px solid rgb(255, 255, 255);\n"
+                                    "	border-radius:15%;\n"
+                                    "	background-color: rgb(238, 242, 255);\n"
+                                    "}\n"
+                                    "QFrame#main_rightbox{\n"
+                                    "	border:2px solid rgb(255, 255, 255);\n"
+                                    "	border-radius:15%;\n"
+                                    "	background-color: rgb(238, 242, 255);\n"
+                                    "}\n"
+                                    "/*QFrame#rightbox_bottom{\n"
+                                    "	border:2px solid rgb(255, 255, 255);\n"
+                                    "	border-radius:10%;\n"
+                                    "}*/")
         self.rightBox.setFrameShape(QFrame.StyledPanel)
         self.rightBox.setFrameShadow(QFrame.Raised)
         self.verticalLayout_5 = QVBoxLayout(self.rightBox)
@@ -637,12 +637,12 @@ class Ui_MainWindow(object):
         self.Class_QF1.setMaximumSize(QSize(125, 80))
         self.Class_QF1.setToolTipDuration(0)
         self.Class_QF1.setStyleSheet(u"QFrame#Class_QF1{\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 15px;\n"
-"background-color:qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0  #97D9E1,  stop:1   #8EC5FC);\n"
-"border: 1px outset #97D9E1;\n"
-"}\n"
-"")
+                                     "color: rgb(255, 255, 255);\n"
+                                     "border-radius: 15px;\n"
+                                     "background-color:qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0  #97D9E1,  stop:1   #8EC5FC);\n"
+                                     "border: 1px outset #97D9E1;\n"
+                                     "}\n"
+                                     "")
         self.Class_QF1.setFrameShape(QFrame.StyledPanel)
         self.Class_QF1.setFrameShadow(QFrame.Raised)
         self.verticalLayout_7 = QVBoxLayout(self.Class_QF1)
@@ -668,8 +668,8 @@ class Ui_MainWindow(object):
         font.setItalic(True)
         self.label_5.setFont(font)
         self.label_5.setStyleSheet(u"color: rgba(255, 255,255, 210);\n"
-"text-align:center;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                   "text-align:center;\n"
+                                   "font: 700 italic 16pt \"Segoe UI\";")
         self.label_5.setAlignment(Qt.AlignCenter)
         self.label_5.setIndent(0)
 
@@ -708,8 +708,8 @@ class Ui_MainWindow(object):
         font1.setUnderline(False)
         self.Class_num1.setFont(font1)
         self.Class_num1.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"font: 12pt \"Microsoft YaHei UI\";\n"
-"")
+                                      "font: 12pt \"Microsoft YaHei UI\";\n"
+                                      "")
         self.Class_num1.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_8.addWidget(self.Class_num1, 0, Qt.AlignTop)
@@ -739,12 +739,12 @@ class Ui_MainWindow(object):
         self.Target_QF1.setMaximumSize(QSize(125, 80))
         self.Target_QF1.setToolTipDuration(0)
         self.Target_QF1.setStyleSheet(u"QFrame#Target_QF1{\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 15px;\n"
-"background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 #E0C3FC,  stop:1  #9599E2);\n"
-"border: 1px outset #9599E2;\n"
-"}\n"
-"")
+                                      "color: rgb(255, 255, 255);\n"
+                                      "border-radius: 15px;\n"
+                                      "background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 #E0C3FC,  stop:1  #9599E2);\n"
+                                      "border: 1px outset #9599E2;\n"
+                                      "}\n"
+                                      "")
         self.Target_QF1.setFrameShape(QFrame.StyledPanel)
         self.Target_QF1.setFrameShadow(QFrame.Raised)
         self.verticalLayout_9 = QVBoxLayout(self.Target_QF1)
@@ -765,8 +765,8 @@ class Ui_MainWindow(object):
         self.label_6.setMaximumSize(QSize(16777215, 30))
         self.label_6.setFont(font)
         self.label_6.setStyleSheet(u"color: rgba(255, 255,255, 210);\n"
-"text-align:center;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                   "text-align:center;\n"
+                                   "font: 700 italic 16pt \"Segoe UI\";")
         self.label_6.setAlignment(Qt.AlignCenter)
         self.label_6.setIndent(0)
 
@@ -799,8 +799,8 @@ class Ui_MainWindow(object):
         self.Target_num1.setMaximumSize(QSize(16777215, 30))
         self.Target_num1.setFont(font1)
         self.Target_num1.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"font: 12pt \"Microsoft YaHei UI\";\n"
-"")
+                                       "font: 12pt \"Microsoft YaHei UI\";\n"
+                                       "")
         self.Target_num1.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_10.addWidget(self.Target_num1, 0, Qt.AlignTop)
@@ -830,12 +830,12 @@ class Ui_MainWindow(object):
         self.Fps_QF1.setMaximumSize(QSize(130, 80))
         self.Fps_QF1.setToolTipDuration(0)
         self.Fps_QF1.setStyleSheet(u"QFrame#Fps_QF1{\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 15px;\n"
-"background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(243, 175, 189),  stop:1 rgb(155, 118, 218));\n"
-"border: 1px outset rgb(153, 117, 219)\n"
-"}\n"
-"")
+                                   "color: rgb(255, 255, 255);\n"
+                                   "border-radius: 15px;\n"
+                                   "background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(243, 175, 189),  stop:1 rgb(155, 118, 218));\n"
+                                   "border: 1px outset rgb(153, 117, 219)\n"
+                                   "}\n"
+                                   "")
         self.Fps_QF1.setFrameShape(QFrame.StyledPanel)
         self.Fps_QF1.setFrameShadow(QFrame.Raised)
         self.verticalLayout_11 = QVBoxLayout(self.Fps_QF1)
@@ -856,8 +856,8 @@ class Ui_MainWindow(object):
         self.label_7.setMaximumSize(QSize(16777215, 30))
         self.label_7.setFont(font)
         self.label_7.setStyleSheet(u"color: rgba(255, 255,255, 210);\n"
-"text-align:center;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                   "text-align:center;\n"
+                                   "font: 700 italic 16pt \"Segoe UI\";")
         self.label_7.setMidLineWidth(-1)
         self.label_7.setAlignment(Qt.AlignCenter)
         self.label_7.setWordWrap(False)
@@ -892,8 +892,8 @@ class Ui_MainWindow(object):
         self.fps_label1.setMaximumSize(QSize(16777215, 30))
         self.fps_label1.setFont(font1)
         self.fps_label1.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"font: 12pt \"Microsoft YaHei UI\";\n"
-"")
+                                      "font: 12pt \"Microsoft YaHei UI\";\n"
+                                      "")
         self.fps_label1.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_12.addWidget(self.fps_label1, 0, Qt.AlignTop)
@@ -923,12 +923,12 @@ class Ui_MainWindow(object):
         self.Model_QF1.setMaximumSize(QSize(125, 80))
         self.Model_QF1.setToolTipDuration(0)
         self.Model_QF1.setStyleSheet(u"QFrame#Model_QF1{\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 15px;\n"
-"background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(162, 129, 247),  stop:1 rgb(119, 111, 252));\n"
-"border: 1px outset rgb(98, 91, 213);\n"
-"}\n"
-"")
+                                     "color: rgb(255, 255, 255);\n"
+                                     "border-radius: 15px;\n"
+                                     "background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(162, 129, 247),  stop:1 rgb(119, 111, 252));\n"
+                                     "border: 1px outset rgb(98, 91, 213);\n"
+                                     "}\n"
+                                     "")
         self.Model_QF1.setFrameShape(QFrame.StyledPanel)
         self.Model_QF1.setFrameShadow(QFrame.Raised)
         self.verticalLayout_13 = QVBoxLayout(self.Model_QF1)
@@ -949,8 +949,8 @@ class Ui_MainWindow(object):
         self.label_8.setMaximumSize(QSize(16777215, 30))
         self.label_8.setFont(font)
         self.label_8.setStyleSheet(u"color: rgba(255, 255,255, 210);\n"
-"text-align:center;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                   "text-align:center;\n"
+                                   "font: 700 italic 16pt \"Segoe UI\";")
         self.label_8.setMidLineWidth(-1)
         self.label_8.setAlignment(Qt.AlignCenter)
         self.label_8.setWordWrap(False)
@@ -985,8 +985,8 @@ class Ui_MainWindow(object):
         self.Model_label1.setMaximumSize(QSize(16777215, 30))
         self.Model_label1.setFont(font1)
         self.Model_label1.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"font: 12pt \"Microsoft YaHei UI\";\n"
-"")
+                                        "font: 12pt \"Microsoft YaHei UI\";\n"
+                                        "")
         self.Model_label1.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.Model_label1, 0, Qt.AlignTop)
@@ -1028,12 +1028,12 @@ class Ui_MainWindow(object):
         self.Class_QF2.setMaximumSize(QSize(125, 80))
         self.Class_QF2.setToolTipDuration(0)
         self.Class_QF2.setStyleSheet(u"QFrame#Class_QF2{\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 15px;\n"
-"background-color:qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0  #97D9E1,  stop:1   #8EC5FC);\n"
-"border: 1px outset #97D9E1;\n"
-"}\n"
-"")
+                                     "color: rgb(255, 255, 255);\n"
+                                     "border-radius: 15px;\n"
+                                     "background-color:qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0  #97D9E1,  stop:1   #8EC5FC);\n"
+                                     "border: 1px outset #97D9E1;\n"
+                                     "}\n"
+                                     "")
         self.Class_QF2.setFrameShape(QFrame.StyledPanel)
         self.Class_QF2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_30 = QVBoxLayout(self.Class_QF2)
@@ -1054,8 +1054,8 @@ class Ui_MainWindow(object):
         self.label_12.setMaximumSize(QSize(16777215, 30))
         self.label_12.setFont(font)
         self.label_12.setStyleSheet(u"color: rgba(255, 255,255, 210);\n"
-"text-align:center;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                    "text-align:center;\n"
+                                    "font: 700 italic 16pt \"Segoe UI\";")
         self.label_12.setAlignment(Qt.AlignCenter)
         self.label_12.setIndent(0)
 
@@ -1088,8 +1088,8 @@ class Ui_MainWindow(object):
         self.Class_num2.setMaximumSize(QSize(16777215, 30))
         self.Class_num2.setFont(font1)
         self.Class_num2.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"font: 12pt \"Microsoft YaHei UI\";\n"
-"")
+                                      "font: 12pt \"Microsoft YaHei UI\";\n"
+                                      "")
         self.Class_num2.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_31.addWidget(self.Class_num2, 0, Qt.AlignTop)
@@ -1119,12 +1119,12 @@ class Ui_MainWindow(object):
         self.Target_QF2.setMaximumSize(QSize(125, 80))
         self.Target_QF2.setToolTipDuration(0)
         self.Target_QF2.setStyleSheet(u"QFrame#Target_QF2{\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 15px;\n"
-"background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 #E0C3FC,  stop:1  #9599E2);\n"
-"border: 1px outset #9599E2;\n"
-"}\n"
-"")
+                                      "color: rgb(255, 255, 255);\n"
+                                      "border-radius: 15px;\n"
+                                      "background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 #E0C3FC,  stop:1  #9599E2);\n"
+                                      "border: 1px outset #9599E2;\n"
+                                      "}\n"
+                                      "")
         self.Target_QF2.setFrameShape(QFrame.StyledPanel)
         self.Target_QF2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_24 = QVBoxLayout(self.Target_QF2)
@@ -1145,8 +1145,8 @@ class Ui_MainWindow(object):
         self.label_9.setMaximumSize(QSize(16777215, 30))
         self.label_9.setFont(font)
         self.label_9.setStyleSheet(u"color: rgba(255, 255,255, 210);\n"
-"text-align:center;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                   "text-align:center;\n"
+                                   "font: 700 italic 16pt \"Segoe UI\";")
         self.label_9.setAlignment(Qt.AlignCenter)
         self.label_9.setIndent(0)
 
@@ -1179,8 +1179,8 @@ class Ui_MainWindow(object):
         self.Target_num2.setMaximumSize(QSize(16777215, 30))
         self.Target_num2.setFont(font1)
         self.Target_num2.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"font: 12pt \"Microsoft YaHei UI\";\n"
-"")
+                                       "font: 12pt \"Microsoft YaHei UI\";\n"
+                                       "")
         self.Target_num2.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_25.addWidget(self.Target_num2, 0, Qt.AlignTop)
@@ -1210,12 +1210,12 @@ class Ui_MainWindow(object):
         self.Fps_QF2.setMaximumSize(QSize(125, 80))
         self.Fps_QF2.setToolTipDuration(0)
         self.Fps_QF2.setStyleSheet(u"QFrame#Fps_QF2{\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 15px;\n"
-"background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(243, 175, 189),  stop:1 rgb(155, 118, 218));\n"
-"border: 1px outset rgb(153, 117, 219)\n"
-"}\n"
-"")
+                                   "color: rgb(255, 255, 255);\n"
+                                   "border-radius: 15px;\n"
+                                   "background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(243, 175, 189),  stop:1 rgb(155, 118, 218));\n"
+                                   "border: 1px outset rgb(153, 117, 219)\n"
+                                   "}\n"
+                                   "")
         self.Fps_QF2.setFrameShape(QFrame.StyledPanel)
         self.Fps_QF2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_26 = QVBoxLayout(self.Fps_QF2)
@@ -1236,8 +1236,8 @@ class Ui_MainWindow(object):
         self.label_10.setMaximumSize(QSize(16777215, 30))
         self.label_10.setFont(font)
         self.label_10.setStyleSheet(u"color: rgba(255, 255,255, 210);\n"
-"text-align:center;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                    "text-align:center;\n"
+                                    "font: 700 italic 16pt \"Segoe UI\";")
         self.label_10.setMidLineWidth(-1)
         self.label_10.setAlignment(Qt.AlignCenter)
         self.label_10.setWordWrap(False)
@@ -1272,8 +1272,8 @@ class Ui_MainWindow(object):
         self.fps_label2.setMaximumSize(QSize(16777215, 30))
         self.fps_label2.setFont(font1)
         self.fps_label2.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"font: 12pt \"Microsoft YaHei UI\";\n"
-"")
+                                      "font: 12pt \"Microsoft YaHei UI\";\n"
+                                      "")
         self.fps_label2.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_27.addWidget(self.fps_label2, 0, Qt.AlignTop)
@@ -1303,12 +1303,12 @@ class Ui_MainWindow(object):
         self.Model_QF2.setMaximumSize(QSize(125, 80))
         self.Model_QF2.setToolTipDuration(0)
         self.Model_QF2.setStyleSheet(u"QFrame#Model_QF2{\n"
-"color: rgb(255, 255, 255);\n"
-"border-radius: 15px;\n"
-"background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(162, 129, 247),  stop:1 rgb(119, 111, 252));\n"
-"border: 1px outset rgb(98, 91, 213);\n"
-"}\n"
-"")
+                                     "color: rgb(255, 255, 255);\n"
+                                     "border-radius: 15px;\n"
+                                     "background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(162, 129, 247),  stop:1 rgb(119, 111, 252));\n"
+                                     "border: 1px outset rgb(98, 91, 213);\n"
+                                     "}\n"
+                                     "")
         self.Model_QF2.setFrameShape(QFrame.StyledPanel)
         self.Model_QF2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_28 = QVBoxLayout(self.Model_QF2)
@@ -1329,8 +1329,8 @@ class Ui_MainWindow(object):
         self.label_11.setMaximumSize(QSize(16777215, 30))
         self.label_11.setFont(font)
         self.label_11.setStyleSheet(u"color: rgba(255, 255,255, 210);\n"
-"text-align:center;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                    "text-align:center;\n"
+                                    "font: 700 italic 16pt \"Segoe UI\";")
         self.label_11.setMidLineWidth(-1)
         self.label_11.setAlignment(Qt.AlignCenter)
         self.label_11.setWordWrap(False)
@@ -1365,8 +1365,8 @@ class Ui_MainWindow(object):
         self.Model_label2.setMaximumSize(QSize(16777215, 30))
         self.Model_label2.setFont(font1)
         self.Model_label2.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"font: 12pt \"Microsoft YaHei UI\";\n"
-"")
+                                        "font: 12pt \"Microsoft YaHei UI\";\n"
+                                        "")
         self.Model_label2.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_29.addWidget(self.Model_label2, 0, Qt.AlignTop)
@@ -1454,13 +1454,13 @@ class Ui_MainWindow(object):
         self.run_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.run_button.setMouseTracking(True)
         self.run_button.setStyleSheet(u"QPushButton{\n"
-"background-repeat: no-repeat;\n"
-"background-position: center;\n"
-"border: none;\n"
-"}\n"
-"QPushButton:hover{\n"
-"\n"
-"}")
+                                      "background-repeat: no-repeat;\n"
+                                      "background-position: center;\n"
+                                      "border: none;\n"
+                                      "}\n"
+                                      "QPushButton:hover{\n"
+                                      "\n"
+                                      "}")
         icon = QIcon()
         icon.addFile(u":/rightbox/images/newsize/play.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.run_button.setIcon(icon)
@@ -1475,19 +1475,19 @@ class Ui_MainWindow(object):
         self.progress_bar.setMinimumSize(QSize(0, 20))
         self.progress_bar.setMaximumSize(QSize(16777215, 20))
         self.progress_bar.setStyleSheet(u"QProgressBar{ \n"
-"font: 700 10pt \"Nirmala UI\";\n"
-"color: #8EC5FC; \n"
-"text-align:center; \n"
-"border:3px solid rgb(255, 255, 255);\n"
-"border-radius: 10px; \n"
-"background-color: rgba(215, 215, 215,100);\n"
-"} \n"
-"\n"
-"QProgressBar:chunk{ \n"
-"border-radius:0px; \n"
-"background:  lightgrey;\n"
-"border-radius: 7px;\n"
-"}")
+                                        "font: 700 10pt \"Nirmala UI\";\n"
+                                        "color: #8EC5FC; \n"
+                                        "text-align:center; \n"
+                                        "border:3px solid rgb(255, 255, 255);\n"
+                                        "border-radius: 10px; \n"
+                                        "background-color: rgba(215, 215, 215,100);\n"
+                                        "} \n"
+                                        "\n"
+                                        "QProgressBar:chunk{ \n"
+                                        "border-radius:0px; \n"
+                                        "background:  lightgrey;\n"
+                                        "border-radius: 7px;\n"
+                                        "}")
         self.progress_bar.setMaximum(100)
         self.progress_bar.setValue(0)
 
@@ -1499,15 +1499,15 @@ class Ui_MainWindow(object):
         self.stop_button.setMaximumSize(QSize(16777215, 30))
         self.stop_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.stop_button.setStyleSheet(u"QPushButton{\n"
-"background-image: url(:/rightbox/images/newsize/stop.png);\n"
-"background-repeat: no-repeat;\n"
-"background-position: center;\n"
-"border: none;\n"
-"}\n"
-"\n"
-"QPushButton:hover{\n"
-"\n"
-"}")
+                                       "background-image: url(:/rightbox/images/newsize/stop.png);\n"
+                                       "background-repeat: no-repeat;\n"
+                                       "background-position: center;\n"
+                                       "border: none;\n"
+                                       "}\n"
+                                       "\n"
+                                       "QPushButton:hover{\n"
+                                       "\n"
+                                       "}")
 
         self.horizontalLayout_20.addWidget(self.stop_button)
 
@@ -1526,7 +1526,7 @@ class Ui_MainWindow(object):
         self.message_bar = QLabel(self.rightbox_bottom)
         self.message_bar.setObjectName(u"message_bar")
         self.message_bar.setStyleSheet(u"font: 700 11pt \"Segoe UI\";\n"
-"color: rgba(0, 0, 0, 140);")
+                                       "color: rgba(0, 0, 0, 140);")
 
         self.horizontalLayout_15.addWidget(self.message_bar)
 
@@ -1544,17 +1544,17 @@ class Ui_MainWindow(object):
         self.settingBox.setMinimumSize(QSize(0, 0))
         self.settingBox.setMaximumSize(QSize(0, 16777215))
         self.settingBox.setStyleSheet(u"QFrame#settingBox{\n"
-"	margin-top: -1px;\n"
-"	margin-right: -1px;\n"
-"	margin-bottom: -1px;\n"
-"    background-color:  #ffffff;\n"
-"    border: 1px solid rgba(0, 0, 0, 15%);\n"
-"	border-radius: 30%;\n"
-"	border-top-left-radius: 0;\n"
-"	border-bottom-left-radius: 0;\n"
-"	margin-left: 1px;\n"
-"	border-left:none;\n"
-"}")
+                                      "	margin-top: -1px;\n"
+                                      "	margin-right: -1px;\n"
+                                      "	margin-bottom: -1px;\n"
+                                      "    background-color:  #ffffff;\n"
+                                      "    border: 1px solid rgba(0, 0, 0, 15%);\n"
+                                      "	border-radius: 30%;\n"
+                                      "	border-top-left-radius: 0;\n"
+                                      "	border-bottom-left-radius: 0;\n"
+                                      "	margin-left: 1px;\n"
+                                      "	border-left:none;\n"
+                                      "}")
         self.settingBox.setFrameShape(QFrame.StyledPanel)
         self.settingBox.setFrameShadow(QFrame.Raised)
         self.verticalLayout_6 = QVBoxLayout(self.settingBox)
@@ -1566,13 +1566,13 @@ class Ui_MainWindow(object):
         self.setting_page.setMinimumSize(QSize(0, 0))
         self.setting_page.setMaximumSize(QSize(330, 16777215))
         self.setting_page.setStyleSheet(u"QFrame#setting_page{\n"
-"	background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #8EC5FC, stop:1 #E0C3FC);\n"
-"	border-top-left-radius:0px;\n"
-"	border-top-right-radius:30%;\n"
-"	border-bottom-right-radius:30%;\n"
-"	border-bottom-left-radius:0px;\n"
-"	border:none;\n"
-"}")
+                                        "	background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #8EC5FC, stop:1 #E0C3FC);\n"
+                                        "	border-top-left-radius:0px;\n"
+                                        "	border-top-right-radius:30%;\n"
+                                        "	border-bottom-right-radius:30%;\n"
+                                        "	border-bottom-left-radius:0px;\n"
+                                        "	border:none;\n"
+                                        "}")
         self.setting_page.setFrameShape(QFrame.StyledPanel)
         self.setting_page.setFrameShadow(QFrame.Raised)
         self.verticalLayout_22 = QVBoxLayout(self.setting_page)
@@ -1582,9 +1582,9 @@ class Ui_MainWindow(object):
         self.label_2 = QLabel(self.setting_page)
         self.label_2.setObjectName(u"label_2")
         self.label_2.setStyleSheet(u"padding-left: 0px;\n"
-"padding-bottom: 2px;\n"
-"color: white;\n"
-"font: 700 italic 16pt \"Segoe UI\";")
+                                   "padding-bottom: 2px;\n"
+                                   "color: white;\n"
+                                   "font: 700 italic 16pt \"Segoe UI\";")
         self.label_2.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_22.addWidget(self.label_2)
@@ -1594,9 +1594,9 @@ class Ui_MainWindow(object):
         self.ModelBOX1.setMinimumSize(QSize(260, 70))
         self.ModelBOX1.setMaximumSize(QSize(260, 70))
         self.ModelBOX1.setStyleSheet(u"QWidget#ModelBOX1{\n"
-"border:2px solid rgba(255, 255, 255, 70);\n"
-"border-radius:15px;\n"
-"}")
+                                     "border:2px solid rgba(255, 255, 255, 70);\n"
+                                     "border-radius:15px;\n"
+                                     "}")
         self.verticalLayout_21 = QVBoxLayout(self.ModelBOX1)
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
         self.verticalLayout_21.setContentsMargins(9, 9, 9, 9)
@@ -1622,18 +1622,18 @@ class Ui_MainWindow(object):
         self.ToggleBotton_6.setLayoutDirection(Qt.LeftToRight)
         self.ToggleBotton_6.setAutoFillBackground(False)
         self.ToggleBotton_6.setStyleSheet(u"QPushButton{\n"
-"background-image: url(:/setting /images/newsize/model.png);\n"
-"background-repeat: no-repeat;\n"
-"background-position: left center;\n"
-"border: none;\n"
-"border-left: 20px solid transparent;\n"
-"\n"
-"text-align: left;\n"
-"padding-left: 30px;\n"
-"padding-bottom: 2px;\n"
-"color: white;\n"
-"font: 700 13pt \"Nirmala UI\";\n"
-"}")
+                                          "background-image: url(:/setting /images/newsize/model.png);\n"
+                                          "background-repeat: no-repeat;\n"
+                                          "background-position: left center;\n"
+                                          "border: none;\n"
+                                          "border-left: 20px solid transparent;\n"
+                                          "\n"
+                                          "text-align: left;\n"
+                                          "padding-left: 30px;\n"
+                                          "padding-bottom: 2px;\n"
+                                          "color: white;\n"
+                                          "font: 700 13pt \"Nirmala UI\";\n"
+                                          "}")
         self.ToggleBotton_6.setAutoDefault(False)
         self.ToggleBotton_6.setFlat(False)
 
@@ -1644,39 +1644,39 @@ class Ui_MainWindow(object):
         self.model_box1.setMinimumSize(QSize(240, 22))
         self.model_box1.setMaximumSize(QSize(240, 20))
         self.model_box1.setStyleSheet(u"ComboBox {\n"
-"            background-color: rgba(255,255,255,90);\n"
-"			color: rgba(0, 0, 0, 200);\n"
-"            border: 1px solid lightgray;\n"
-"            border-radius: 10px;\n"
-"			padding: 2px;\n"
-"			text-align: left;\n"
-"			font: 600 9pt \"Segoe UI\";\n"
-"			padding-left: 15px;\n"
-"}      \n"
-"ComboBox:on {\n"
-"            border: 1px solid #63acfb;       \n"
-" }\n"
-"\n"
-"ComboBox::drop-down {\n"
-"            width: 22px;\n"
-"            border-left: 1px solid lightgray;\n"
-"            border-top-right-radius: 15px;\n"
-"            border-bottom-right-radius: 15px; \n"
-"}\n"
-"ComboBox::drop-down:on {\n"
-"            border-left: 1px solid #63acfb;\n"
-" }\n"
-"\n"
-"ComboBox::down-arrow {\n"
-"            width: 16px;\n"
-"            height: 16px;\n"
-"            image: url(:/setting /images/newsize/box_down.png);\n"
-" }\n"
-"\n"
-"ComboBox::down-arrow:on {\n"
-"            image: url(:/setting /images/newsize/box_up.png);\n"
-" }\n"
-"")
+                                      "            background-color: rgba(255,255,255,90);\n"
+                                      "			color: rgba(0, 0, 0, 200);\n"
+                                      "            border: 1px solid lightgray;\n"
+                                      "            border-radius: 10px;\n"
+                                      "			padding: 2px;\n"
+                                      "			text-align: left;\n"
+                                      "			font: 600 9pt \"Segoe UI\";\n"
+                                      "			padding-left: 15px;\n"
+                                      "}      \n"
+                                      "ComboBox:on {\n"
+                                      "            border: 1px solid #63acfb;       \n"
+                                      " }\n"
+                                      "\n"
+                                      "ComboBox::drop-down {\n"
+                                      "            width: 22px;\n"
+                                      "            border-left: 1px solid lightgray;\n"
+                                      "            border-top-right-radius: 15px;\n"
+                                      "            border-bottom-right-radius: 15px; \n"
+                                      "}\n"
+                                      "ComboBox::drop-down:on {\n"
+                                      "            border-left: 1px solid #63acfb;\n"
+                                      " }\n"
+                                      "\n"
+                                      "ComboBox::down-arrow {\n"
+                                      "            width: 16px;\n"
+                                      "            height: 16px;\n"
+                                      "            image: url(:/setting /images/newsize/box_down.png);\n"
+                                      " }\n"
+                                      "\n"
+                                      "ComboBox::down-arrow:on {\n"
+                                      "            image: url(:/setting /images/newsize/box_up.png);\n"
+                                      " }\n"
+                                      "")
         self.model_box1.setProperty(u"minimumContentsLength", 0)
 
         self.verticalLayout_21.addWidget(self.model_box1)
@@ -1689,9 +1689,9 @@ class Ui_MainWindow(object):
         self.ModelBOX2.setMinimumSize(QSize(260, 70))
         self.ModelBOX2.setMaximumSize(QSize(260, 70))
         self.ModelBOX2.setStyleSheet(u"QWidget#ModelBOX2{\n"
-"border:2px solid rgba(255, 255, 255, 70);\n"
-"border-radius:15px;\n"
-"}")
+                                     "border:2px solid rgba(255, 255, 255, 70);\n"
+                                     "border-radius:15px;\n"
+                                     "}")
         self.verticalLayout_35 = QVBoxLayout(self.ModelBOX2)
         self.verticalLayout_35.setObjectName(u"verticalLayout_35")
         self.ToggleBotton_7 = QPushButton(self.ModelBOX2)
@@ -1708,18 +1708,18 @@ class Ui_MainWindow(object):
         self.ToggleBotton_7.setLayoutDirection(Qt.LeftToRight)
         self.ToggleBotton_7.setAutoFillBackground(False)
         self.ToggleBotton_7.setStyleSheet(u"QPushButton{\n"
-"background-image: url(:/setting /images/newsize/model.png);\n"
-"background-repeat: no-repeat;\n"
-"background-position: left center;\n"
-"border: none;\n"
-"border-left: 20px solid transparent;\n"
-"\n"
-"text-align: left;\n"
-"padding-left: 30px;\n"
-"padding-bottom: 2px;\n"
-"color: white;\n"
-"font: 700 13pt \"Nirmala UI\";\n"
-"}")
+                                          "background-image: url(:/setting /images/newsize/model.png);\n"
+                                          "background-repeat: no-repeat;\n"
+                                          "background-position: left center;\n"
+                                          "border: none;\n"
+                                          "border-left: 20px solid transparent;\n"
+                                          "\n"
+                                          "text-align: left;\n"
+                                          "padding-left: 30px;\n"
+                                          "padding-bottom: 2px;\n"
+                                          "color: white;\n"
+                                          "font: 700 13pt \"Nirmala UI\";\n"
+                                          "}")
         self.ToggleBotton_7.setAutoDefault(False)
         self.ToggleBotton_7.setFlat(False)
 
@@ -1730,39 +1730,39 @@ class Ui_MainWindow(object):
         self.model_box2.setMinimumSize(QSize(240, 22))
         self.model_box2.setMaximumSize(QSize(240, 20))
         self.model_box2.setStyleSheet(u"ComboBox {\n"
-"            background-color: rgba(255,255,255,90);\n"
-"			color: rgba(0, 0, 0, 200);\n"
-"            border: 1px solid lightgray;\n"
-"            border-radius: 10px;\n"
-"			padding: 2px;\n"
-"			text-align: left;\n"
-"			font: 600 9pt \"Segoe UI\";\n"
-"			padding-left: 15px;\n"
-"}      \n"
-"ComboBox:on {\n"
-"            border: 1px solid #63acfb;       \n"
-" }\n"
-"\n"
-"ComboBox::drop-down {\n"
-"            width: 22px;\n"
-"            border-left: 1px solid lightgray;\n"
-"            border-top-right-radius: 15px;\n"
-"            border-bottom-right-radius: 15px; \n"
-"}\n"
-"ComboBox::drop-down:on {\n"
-"            border-left: 1px solid #63acfb;\n"
-" }\n"
-"\n"
-"ComboBox::down-arrow {\n"
-"            width: 16px;\n"
-"            height: 16px;\n"
-"            image: url(:/setting /images/newsize/box_down.png);\n"
-" }\n"
-"\n"
-"ComboBox::down-arrow:on {\n"
-"            image: url(:/setting /images/newsize/box_up.png);\n"
-" }\n"
-"")
+                                      "            background-color: rgba(255,255,255,90);\n"
+                                      "			color: rgba(0, 0, 0, 200);\n"
+                                      "            border: 1px solid lightgray;\n"
+                                      "            border-radius: 10px;\n"
+                                      "			padding: 2px;\n"
+                                      "			text-align: left;\n"
+                                      "			font: 600 9pt \"Segoe UI\";\n"
+                                      "			padding-left: 15px;\n"
+                                      "}      \n"
+                                      "ComboBox:on {\n"
+                                      "            border: 1px solid #63acfb;       \n"
+                                      " }\n"
+                                      "\n"
+                                      "ComboBox::drop-down {\n"
+                                      "            width: 22px;\n"
+                                      "            border-left: 1px solid lightgray;\n"
+                                      "            border-top-right-radius: 15px;\n"
+                                      "            border-bottom-right-radius: 15px; \n"
+                                      "}\n"
+                                      "ComboBox::drop-down:on {\n"
+                                      "            border-left: 1px solid #63acfb;\n"
+                                      " }\n"
+                                      "\n"
+                                      "ComboBox::down-arrow {\n"
+                                      "            width: 16px;\n"
+                                      "            height: 16px;\n"
+                                      "            image: url(:/setting /images/newsize/box_down.png);\n"
+                                      " }\n"
+                                      "\n"
+                                      "ComboBox::down-arrow:on {\n"
+                                      "            image: url(:/setting /images/newsize/box_up.png);\n"
+                                      " }\n"
+                                      "")
         self.model_box2.setProperty(u"minimumContentsLength", 0)
 
         self.verticalLayout_35.addWidget(self.model_box2)
@@ -1775,9 +1775,9 @@ class Ui_MainWindow(object):
         self.IOU_QF.setMinimumSize(QSize(260, 75))
         self.IOU_QF.setMaximumSize(QSize(260, 75))
         self.IOU_QF.setStyleSheet(u"QFrame#IOU_QF{\n"
-"border:2px solid rgba(255, 255, 255, 70);\n"
-"border-radius:15px;\n"
-"}")
+                                  "border:2px solid rgba(255, 255, 255, 70);\n"
+                                  "border-radius:15px;\n"
+                                  "}")
         self.verticalLayout_15 = QVBoxLayout(self.IOU_QF)
         self.verticalLayout_15.setObjectName(u"verticalLayout_15")
         self.ToggleBotton_2 = QPushButton(self.IOU_QF)
@@ -1794,18 +1794,18 @@ class Ui_MainWindow(object):
         self.ToggleBotton_2.setLayoutDirection(Qt.LeftToRight)
         self.ToggleBotton_2.setAutoFillBackground(False)
         self.ToggleBotton_2.setStyleSheet(u"QPushButton{\n"
-"background-image:url(:/setting /images/newsize/IOU.png);\n"
-"background-repeat: no-repeat;\n"
-"background-position: left center;\n"
-"border: none;\n"
-"border-left: 20px solid transparent;\n"
-"\n"
-"text-align: left;\n"
-"padding-left: 40px;\n"
-"padding-bottom: 4px;\n"
-"color: white;\n"
-"font: 700 13pt \"Nirmala UI\";\n"
-"}")
+                                          "background-image:url(:/setting /images/newsize/IOU.png);\n"
+                                          "background-repeat: no-repeat;\n"
+                                          "background-position: left center;\n"
+                                          "border: none;\n"
+                                          "border-left: 20px solid transparent;\n"
+                                          "\n"
+                                          "text-align: left;\n"
+                                          "padding-left: 40px;\n"
+                                          "padding-bottom: 4px;\n"
+                                          "color: white;\n"
+                                          "font: 700 13pt \"Nirmala UI\";\n"
+                                          "}")
         self.ToggleBotton_2.setAutoDefault(False)
         self.ToggleBotton_2.setFlat(False)
 
@@ -1825,31 +1825,31 @@ class Ui_MainWindow(object):
         self.iou_spinbox.setObjectName(u"iou_spinbox")
         self.iou_spinbox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.iou_spinbox.setStyleSheet(u"QDoubleSpinBox {\n"
-"border: 0px solid lightgray;\n"
-"border-radius: 2px;\n"
-"background-color: rgba(255,255,255,90);\n"
-"font: 600 9pt \"Segoe UI\";\n"
-"}\n"
-"        \n"
-"QDoubleSpinBox::up-button {\n"
-"width: 10px;\n"
-"height: 9px;\n"
-"margin: 0px 3px 0px 0px;\n"
-"border-image: url(:/setting /images/newsize/box_up.png);\n"
-"}\n"
-"QDoubleSpinBox::up-button:pressed {\n"
-"margin-top: 1px;\n"
-"}\n"
-"            \n"
-"QDoubleSpinBox::down-button {\n"
-"width: 10px;\n"
-"height: 9px;\n"
-"margin: 0px 3px 0px 0px;\n"
-"border-image:url(:/setting /images/newsize/box_down.png);\n"
-"}\n"
-"QDoubleSpinBox::down-button:pressed {\n"
-"margin-bottom: 1px;\n"
-"}")
+                                       "border: 0px solid lightgray;\n"
+                                       "border-radius: 2px;\n"
+                                       "background-color: rgba(255,255,255,90);\n"
+                                       "font: 600 9pt \"Segoe UI\";\n"
+                                       "}\n"
+                                       "        \n"
+                                       "QDoubleSpinBox::up-button {\n"
+                                       "width: 10px;\n"
+                                       "height: 9px;\n"
+                                       "margin: 0px 3px 0px 0px;\n"
+                                       "border-image: url(:/setting /images/newsize/box_up.png);\n"
+                                       "}\n"
+                                       "QDoubleSpinBox::up-button:pressed {\n"
+                                       "margin-top: 1px;\n"
+                                       "}\n"
+                                       "            \n"
+                                       "QDoubleSpinBox::down-button {\n"
+                                       "width: 10px;\n"
+                                       "height: 9px;\n"
+                                       "margin: 0px 3px 0px 0px;\n"
+                                       "border-image:url(:/setting /images/newsize/box_down.png);\n"
+                                       "}\n"
+                                       "QDoubleSpinBox::down-button:pressed {\n"
+                                       "margin-bottom: 1px;\n"
+                                       "}")
         self.iou_spinbox.setMinimum(0.010000000000000)
         self.iou_spinbox.setMaximum(1.000000000000000)
         self.iou_spinbox.setSingleStep(0.050000000000000)
@@ -1861,23 +1861,23 @@ class Ui_MainWindow(object):
         self.iou_slider.setObjectName(u"iou_slider")
         self.iou_slider.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.iou_slider.setStyleSheet(u"QSlider::groove:horizontal {\n"
-"border: none;\n"
-"height: 10px;\n"
-"background-color: rgba(255,255,255,90);\n"
-"border-radius: 5px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal {\n"
-"width: 10px;\n"
-"margin: -1px 0px -1px 0px;\n"
-"border-radius: 3px;\n"
-"background-color: white;\n"
-"}\n"
-"\n"
-"QSlider::sub-page:horizontal {\n"
-"background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #59969b, stop:1 #04e7fa);\n"
-"border-radius: 5px;\n"
-"}")
+                                      "border: none;\n"
+                                      "height: 10px;\n"
+                                      "background-color: rgba(255,255,255,90);\n"
+                                      "border-radius: 5px;\n"
+                                      "}\n"
+                                      "\n"
+                                      "QSlider::handle:horizontal {\n"
+                                      "width: 10px;\n"
+                                      "margin: -1px 0px -1px 0px;\n"
+                                      "border-radius: 3px;\n"
+                                      "background-color: white;\n"
+                                      "}\n"
+                                      "\n"
+                                      "QSlider::sub-page:horizontal {\n"
+                                      "background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #59969b, stop:1 #04e7fa);\n"
+                                      "border-radius: 5px;\n"
+                                      "}")
         self.iou_slider.setMinimum(1)
         self.iou_slider.setMaximum(100)
         self.iou_slider.setValue(45)
@@ -1898,9 +1898,9 @@ class Ui_MainWindow(object):
         self.Conf_QF.setMinimumSize(QSize(260, 75))
         self.Conf_QF.setMaximumSize(QSize(260, 75))
         self.Conf_QF.setStyleSheet(u"QFrame#Conf_QF{\n"
-"border:2px solid rgba(255, 255, 255, 70);\n"
-"border-radius:15px;\n"
-"}")
+                                   "border:2px solid rgba(255, 255, 255, 70);\n"
+                                   "border-radius:15px;\n"
+                                   "}")
         self.verticalLayout_18 = QVBoxLayout(self.Conf_QF)
         self.verticalLayout_18.setObjectName(u"verticalLayout_18")
         self.ToggleBotton_3 = QPushButton(self.Conf_QF)
@@ -1917,18 +1917,18 @@ class Ui_MainWindow(object):
         self.ToggleBotton_3.setLayoutDirection(Qt.LeftToRight)
         self.ToggleBotton_3.setAutoFillBackground(False)
         self.ToggleBotton_3.setStyleSheet(u"QPushButton{\n"
-"background-image: url(:/setting /images/newsize/conf.png);\n"
-"background-repeat: no-repeat;\n"
-"background-position: left center;\n"
-"border: none;\n"
-"border-left: 20px solid transparent;\n"
-"\n"
-"text-align: left;\n"
-"padding-left: 40px;\n"
-"padding-bottom: 4px;\n"
-"color: white;\n"
-"font: 700 13pt \"Nirmala UI\";\n"
-"}")
+                                          "background-image: url(:/setting /images/newsize/conf.png);\n"
+                                          "background-repeat: no-repeat;\n"
+                                          "background-position: left center;\n"
+                                          "border: none;\n"
+                                          "border-left: 20px solid transparent;\n"
+                                          "\n"
+                                          "text-align: left;\n"
+                                          "padding-left: 40px;\n"
+                                          "padding-bottom: 4px;\n"
+                                          "color: white;\n"
+                                          "font: 700 13pt \"Nirmala UI\";\n"
+                                          "}")
         self.ToggleBotton_3.setAutoDefault(False)
         self.ToggleBotton_3.setFlat(False)
 
@@ -1948,31 +1948,31 @@ class Ui_MainWindow(object):
         self.conf_spinbox.setObjectName(u"conf_spinbox")
         self.conf_spinbox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.conf_spinbox.setStyleSheet(u"QDoubleSpinBox {\n"
-"border: 0px solid lightgray;\n"
-"border-radius: 2px;\n"
-"background-color: rgba(255,255,255,90);\n"
-"font: 600 9pt \"Segoe UI\";\n"
-"}\n"
-"        \n"
-"QDoubleSpinBox::up-button {\n"
-"width: 10px;\n"
-"height: 9px;\n"
-"margin: 0px 3px 0px 0px;\n"
-"border-image: url(:/setting /images/newsize/box_up.png);\n"
-"}\n"
-"QDoubleSpinBox::up-button:pressed {\n"
-"margin-top: 1px;\n"
-"}\n"
-"            \n"
-"QDoubleSpinBox::down-button {\n"
-"width: 10px;\n"
-"height: 9px;\n"
-"margin: 0px 3px 0px 0px;\n"
-"border-image: url(:/setting /images/newsize/box_down.png);\n"
-"}\n"
-"QDoubleSpinBox::down-button:pressed {\n"
-"margin-bottom: 1px;\n"
-"}")
+                                        "border: 0px solid lightgray;\n"
+                                        "border-radius: 2px;\n"
+                                        "background-color: rgba(255,255,255,90);\n"
+                                        "font: 600 9pt \"Segoe UI\";\n"
+                                        "}\n"
+                                        "        \n"
+                                        "QDoubleSpinBox::up-button {\n"
+                                        "width: 10px;\n"
+                                        "height: 9px;\n"
+                                        "margin: 0px 3px 0px 0px;\n"
+                                        "border-image: url(:/setting /images/newsize/box_up.png);\n"
+                                        "}\n"
+                                        "QDoubleSpinBox::up-button:pressed {\n"
+                                        "margin-top: 1px;\n"
+                                        "}\n"
+                                        "            \n"
+                                        "QDoubleSpinBox::down-button {\n"
+                                        "width: 10px;\n"
+                                        "height: 9px;\n"
+                                        "margin: 0px 3px 0px 0px;\n"
+                                        "border-image: url(:/setting /images/newsize/box_down.png);\n"
+                                        "}\n"
+                                        "QDoubleSpinBox::down-button:pressed {\n"
+                                        "margin-bottom: 1px;\n"
+                                        "}")
         self.conf_spinbox.setMinimum(0.010000000000000)
         self.conf_spinbox.setMaximum(1.000000000000000)
         self.conf_spinbox.setSingleStep(0.050000000000000)
@@ -1984,23 +1984,23 @@ class Ui_MainWindow(object):
         self.conf_slider.setObjectName(u"conf_slider")
         self.conf_slider.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.conf_slider.setStyleSheet(u"QSlider::groove:horizontal {\n"
-"border: none;\n"
-"height: 10px;\n"
-"background-color: rgba(255,255,255,90);\n"
-"border-radius: 5px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal {\n"
-"width: 10px;\n"
-"margin: -1px 0px -1px 0px;\n"
-"border-radius: 3px;\n"
-"background-color: white;\n"
-"}\n"
-"\n"
-"QSlider::sub-page:horizontal {\n"
-"background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #59969b, stop:1 #04e7fa);\n"
-"border-radius: 5px;\n"
-"}")
+                                       "border: none;\n"
+                                       "height: 10px;\n"
+                                       "background-color: rgba(255,255,255,90);\n"
+                                       "border-radius: 5px;\n"
+                                       "}\n"
+                                       "\n"
+                                       "QSlider::handle:horizontal {\n"
+                                       "width: 10px;\n"
+                                       "margin: -1px 0px -1px 0px;\n"
+                                       "border-radius: 3px;\n"
+                                       "background-color: white;\n"
+                                       "}\n"
+                                       "\n"
+                                       "QSlider::sub-page:horizontal {\n"
+                                       "background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #59969b, stop:1 #04e7fa);\n"
+                                       "border-radius: 5px;\n"
+                                       "}")
         self.conf_slider.setMinimum(1)
         self.conf_slider.setMaximum(100)
         self.conf_slider.setValue(25)
@@ -2021,9 +2021,9 @@ class Ui_MainWindow(object):
         self.Delay_QF.setMinimumSize(QSize(260, 75))
         self.Delay_QF.setMaximumSize(QSize(260, 75))
         self.Delay_QF.setStyleSheet(u"QFrame#Delay_QF{\n"
-"border:2px solid rgba(255, 255, 255, 70);\n"
-"border-radius:15px;\n"
-"}")
+                                    "border:2px solid rgba(255, 255, 255, 70);\n"
+                                    "border-radius:15px;\n"
+                                    "}")
         self.verticalLayout_19 = QVBoxLayout(self.Delay_QF)
         self.verticalLayout_19.setObjectName(u"verticalLayout_19")
         self.ToggleBotton_4 = QPushButton(self.Delay_QF)
@@ -2040,18 +2040,18 @@ class Ui_MainWindow(object):
         self.ToggleBotton_4.setLayoutDirection(Qt.LeftToRight)
         self.ToggleBotton_4.setAutoFillBackground(False)
         self.ToggleBotton_4.setStyleSheet(u"QPushButton{\n"
-"background-image:url(:/setting /images/newsize/delay.png);\n"
-"background-repeat: no-repeat;\n"
-"background-position: left center;\n"
-"border: none;\n"
-"border-left: 20px solid transparent;\n"
-"\n"
-"text-align: left;\n"
-"padding-left: 40px;\n"
-"padding-bottom: 2px;\n"
-"color: white;\n"
-"font: 700 13pt \"Nirmala UI\";\n"
-"}")
+                                          "background-image:url(:/setting /images/newsize/delay.png);\n"
+                                          "background-repeat: no-repeat;\n"
+                                          "background-position: left center;\n"
+                                          "border: none;\n"
+                                          "border-left: 20px solid transparent;\n"
+                                          "\n"
+                                          "text-align: left;\n"
+                                          "padding-left: 40px;\n"
+                                          "padding-bottom: 2px;\n"
+                                          "color: white;\n"
+                                          "font: 700 13pt \"Nirmala UI\";\n"
+                                          "}")
         self.ToggleBotton_4.setAutoDefault(False)
         self.ToggleBotton_4.setFlat(False)
 
@@ -2070,31 +2070,31 @@ class Ui_MainWindow(object):
         self.speed_spinbox = QSpinBox(self.frame_2)
         self.speed_spinbox.setObjectName(u"speed_spinbox")
         self.speed_spinbox.setStyleSheet(u"QSpinBox {\n"
-"border: 0px solid lightgray;\n"
-"border-radius: 2px;\n"
-"background-color: rgba(255,255,255,90);\n"
-"font: 600 9pt \"Segoe UI\";\n"
-"}\n"
-"        \n"
-"QSpinBox::up-button {\n"
-"width: 10px;\n"
-"height: 9px;\n"
-"margin: 0px 3px 0px 0px;\n"
-"border-image: url(:/setting /images/newsize/box_up.png);\n"
-"}\n"
-"QSpinBox::up-button:pressed {\n"
-"margin-top: 1px;\n"
-"}\n"
-"            \n"
-"QSpinBox::down-button {\n"
-"width: 10px;\n"
-"height: 9px;\n"
-"margin: 0px 3px 0px 0px;\n"
-"border-image:url(:/setting /images/newsize/box_down.png);\n"
-"}\n"
-"QSpinBox::down-button:pressed {\n"
-"margin-bottom: 1px;\n"
-"}")
+                                         "border: 0px solid lightgray;\n"
+                                         "border-radius: 2px;\n"
+                                         "background-color: rgba(255,255,255,90);\n"
+                                         "font: 600 9pt \"Segoe UI\";\n"
+                                         "}\n"
+                                         "        \n"
+                                         "QSpinBox::up-button {\n"
+                                         "width: 10px;\n"
+                                         "height: 9px;\n"
+                                         "margin: 0px 3px 0px 0px;\n"
+                                         "border-image: url(:/setting /images/newsize/box_up.png);\n"
+                                         "}\n"
+                                         "QSpinBox::up-button:pressed {\n"
+                                         "margin-top: 1px;\n"
+                                         "}\n"
+                                         "            \n"
+                                         "QSpinBox::down-button {\n"
+                                         "width: 10px;\n"
+                                         "height: 9px;\n"
+                                         "margin: 0px 3px 0px 0px;\n"
+                                         "border-image:url(:/setting /images/newsize/box_down.png);\n"
+                                         "}\n"
+                                         "QSpinBox::down-button:pressed {\n"
+                                         "margin-bottom: 1px;\n"
+                                         "}")
         self.speed_spinbox.setMaximum(50)
         self.speed_spinbox.setValue(10)
 
@@ -2104,23 +2104,23 @@ class Ui_MainWindow(object):
         self.speed_slider.setObjectName(u"speed_slider")
         self.speed_slider.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.speed_slider.setStyleSheet(u"QSlider::groove:horizontal {\n"
-"border: none;\n"
-"height: 10px;\n"
-"background-color: rgba(255,255,255,90);\n"
-"border-radius: 5px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal {\n"
-"width: 10px;\n"
-"margin: -1px 0px -1px 0px;\n"
-"border-radius: 3px;\n"
-"background-color: white;\n"
-"}\n"
-"\n"
-"QSlider::sub-page:horizontal {\n"
-"background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(253, 139, 133),  stop:1 rgb(248, 194, 152));\n"
-"border-radius: 5px;\n"
-"}")
+                                        "border: none;\n"
+                                        "height: 10px;\n"
+                                        "background-color: rgba(255,255,255,90);\n"
+                                        "border-radius: 5px;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QSlider::handle:horizontal {\n"
+                                        "width: 10px;\n"
+                                        "margin: -1px 0px -1px 0px;\n"
+                                        "border-radius: 3px;\n"
+                                        "background-color: white;\n"
+                                        "}\n"
+                                        "\n"
+                                        "QSlider::sub-page:horizontal {\n"
+                                        "background-color: qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(253, 139, 133),  stop:1 rgb(248, 194, 152));\n"
+                                        "border-radius: 5px;\n"
+                                        "}")
         self.speed_slider.setMaximum(50)
         self.speed_slider.setValue(10)
         self.speed_slider.setOrientation(Qt.Horizontal)
@@ -2140,9 +2140,9 @@ class Ui_MainWindow(object):
         self.LINE_THICKNESS.setMinimumSize(QSize(260, 75))
         self.LINE_THICKNESS.setMaximumSize(QSize(260, 75))
         self.LINE_THICKNESS.setStyleSheet(u"QFrame#LINE_THICKNESS{\n"
-"border:2px solid rgba(255, 255, 255, 70);\n"
-"border-radius:15px;\n"
-"}")
+                                          "border:2px solid rgba(255, 255, 255, 70);\n"
+                                          "border-radius:15px;\n"
+                                          "}")
         self.LINE_THICKNESS.setFrameShape(QFrame.StyledPanel)
         self.LINE_THICKNESS.setFrameShadow(QFrame.Raised)
         self.verticalLayout_23 = QVBoxLayout(self.LINE_THICKNESS)
@@ -2161,17 +2161,17 @@ class Ui_MainWindow(object):
         self.ToggleBotton_5.setLayoutDirection(Qt.LeftToRight)
         self.ToggleBotton_5.setAutoFillBackground(False)
         self.ToggleBotton_5.setStyleSheet(u"QPushButton{\n"
-"background-image:url(:/setting /images/newsize/line.png);\n"
-"background-repeat: no-repeat;\n"
-"background-position: left center;\n"
-"border: none;\n"
-"border-left: 20px solid transparent;\n"
-"text-align: left;\n"
-"padding-left: 40px;\n"
-"padding-bottom: 4px;\n"
-"color: white;\n"
-"font: 700 13pt \"Nirmala UI\";\n"
-"}")
+                                          "background-image:url(:/setting /images/newsize/line.png);\n"
+                                          "background-repeat: no-repeat;\n"
+                                          "background-position: left center;\n"
+                                          "border: none;\n"
+                                          "border-left: 20px solid transparent;\n"
+                                          "text-align: left;\n"
+                                          "padding-left: 40px;\n"
+                                          "padding-bottom: 4px;\n"
+                                          "color: white;\n"
+                                          "font: 700 13pt \"Nirmala UI\";\n"
+                                          "}")
         self.ToggleBotton_5.setAutoDefault(False)
         self.ToggleBotton_5.setFlat(False)
 
@@ -2191,31 +2191,31 @@ class Ui_MainWindow(object):
         self.line_spinbox.setObjectName(u"line_spinbox")
         self.line_spinbox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.line_spinbox.setStyleSheet(u"QDoubleSpinBox {\n"
-"border: 0px solid lightgray;\n"
-"border-radius: 2px;\n"
-"background-color: rgba(255,255,255,90);\n"
-"font: 600 9pt \"Segoe UI\";\n"
-"}\n"
-"        \n"
-"QDoubleSpinBox::up-button {\n"
-"width: 10px;\n"
-"height: 9px;\n"
-"margin: 0px 3px 0px 0px;\n"
-"border-image: url(:/setting /images/newsize/box_up.png);\n"
-"}\n"
-"QDoubleSpinBox::up-button:pressed {\n"
-"margin-top: 1px;\n"
-"}\n"
-"            \n"
-"QDoubleSpinBox::down-button {\n"
-"width: 10px;\n"
-"height: 9px;\n"
-"margin: 0px 3px 0px 0px;\n"
-"border-image:url(:/setting /images/newsize/box_down.png);\n"
-"}\n"
-"QDoubleSpinBox::down-button:pressed {\n"
-"margin-bottom: 1px;\n"
-"}")
+                                        "border: 0px solid lightgray;\n"
+                                        "border-radius: 2px;\n"
+                                        "background-color: rgba(255,255,255,90);\n"
+                                        "font: 600 9pt \"Segoe UI\";\n"
+                                        "}\n"
+                                        "        \n"
+                                        "QDoubleSpinBox::up-button {\n"
+                                        "width: 10px;\n"
+                                        "height: 9px;\n"
+                                        "margin: 0px 3px 0px 0px;\n"
+                                        "border-image: url(:/setting /images/newsize/box_up.png);\n"
+                                        "}\n"
+                                        "QDoubleSpinBox::up-button:pressed {\n"
+                                        "margin-top: 1px;\n"
+                                        "}\n"
+                                        "            \n"
+                                        "QDoubleSpinBox::down-button {\n"
+                                        "width: 10px;\n"
+                                        "height: 9px;\n"
+                                        "margin: 0px 3px 0px 0px;\n"
+                                        "border-image:url(:/setting /images/newsize/box_down.png);\n"
+                                        "}\n"
+                                        "QDoubleSpinBox::down-button:pressed {\n"
+                                        "margin-bottom: 1px;\n"
+                                        "}")
         self.line_spinbox.setDecimals(0)
         self.line_spinbox.setMinimum(0.000000000000000)
         self.line_spinbox.setMaximum(5.000000000000000)
@@ -2228,23 +2228,23 @@ class Ui_MainWindow(object):
         self.line_slider.setObjectName(u"line_slider")
         self.line_slider.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.line_slider.setStyleSheet(u"QSlider::groove:horizontal {\n"
-"border: none;\n"
-"height: 10px;\n"
-"background-color: rgba(255,255,255,90);\n"
-"border-radius: 5px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal {\n"
-"width: 10px;\n"
-"margin: -1px 0px -1px 0px;\n"
-"border-radius: 3px;\n"
-"background-color: white;\n"
-"}\n"
-"\n"
-"QSlider::sub-page:horizontal {\n"
-"background-color:  qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(253, 139, 133),  stop:1 rgb(248, 194, 152));\n"
-"border-radius: 5px;\n"
-"}")
+                                       "border: none;\n"
+                                       "height: 10px;\n"
+                                       "background-color: rgba(255,255,255,90);\n"
+                                       "border-radius: 5px;\n"
+                                       "}\n"
+                                       "\n"
+                                       "QSlider::handle:horizontal {\n"
+                                       "width: 10px;\n"
+                                       "margin: -1px 0px -1px 0px;\n"
+                                       "border-radius: 3px;\n"
+                                       "background-color: white;\n"
+                                       "}\n"
+                                       "\n"
+                                       "QSlider::sub-page:horizontal {\n"
+                                       "background-color:  qradialgradient(cx:0, cy:0, radius:1, fx:0.1, fy:0.1, stop:0 rgb(253, 139, 133),  stop:1 rgb(248, 194, 152));\n"
+                                       "border-radius: 5px;\n"
+                                       "}")
         self.line_slider.setMinimum(0)
         self.line_slider.setMaximum(5)
         self.line_slider.setPageStep(1)
@@ -2265,9 +2265,9 @@ class Ui_MainWindow(object):
         self.Model_Manage.setObjectName(u"Model_Manage")
         self.Model_Manage.setMinimumSize(QSize(190, 150))
         self.Model_Manage.setStyleSheet(u"QWidget#Model_Manage{\n"
-"border:2px solid rgba(255, 255, 255, 70);\n"
-"border-radius:15px;\n"
-"}")
+                                        "border:2px solid rgba(255, 255, 255, 70);\n"
+                                        "border-radius:15px;\n"
+                                        "}")
         self.Model_Manage.setFrameShape(QFrame.StyledPanel)
         self.Model_Manage.setFrameShadow(QFrame.Raised)
         self.verticalLayout_16 = QVBoxLayout(self.Model_Manage)
@@ -2285,44 +2285,92 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.import_button.sizePolicy().hasHeightForWidth())
         self.import_button.setSizePolicy(sizePolicy2)
         self.import_button.setStyleSheet(u"QPushButton{\n"
-"	background-image:url(:/setting /images/newsize/import.png);\n"
-"	background-repeat: no-repeat;\n"
-"	background-position: left center;\n"
-"	border: none;	\n"
-"	border-left: 10px solid transparent;\n"
-"	text-align: left;\n"
-"	padding-left: 40px;\n"
-"	padding-bottom: 4px;\n"
-"	color: white;\n"
-"	font: 700 13pt \"Nirmala UI\";\n"
-"}\n"
-"QPushButton:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}")
+                                         "	background-image:url(:/setting /images/newsize/import.png);\n"
+                                         "	background-repeat: no-repeat;\n"
+                                         "	background-position: left center;\n"
+                                         "	border: none;	\n"
+                                         "	border-left: 10px solid transparent;\n"
+                                         "	text-align: left;\n"
+                                         "	padding-left: 40px;\n"
+                                         "	padding-bottom: 4px;\n"
+                                         "	color: white;\n"
+                                         "	font: 700 13pt \"Nirmala UI\";\n"
+                                         "}\n"
+                                         "QPushButton:hover{\n"
+                                         "	background-color: rgba(114, 129, 214, 59);\n"
+                                         "}")
 
         self.verticalLayout_17.addWidget(self.import_button)
+
+        self.save_label_button = QCheckBox(self.frame_4)
+        self.save_label_button.setObjectName(u"save_label_button")
+        self.save_label_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.save_label_button.setStyleSheet(u"QCheckBox {\n"
+                                             "color: white;\n"
+                                             "font: 700 13pt \"Nirmala UI\";\n"
+                                             "        }\n"
+                                             "QCheckBox::indicator {\n"
+                                             "           padding-top: 1px;\n"
+                                             "            width: 40px;\n"
+                                             "            height: 30px;\n"
+                                             "            border: none;\n"
+                                             " }\n"
+                                             "\n"
+                                             "QCheckBox::indicator:unchecked {\n"
+                                             "            image: url(:/setting /images/newsize/check_no.png);\n"
+                                             "        }\n"
+                                             "\n"
+                                             "QCheckBox::indicator:checked {\n"
+                                             "            image:url(:/setting /images/newsize/check_yes.png);\n"
+                                             "        }")
+
+        self.verticalLayout_17.addWidget(self.save_label_button)
+
+        self.save_json_button = QCheckBox(self.frame_4)
+        self.save_json_button.setObjectName(u"save_json_button")
+        self.save_json_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.save_json_button.setStyleSheet(u"QCheckBox {\n"
+                                            "color: white;\n"
+                                            "font: 700 13pt \"Nirmala UI\";\n"
+                                            "        }\n"
+                                            "QCheckBox::indicator {\n"
+                                            "           padding-top: 1px;\n"
+                                            "            width: 40px;\n"
+                                            "            height: 30px;\n"
+                                            "            border: none;\n"
+                                            " }\n"
+                                            "\n"
+                                            "QCheckBox::indicator:unchecked {\n"
+                                            "            image: url(:/setting /images/newsize/check_no.png);\n"
+                                            "        }\n"
+                                            "\n"
+                                            "QCheckBox::indicator:checked {\n"
+                                            "            image:url(:/setting /images/newsize/check_yes.png);\n"
+                                            "        }")
+
+        self.verticalLayout_17.addWidget(self.save_json_button)
 
         self.save_status_button = QCheckBox(self.frame_4)
         self.save_status_button.setObjectName(u"save_status_button")
         self.save_status_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.save_status_button.setStyleSheet(u"QCheckBox {\n"
-"color: white;\n"
-"font: 700 13pt \"Nirmala UI\";\n"
-"        }\n"
-"QCheckBox::indicator {\n"
-"           padding-top: 1px;\n"
-"            width: 40px;\n"
-"            height: 30px;\n"
-"            border: none;\n"
-" }\n"
-"\n"
-"QCheckBox::indicator:unchecked {\n"
-"            image: url(:/setting /images/newsize/check_no.png);\n"
-"        }\n"
-"\n"
-"QCheckBox::indicator:checked {\n"
-"            image:url(:/setting /images/newsize/check_yes.png);\n"
-"        }")
+                                              "color: white;\n"
+                                              "font: 700 13pt \"Nirmala UI\";\n"
+                                              "        }\n"
+                                              "QCheckBox::indicator {\n"
+                                              "           padding-top: 1px;\n"
+                                              "            width: 40px;\n"
+                                              "            height: 30px;\n"
+                                              "            border: none;\n"
+                                              " }\n"
+                                              "\n"
+                                              "QCheckBox::indicator:unchecked {\n"
+                                              "            image: url(:/setting /images/newsize/check_no.png);\n"
+                                              "        }\n"
+                                              "\n"
+                                              "QCheckBox::indicator:checked {\n"
+                                              "            image:url(:/setting /images/newsize/check_yes.png);\n"
+                                              "        }")
 
         self.verticalLayout_17.addWidget(self.save_status_button)
 
@@ -2331,20 +2379,20 @@ class Ui_MainWindow(object):
         sizePolicy2.setHeightForWidth(self.save_button.sizePolicy().hasHeightForWidth())
         self.save_button.setSizePolicy(sizePolicy2)
         self.save_button.setStyleSheet(u"QPushButton{\n"
-"	background-image:url(:/setting /images/newsize/save.png);\n"
-"	background-repeat: no-repeat;\n"
-"	background-position: left center;\n"
-"	border: none;	\n"
-"	border-left: 10px solid transparent;\n"
-"	text-align: left;\n"
-"	padding-left: 40px;\n"
-"	padding-bottom: 4px;\n"
-"	color: white;\n"
-"	font: 700 13pt \"Nirmala UI\";\n"
-"}\n"
-"QPushButton:hover{\n"
-"	background-color: rgba(114, 129, 214, 59);\n"
-"}")
+                                       "	background-image:url(:/setting /images/newsize/save.png);\n"
+                                       "	background-repeat: no-repeat;\n"
+                                       "	background-position: left center;\n"
+                                       "	border: none;	\n"
+                                       "	border-left: 10px solid transparent;\n"
+                                       "	text-align: left;\n"
+                                       "	padding-left: 40px;\n"
+                                       "	padding-bottom: 4px;\n"
+                                       "	color: white;\n"
+                                       "	font: 700 13pt \"Nirmala UI\";\n"
+                                       "}\n"
+                                       "QPushButton:hover{\n"
+                                       "	background-color: rgba(114, 129, 214, 59);\n"
+                                       "}")
         self.save_button.setCheckable(False)
 
         self.verticalLayout_17.addWidget(self.save_button)
@@ -2439,6 +2487,8 @@ class Ui_MainWindow(object):
         self.ToggleBotton_4.setText(QCoreApplication.translate("MainWindow", u"Delay(ms)", None))
         self.ToggleBotton_5.setText(QCoreApplication.translate("MainWindow", u"Line Width", None))
         self.import_button.setText(QCoreApplication.translate("MainWindow", u"Import Model", None))
+        self.save_label_button.setText(QCoreApplication.translate("MainWindow", u"Save Label", None))
+        self.save_json_button.setText(QCoreApplication.translate("MainWindow", u"Save Json", None))
         self.save_status_button.setText(QCoreApplication.translate("MainWindow", u"Save Mode", None))
         self.save_button.setText(QCoreApplication.translate("MainWindow", u"Save Result", None))
     # retranslateUi

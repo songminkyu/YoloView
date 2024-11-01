@@ -606,7 +606,7 @@ class YOLOSHOWBASE:
             self.ui.track_label.hide()
 
             return False
-    # 내보내기 결과 상태
+    # 내보내기 결과 상태(탐지된 결과)
     def saveStatus(self):
         if self.ui.save_status_button.checkState() == Qt.CheckState.Unchecked:
             self.showStatus('NOTE: Run image results are not saved.')
@@ -618,6 +618,28 @@ class YOLOSHOWBASE:
             for yolo_thread in self.yolo_threads.threads_pool.values():
                 yolo_thread.save_res = True
             self.ui.save_button.setEnabled(True)
+
+    # 내보내기 결과 상태(탐지된 라벨값 위치 기록)
+    def saveLabel(self):
+        if self.ui.save_label_button.checkState() == Qt.CheckState.Unchecked:
+            self.showStatus('NOTE: Run label results are not saved.')
+            for yolo_thread in self.yolo_threads.threads_pool.values():
+                yolo_thread.save_label = False
+        elif self.ui.save_label_button.checkState() == Qt.CheckState.Checked:
+            self.showStatus('NOTE: Run label results will be saved.')
+            for yolo_thread in self.yolo_threads.threads_pool.values():
+                yolo_thread.save_label = True
+
+    # 내보내기 결과 상태(탐지된 이미지 정보 기록)
+    def saveJson(self):
+        if self.ui.save_json_button.checkState() == Qt.CheckState.Unchecked:
+            self.showStatus('NOTE: Run json results are not saved.')
+            for yolo_thread in self.yolo_threads.threads_pool.values():
+                yolo_thread.save_Json = False
+        elif self.ui.save_json_button.checkState() == Qt.CheckState.Checked:
+            self.showStatus('NOTE: Run json results will be saved.')
+            for yolo_thread in self.yolo_threads.threads_pool.values():
+                yolo_thread.save_Json = True
 
     # 테스트 결과 내보내기 --- 프로세스 코드
     def saveResultProcess(self, outdir, current_model_name, folder):

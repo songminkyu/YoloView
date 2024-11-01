@@ -46,6 +46,8 @@ class YOLOv8ObbThread(QThread,BasePredictor):
         self.stop_dtc = True  # 감지 중지
         self.is_continue = True  # continue/pause
         self.save_res = False  # Save test results
+        self.save_json = False  # Save result json
+        self.save_label = False  # Save result label
         self.iou_thres = 0.45  # iou
         self.conf_thres = 0.25  # conf
         self.speed_thres = 10  # delay, ms
