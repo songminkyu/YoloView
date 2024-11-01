@@ -182,6 +182,9 @@ class YOLOv8ObbThread(QThread,BasePredictor):
                     else:
                         percent = 100
                         self.send_progress.emit(percent)
+                elif self.is_folder:
+                    percent = (index / total_count) * 100 if total_count > 0 else 0
+                    self.send_progress.emit(percent)
                 else:
                     percent = self.progress_value
                 if count % 5 == 0 and count >= 5:  # Calculate the frame rate every 5 frames
