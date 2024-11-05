@@ -613,24 +613,39 @@ class YOLOSHOWBASE:
         # 클래스 이름 가져오기
         model = YOLO(thread.new_model_name)
         class_names = model.names.values()
+
         if mode == 'single':
             self.ui.category_box.reset_display_text()
             self.ui.category_box.clearCategories()
-            self.ui.category_box.addCategory(['all'])
+            self.ui.category_box.addCategory(['reset'])
             self.ui.category_box.addCategory(class_names)
-            self.ui.category_box.check_categories_by_dict({'all': True})
+            self.ui.category_box.check_categories_by_dict({'reset': True})
         elif mode == 'left':
             self.ui.category_box1.reset_display_text()
             self.ui.category_box1.clearCategories()
-            self.ui.category_box1.addCategory(['all'])
+            self.ui.category_box1.addCategory(['reset'])
             self.ui.category_box1.addCategory(class_names)
-            self.ui.category_box1.check_categories_by_dict({'all': True})
+            self.ui.category_box1.check_categories_by_dict({'reset': True})
         elif mode == 'right':
             self.ui.category_box2.reset_display_text()
             self.ui.category_box2.clearCategories()
-            self.ui.category_box2.addCategory(['all'])
+            self.ui.category_box2.addCategory(['reset'])
             self.ui.category_box2.addCategory(class_names)
-            self.ui.category_box2.check_categories_by_dict({'all': True})
+            self.ui.category_box2.check_categories_by_dict({'reset': True})
+        '''
+        if mode == 'single':
+            self.ui.category_box.clearCategory();
+            self.ui.category_box.addCategory(['reset'])
+            self.ui.category_box.addCategory(class_names)
+        elif mode == 'left':
+            self.ui.category_box1.clearCategory();
+            self.ui.category_box1.addCategory(['reset'])
+            self.ui.category_box1.addCategory(class_names)
+        elif mode == 'right':
+            self.ui.category_box2.clearCategory();
+            self.ui.category_box2.addCategory(['reset'])
+            self.ui.category_box2.addCategory(class_names)
+        '''
 
     # 내보내기 결과 상태(탐지된 결과)
     def saveStatus(self):
