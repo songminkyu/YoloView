@@ -250,6 +250,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         yolo_thread = self.yolo_threads.get(current_model_name)
         if yolo_thread is not None:
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box.currentText()
+            self.loadCategorys(yolo_thread,'single')
         else:
             self.yolo_threads.set(current_model_name, MODEL_THREAD_CLASSES[current_model_name]())
             self.initModel(yoloname=current_model_name)

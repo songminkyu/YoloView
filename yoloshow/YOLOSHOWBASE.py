@@ -31,6 +31,7 @@ from yolocode.YOLOv8SegThread import YOLOv8SegThread
 from yolocode.RTDETRThread import RTDETRThread
 from yolocode.YOLOv8PoseThread import YOLOv8PoseThread
 from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
+from ultralytics import YOLO
 
 GLOBAL_WINDOW_STATE = True
 
@@ -115,6 +116,8 @@ class YOLOSHOWBASE:
         thread.send_target_num.connect(lambda x: self.ui.Target_num.setText(str(x)))
         thread.send_result_picture.connect(lambda x: self.setResultStatistic(x))
         thread.send_result_table.connect(lambda x,y: self.setTableResult(x,y))
+
+        self.loadCategorys(thread, 'single')
 
     def updateTrackMode(self, thread):
         thread.track_mode = True if self.ui.track_box.currentText() == "On" else False
@@ -606,6 +609,29 @@ class YOLOSHOWBASE:
             self.ui.track_label.hide()
 
             return False
+    def loadCategorys(self, thread, mode):
+        # 클래스 이름 가져오기
+        model = YOLO(thread.new_model_name)
+        class_names = model.names.values()
+        if mode == 'single':
+            self.ui.category_box.reset_display_text()
+            self.ui.category_box.clearCategories()
+            self.ui.category_box.addCategory(['all'])
+            self.ui.category_box.addCategory(class_names)
+            self.ui.category_box.check_categories_by_dict({'all': True})
+        elif mode == 'left':
+            self.ui.category_box1.reset_display_text()
+            self.ui.category_box1.clearCategories()
+            self.ui.category_box1.addCategory(['all'])
+            self.ui.category_box1.addCategory(class_names)
+            self.ui.category_box1.check_categories_by_dict({'all': True})
+        elif mode == 'right':
+            self.ui.category_box2.reset_display_text()
+            self.ui.category_box2.clearCategories()
+            self.ui.category_box2.addCategory(['all'])
+            self.ui.category_box2.addCategory(class_names)
+            self.ui.category_box2.check_categories_by_dict({'all': True})
+
     # 내보내기 결과 상태(탐지된 결과)
     def saveStatus(self):
         if self.ui.save_status_button.checkState() == Qt.CheckState.Unchecked:

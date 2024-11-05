@@ -9,7 +9,7 @@ class MultiSelectComboBox(ComboBox):
         # Placeholder text for the ComboBox
         self.addItem("Select categories...")
 
-        self.selected_items = []
+        self.selected_items = list()
 
         # Container for checkboxes with scrolling capability
         self.checkbox_container = QWidget(self)
@@ -82,10 +82,10 @@ class MultiSelectComboBox(ComboBox):
         self.checkbox_container.setFixedWidth(self.width())  # Match the ComboBox width
 
     def addCategory(self, categories):
-        # Add checkboxes for each category
+        # Add checkboxes for new categories only
         for category in categories:
-            checkbox = QCheckBox(category, self.inner_widget)  # or self.checkbox_container for non-scrollable
-            checkbox.stateChanged.connect(self.update_display)  # Ensure connection
+            checkbox = QCheckBox(category, self.inner_widget)
+            checkbox.stateChanged.connect(self.update_display)
             self.checkbox_layout.addWidget(checkbox)
 
     def removeCategory(self, category):
@@ -125,18 +125,38 @@ class MultiSelectComboBox(ComboBox):
         self.checkbox_container.show()
 
     def update_display(self):
-        # Collect selected items from checked checkboxes
-        self.selected_items = [
+        # Collect selected items from checked checkboxes, removing duplicates
+        self.selected_items = list({
             checkbox.text()
             for checkbox in self.inner_widget.findChildren(QCheckBox)
             if checkbox.isChecked()
-        ]
+        })
+
         # Update ComboBox display text with comma-separated selected items
         if self.selected_items:
             self.setItemText(0, ", ".join(self.selected_items))
         else:
             self.setItemText(0, "Select categories...")
 
+    def reset_display_text(self):
+        self.setItemText(0, "Select categories...")
+        self.selected_items.clear()  # Clear the current selection list
+
     def get_selected_items(self):
         """Return the list of selected items."""
         return self.selected_items
+
+    def check_categories_by_dict(self, category_dict):
+        """
+        Set the check state of each category based on the provided dictionary.
+
+        Parameters:
+        category_dict (dict): Dictionary where keys are category names and values are booleans indicating
+                              whether the category should be checked (True) or unchecked (False).
+        """
+        for checkbox in self.inner_widget.findChildren(QCheckBox):
+            # Set the check state based on the dictionary values, defaulting to False if the category isn't specified
+            checkbox.setChecked(category_dict.get(checkbox.text(), False))
+
+        # Update the display text based on the new selections
+        self.update_display()

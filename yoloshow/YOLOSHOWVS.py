@@ -188,6 +188,9 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             yolo_thread.send_fps.connect(lambda x: self.ui.fps_label1.setText(str(x)))
             yolo_thread.send_class_num.connect(lambda x: self.ui.Class_num1.setText(str(x)))
             yolo_thread.send_target_num.connect(lambda x: self.ui.Target_num1.setText(str(x)))
+
+            self.loadCategorys(yolo_thread,'left');
+
         elif yoloname.endswith("right"):
             # 오른쪽 모델 로드
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box2.currentText()
@@ -198,6 +201,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             yolo_thread.send_fps.connect(lambda x: self.ui.fps_label2.setText(str(x)))
             yolo_thread.send_class_num.connect(lambda x: self.ui.Class_num2.setText(str(x)))
             yolo_thread.send_target_num.connect(lambda x: self.ui.Target_num2.setText(str(x)))
+
+            self.loadCategorys(yolo_thread, 'right')
 
     def selectedTrackMode(self):
         # 현재 모델 가져오기
