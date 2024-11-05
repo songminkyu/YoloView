@@ -149,6 +149,9 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.showStatus("Welcome to YOLOSHOW")
         # --- MessageBar Init --- #
 
+        #self.categories = ["song", "min", "kyu", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        #self.ui.category_box.addCategory(self.categories)
+
     def initThreads(self):
         self.yolo_threads = YOLOThreadPool()
         # 현재 모델 설정
@@ -205,7 +208,6 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
         # yolov8/yolo11 이면 track 모드 UI 활성화
         if not self.model_initialized_trackmodel:
-            current_model_name = self.checkCurrentModel()
             self.showTrackStatus(self.model_name)
             self.model_initialized_trackmodel = True # Track 모드 지원 여부 1번만 체크
 
