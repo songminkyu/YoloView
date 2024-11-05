@@ -230,7 +230,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             if self.yolo_threads.get(model_name).isRunning():
                 self.stopOtherModelProcess(model_name, current_yoloname)
 
-    # 모델 다시 로드
+    # 모델 다시 로드?
     def resignModel(self, model_name):
         glo.set_value('yoloname', model_name)
         self.reloadModel()
