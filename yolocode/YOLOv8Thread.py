@@ -507,3 +507,14 @@ class YOLOv8Thread(QThread,BasePredictor):
                 cv2.polylines(self.im, [points], isClosed=False, color=(203, 224, 252), thickness=5)
 
         return log_string
+
+    def get_class_names(self, model_path):
+        # Load the YOLOv8 model
+        model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path, force_reload=True)
+
+        # Retrieve class names from the model
+        class_names = model.names  # This is a dictionary of class index to class name
+
+        # Convert dictionary values to a list of class names
+        class_names_list = [name for name in class_names.values()]
+        return class_names_list

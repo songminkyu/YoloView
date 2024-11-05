@@ -1,0 +1,142 @@
+from PySide6.QtCore import (QPoint, Qt)
+from PySide6.QtWidgets import (QVBoxLayout,QWidget,QScrollArea,QCheckBox)
+from qfluentwidgets import ComboBox, CheckBox
+
+class MultiSelectComboBox(ComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        # Placeholder text for the ComboBox
+        self.addItem("Select categories...")
+
+        self.selected_items = []
+
+        # Container for checkboxes with scrolling capability
+        self.checkbox_container = QWidget(self)
+        self.scroll_area = QScrollArea(self.checkbox_container)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFixedHeight(200)  # Set fixed height for scrolling
+
+        # Inner widget to hold checkboxes inside the scroll area
+        self.inner_widget = QWidget()
+        self.checkbox_layout = QVBoxLayout(self.inner_widget)
+
+        # Add inner widget to the scroll area
+        self.scroll_area.setWidget(self.inner_widget)
+
+        # Main layout for the checkbox container
+        layout = QVBoxLayout(self.checkbox_container)
+        layout.addWidget(self.scroll_area)
+
+        # Apply custom styling to the checkbox container
+        self.checkbox_container.setStyleSheet("""
+                  QWidget {
+                      background-color: white;                     
+                      border-radius: 8px;
+                  }
+                  QCheckBox {
+                      padding: 3px;
+                      font: 600 9pt "Segoe UI";
+                  }
+                  QCheckBox::indicator {
+                      width: 14px;
+                      height: 14px;
+                  }
+                  QCheckBox::indicator:unchecked {
+                      border: 1px solid #c0c0c0;
+                      background-color: #f9f9f9;
+                      border-radius: 3px;
+                  }
+                  QCheckBox::indicator:checked {
+                      border: 1px solid #63acfb;
+                      background-color: #63acfb;
+                      border-radius: 3px;
+                  }
+                  QScrollBar:vertical {
+                      border: none;
+                      background: #f0f0f0;
+                      width: 10px;
+                      margin: 5px 0 5px 0;
+                      border-radius: 5px;
+                  }
+                  QScrollBar::handle:vertical {
+                      background: #b0b0b0;
+                      min-height: 20px;
+                      border-radius: 5px;
+                  }
+                  QScrollBar::handle:vertical:hover {
+                      background: #a0a0a0;
+                  }
+                  QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                      background: none;
+                      height: 0px;
+                      width: 0px;
+                  }
+                  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                      background: none;
+                  }
+              """)
+
+        # Configure the checkbox container as a floating widget
+        self.checkbox_container.setWindowFlags(Qt.Popup)
+        self.checkbox_container.setFixedWidth(self.width())  # Match the ComboBox width
+
+    def addCategory(self, categories):
+        # Add checkboxes for each category
+        for category in categories:
+            checkbox = QCheckBox(category, self.inner_widget)  # or self.checkbox_container for non-scrollable
+            checkbox.stateChanged.connect(self.update_display)  # Ensure connection
+            self.checkbox_layout.addWidget(checkbox)
+
+    def removeCategory(self, category):
+        # Find the checkbox with the given text and remove it
+        for checkbox in self.inner_widget.findChildren(QCheckBox):
+            if checkbox.text() == category:
+                self.checkbox_layout.removeWidget(checkbox)
+                checkbox.deleteLater()  # Remove and delete the checkbox
+                self.update_display()  # Update display after removal
+                break
+
+    def clearCategories(self):
+        # Remove all checkboxes
+        for checkbox in self.inner_widget.findChildren(QCheckBox):
+            self.checkbox_layout.removeWidget(checkbox)
+            checkbox.deleteLater()  # Properly delete each checkbox
+
+        # Clear the selected items list and reset the ComboBox display
+        self.selected_items.clear()
+        self.setCurrentText("Select categories...")  # Reset placeholder text
+
+    def mousePressEvent(self, event):
+        # Override mouse press to toggle dropdown immediately on click
+        if self.checkbox_container.isVisible():
+            self.checkbox_container.hide()
+        else:
+            self.show_dropdown()
+        # Call the parent class's mousePressEvent to maintain ComboBox behavior
+        super().mousePressEvent(event)
+
+    def show_dropdown(self):
+        # Position and show the dropdown container
+        pos = self.mapToGlobal(QPoint(0, self.height()))
+
+        self.checkbox_container.setFixedWidth(245)
+        self.checkbox_container.move(pos)
+        self.checkbox_container.show()
+
+    def update_display(self):
+        # Collect selected items from checked checkboxes
+        self.selected_items = [
+            checkbox.text()
+            for checkbox in self.inner_widget.findChildren(QCheckBox)
+            if checkbox.isChecked()
+        ]
+        # Update ComboBox display text with comma-separated selected items
+        if self.selected_items:
+            self.setItemText(0, ", ".join(self.selected_items))
+        else:
+            self.setItemText(0, "Select categories...")
+
+    def get_selected_items(self):
+        """Return the list of selected items."""
+        return self.selected_items

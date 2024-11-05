@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QDoubleSpinBox, QFrame,
 
 from qfluentwidgets import ComboBox
 from ui.utils.UpdateFrame import DoubleClickQFrame
+from ui.utils.MultiSelectComboBox import MultiSelectComboBox
 from . import YOLOSHOWUI_rc
 
 class Ui_MainWindow(object):
@@ -1591,8 +1592,8 @@ class Ui_MainWindow(object):
 
         self.ModelBOX1 = QWidget(self.setting_page)
         self.ModelBOX1.setObjectName(u"ModelBOX1")
-        self.ModelBOX1.setMinimumSize(QSize(260, 70))
-        self.ModelBOX1.setMaximumSize(QSize(260, 70))
+        self.ModelBOX1.setMinimumSize(QSize(260, 110))
+        self.ModelBOX1.setMaximumSize(QSize(260, 110))
         self.ModelBOX1.setStyleSheet(u"QWidget#ModelBOX1{\n"
                                      "border:2px solid rgba(255, 255, 255, 70);\n"
                                      "border-radius:15px;\n"
@@ -1681,13 +1682,54 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_21.addWidget(self.model_box1)
 
+        self.category_box1 = MultiSelectComboBox(self.ModelBOX1)
+        self.category_box1.setObjectName(u"category_box")
+        self.category_box1.setMinimumSize(QSize(240, 22))
+        self.category_box1.setMaximumSize(QSize(240, 20))
+        self.category_box1.setStyleSheet(u"ComboBox {\n"
+                                        "            background-color: rgba(255,255,255,90);\n"
+                                        "			color: rgba(0, 0, 0, 200);\n"
+                                        "            border: 1px solid lightgray;\n"
+                                        "            border-radius: 10px;\n"
+                                        "			padding: 2px;\n"
+                                        "			text-align: left;\n"
+                                        "			font: 600 9pt \"Segoe UI\";\n"
+                                        "			padding-left: 15px;\n"
+                                        "}      \n"
+                                        "ComboBox:on {\n"
+                                        "            border: 1px solid #63acfb;       \n"
+                                        " }\n"
+                                        "\n"
+                                        "ComboBox::drop-down {\n"
+                                        "            width: 22px;\n"
+                                        "            border-left: 1px solid lightgray;\n"
+                                        "            border-top-right-radius: 15px;\n"
+                                        "            border-bottom-right-radius: 15px; \n"
+                                        "}\n"
+                                        "ComboBox::drop-down:on {\n"
+                                        "            border-left: 1px solid #63acfb;\n"
+                                        " }\n"
+                                        "\n"
+                                        "ComboBox::down-arrow {\n"
+                                        "            width: 16px;\n"
+                                        "            height: 16px;\n"
+                                        "            image: url(:/setting /images/newsize/box_down.png);\n"
+                                        " }\n"
+                                        "\n"
+                                        "ComboBox::down-arrow:on {\n"
+                                        "            image: url(:/setting /images/newsize/box_up.png);\n"
+                                        " }\n"
+                                        "")
+        self.category_box1.setProperty(u"minimumContentsLength", 0)
+        # 모델 생성 및 설정
+        self.verticalLayout_21.addWidget(self.category_box1)
 
         self.verticalLayout_22.addWidget(self.ModelBOX1)
 
         self.ModelBOX2 = QWidget(self.setting_page)
         self.ModelBOX2.setObjectName(u"ModelBOX2")
-        self.ModelBOX2.setMinimumSize(QSize(260, 70))
-        self.ModelBOX2.setMaximumSize(QSize(260, 70))
+        self.ModelBOX2.setMinimumSize(QSize(260, 110))
+        self.ModelBOX2.setMaximumSize(QSize(260, 110))
         self.ModelBOX2.setStyleSheet(u"QWidget#ModelBOX2{\n"
                                      "border:2px solid rgba(255, 255, 255, 70);\n"
                                      "border-radius:15px;\n"
@@ -1767,6 +1809,47 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_35.addWidget(self.model_box2)
 
+        self.category_box2 = MultiSelectComboBox(self.ModelBOX2)
+        self.category_box2.setObjectName(u"category_box")
+        self.category_box2.setMinimumSize(QSize(240, 22))
+        self.category_box2.setMaximumSize(QSize(240, 20))
+        self.category_box2.setStyleSheet(u"ComboBox {\n"
+                                         "            background-color: rgba(255,255,255,90);\n"
+                                         "			color: rgba(0, 0, 0, 200);\n"
+                                         "            border: 1px solid lightgray;\n"
+                                         "            border-radius: 10px;\n"
+                                         "			padding: 2px;\n"
+                                         "			text-align: left;\n"
+                                         "			font: 600 9pt \"Segoe UI\";\n"
+                                         "			padding-left: 15px;\n"
+                                         "}      \n"
+                                         "ComboBox:on {\n"
+                                         "            border: 1px solid #63acfb;       \n"
+                                         " }\n"
+                                         "\n"
+                                         "ComboBox::drop-down {\n"
+                                         "            width: 22px;\n"
+                                         "            border-left: 1px solid lightgray;\n"
+                                         "            border-top-right-radius: 15px;\n"
+                                         "            border-bottom-right-radius: 15px; \n"
+                                         "}\n"
+                                         "ComboBox::drop-down:on {\n"
+                                         "            border-left: 1px solid #63acfb;\n"
+                                         " }\n"
+                                         "\n"
+                                         "ComboBox::down-arrow {\n"
+                                         "            width: 16px;\n"
+                                         "            height: 16px;\n"
+                                         "            image: url(:/setting /images/newsize/box_down.png);\n"
+                                         " }\n"
+                                         "\n"
+                                         "ComboBox::down-arrow:on {\n"
+                                         "            image: url(:/setting /images/newsize/box_up.png);\n"
+                                         " }\n"
+                                         "")
+        self.category_box2.setProperty(u"minimumContentsLength", 0)
+        # 모델 생성 및 설정
+        self.verticalLayout_35.addWidget(self.category_box2)
 
         self.verticalLayout_22.addWidget(self.ModelBOX2)
 
@@ -2480,8 +2563,10 @@ class Ui_MainWindow(object):
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.ToggleBotton_6.setText(QCoreApplication.translate("MainWindow", u"Left Model ", None))
         self.model_box1.setProperty(u"placeholderText", "")
+        self.category_box1.setProperty(u"placeholderText", "")
         self.ToggleBotton_7.setText(QCoreApplication.translate("MainWindow", u"Right Model", None))
         self.model_box2.setProperty(u"placeholderText", "")
+        self.category_box2.setProperty(u"placeholderText", "")
         self.ToggleBotton_2.setText(QCoreApplication.translate("MainWindow", u"IOU", None))
         self.ToggleBotton_3.setText(QCoreApplication.translate("MainWindow", u"Confidence", None))
         self.ToggleBotton_4.setText(QCoreApplication.translate("MainWindow", u"Delay(ms)", None))
