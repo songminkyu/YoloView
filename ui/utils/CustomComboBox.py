@@ -311,8 +311,9 @@ class TristateMultiSelectComboBox(ComboBox):
                 border-radius: 3px;
             }
             QCheckBox::indicator:indeterminate {
-                background-color: #009faa;
-                border: 1px solid #009faa;
+                background-color: #DB7093;  /* Match teal color */
+                border: 1px solid #DB7093;
+                border-radius: 3px; 
             }
             QScrollBar:vertical {
                 border: none;
