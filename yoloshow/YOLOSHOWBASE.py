@@ -632,20 +632,6 @@ class YOLOSHOWBASE:
             self.ui.category_box2.addCategory(['reset category'])
             self.ui.category_box2.addCategory(class_names)
             self.ui.category_box2.check_categories_by_dict({'reset category': True})
-        '''
-        if mode == 'single':
-            self.ui.category_box.clearCategory();
-            self.ui.category_box.addCategory(['reset'])
-            self.ui.category_box.addCategory(class_names)
-        elif mode == 'left':
-            self.ui.category_box1.clearCategory();
-            self.ui.category_box1.addCategory(['reset'])
-            self.ui.category_box1.addCategory(class_names)
-        elif mode == 'right':
-            self.ui.category_box2.clearCategory();
-            self.ui.category_box2.addCategory(['reset'])
-            self.ui.category_box2.addCategory(class_names)
-        '''
 
     # 내보내기 결과 상태(탐지된 결과)
     def saveStatus(self):
