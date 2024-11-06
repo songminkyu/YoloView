@@ -125,7 +125,7 @@ class MultiSelectComboBox(ComboBox):
 
     def show_dropdown(self):
         # Position and show the dropdown container
-        pos = self.mapToGlobal(QPoint(0, self.height()))
+        pos = self.mapToGlobal(QPoint(0, self.height() + 5))
 
         self.checkbox_container.setFixedWidth(245)
         self.checkbox_container.move(pos)
