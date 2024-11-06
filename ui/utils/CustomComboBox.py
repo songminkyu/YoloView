@@ -1,6 +1,6 @@
 from PySide6.QtCore import (QPoint, Qt)
 from PySide6.QtWidgets import (QVBoxLayout,QWidget,QScrollArea,QCheckBox)
-from qfluentwidgets import ComboBox, CheckBox
+from qfluentwidgets import ComboBox
 
 class MultiSelectComboBox(ComboBox):
     def __init__(self, parent=None):
@@ -82,11 +82,18 @@ class MultiSelectComboBox(ComboBox):
         self.checkbox_container.setFixedWidth(self.width())  # Match the ComboBox width
 
     def addCategory(self, categories):
-        # Add checkboxes for new categories only
         for category in categories:
             checkbox = QCheckBox(category, self.inner_widget)
-            checkbox.stateChanged.connect(self.update_display)
+            checkbox.stateChanged.connect(lambda state, chk=checkbox: self.on_checkbox_state_changed(chk))
+
+            # If the category is 'reset', set its object name for easy retrieval
+            if category == 'reset':
+                checkbox.setObjectName('reset')
+
             self.checkbox_layout.addWidget(checkbox)
+
+        # Retrieve the reset checkbox after adding categories
+        self.reset_checkbox = self.inner_widget.findChild(QCheckBox, 'reset')
 
     def removeCategory(self, category):
         # Find the checkbox with the given text and remove it
@@ -159,6 +166,16 @@ class MultiSelectComboBox(ComboBox):
             checkbox.setChecked(category_dict.get(checkbox.text(), False))
 
         # Update the display text based on the new selections
+        self.update_display()
+
+    def on_checkbox_state_changed(self, checkbox):
+        if checkbox.text() == 'reset' and checkbox.isChecked():
+            for cb in self.inner_widget.findChildren(QCheckBox):
+                if cb.text() != 'reset':
+                    cb.setChecked(False)
+        elif checkbox.text() != 'reset' and checkbox.isChecked():
+            self.reset_checkbox.setChecked(False)
+
         self.update_display()
 
 class MultiSelectComboBox2(ComboBox):
