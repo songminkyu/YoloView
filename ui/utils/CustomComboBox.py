@@ -478,7 +478,7 @@ class TristateMultiSelectComboBox(ComboBox):
         Handle the 'Select All' checkbox click event to toggle all category checkboxes.
         """
         # Determine if we need to check or uncheck all based on current state
-        if self.select_all_checkbox.checkState() == PySide6.QtCore.Qt.CheckState.Checked:
+        if self.select_all_checkbox.checkState() == PySide6.QtCore.Qt.CheckState.Unchecked:
             should_check = False
         else:
             should_check = True
