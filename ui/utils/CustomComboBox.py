@@ -48,8 +48,8 @@ class MultiSelectComboBox(ComboBox):
                       border-radius: 3px;
                   }
                   QCheckBox::indicator:checked {
-                      border: 1px solid #63acfb;
-                      background-color: #63acfb;
+                      border: 1px solid #009faa;
+                      background-color: #009faa;
                       border-radius: 3px;
                   }
                   QScrollBar:vertical {
