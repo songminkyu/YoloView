@@ -88,16 +88,14 @@ class MultiSelectComboBox(ComboBox):
     def addCategory(self, categories):
         for category in categories:
             checkbox = QCheckBox(category, self.inner_widget)
-            checkbox.stateChanged.connect(lambda state, chk=checkbox: self.on_checkbox_state_changed(chk))
+            checkbox.stateChanged.connect(self.on_checkbox_state_changed)
 
-            # If the category is 'reset', set its object name for easy retrieval
+            # If the category is 'reset', set its object name and assign it directly
             if category == 'reset':
                 checkbox.setObjectName('reset')
+                self.reset_checkbox = checkbox  # Directly assign the reset checkbox
 
             self.checkbox_layout.addWidget(checkbox)
-
-        # Retrieve the reset checkbox after adding categories
-        self.reset_checkbox = self.inner_widget.findChild(QCheckBox, 'reset')
 
     def removeCategory(self, category):
         # Find the checkbox with the given text and remove it
@@ -117,6 +115,9 @@ class MultiSelectComboBox(ComboBox):
         # Clear the selected items list and reset the ComboBox display
         self.selected_items.clear()
         self.setCurrentText("Select categories...")  # Reset placeholder text
+
+        # Reset the reset_checkbox reference
+        self.reset_checkbox = None
 
     def mousePressEvent(self, event):
         # Override mouse press to toggle dropdown immediately on click
@@ -172,57 +173,15 @@ class MultiSelectComboBox(ComboBox):
         # Update the display text based on the new selections
         self.update_display()
 
-    def on_checkbox_state_changed(self, checkbox):
+    def on_checkbox_state_changed(self, state):
+        checkbox = self.sender()  # Get the checkbox that sent the signal
         if checkbox.text() == 'reset' and checkbox.isChecked():
             for cb in self.inner_widget.findChildren(QCheckBox):
                 if cb.text() != 'reset':
                     cb.setChecked(False)
         elif checkbox.text() != 'reset' and checkbox.isChecked():
-            self.reset_checkbox.setChecked(False)
-
-        self.update_display()
-
-class MultiSelectComboBox2(ComboBox):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        # 다중 선택된 항목을 저장할 리스트
-        self.selected_items = []
-
-        # 항목 선택 시 신호 연결
-        self.activated.connect(self.toggle_item_selection)
-
-    def addCategory(self, categories):
-        # ComboBox에 카테고리를 추가
-        self.addItems(categories)
-
-    def clearCategory(self):
-        self.clear()
-
-    def toggle_item_selection(self, index):
-        # 클릭된 항목의 텍스트 가져오기
-        item_text = self.itemText(index)
-
-        if item_text == 'reset':
-            self.selected_items.clear()
-        else:
-            # 선택된 항목을 토글
-            if item_text in self.selected_items:
-                self.selected_items.remove(item_text)
+            if self.reset_checkbox is not None:
+                self.reset_checkbox.setChecked(False)
             else:
-                self.selected_items.append(item_text)
-
-        # Placeholder 대신 버튼 텍스트에 결과 표시
+                print("Warning: reset_checkbox is None or has been deleted")
         self.update_display()
-
-    def update_display(self):
-        # 선택된 항목을 콤마로 구분된 텍스트로 표시
-        if self.selected_items:
-            result_text = ", ".join(self.selected_items)
-            self.setText(result_text)  # 버튼 텍스트에 결과 표시
-        else:
-            self.setText("Select categories...")  # 선택된 항목이 없으면 기본 텍스트로 설정
-
-    def get_selected_items(self):
-        """Return the list of selected items."""
-        return self.selected_items

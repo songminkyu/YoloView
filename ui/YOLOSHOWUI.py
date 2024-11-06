@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QDoubleSpinBox, QFrame,
 
 from qfluentwidgets import ComboBox,CheckBox
 from ui.utils.UpdateFrame import DoubleClickQFrame
-from ui.utils.CustomComboBox import MultiSelectComboBox,MultiSelectComboBox2
+from ui.utils.CustomComboBox import MultiSelectComboBox
 from . import YOLOSHOWUI_rc
 
 class Ui_MainWindow(object):
