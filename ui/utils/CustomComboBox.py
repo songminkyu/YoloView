@@ -30,52 +30,56 @@ class MultiSelectComboBox(ComboBox):
 
         # Apply custom styling to the checkbox container
         self.checkbox_container.setStyleSheet("""
-                  QWidget {
-                      background-color: white;                     
-                      border-radius: 8px;
-                  }
-                  QCheckBox {
-                      padding: 3px;
-                      font: 600 9pt "Segoe UI";
-                  }
-                  QCheckBox::indicator {
-                      width: 14px;
-                      height: 14px;
-                  }
-                  QCheckBox::indicator:unchecked {
-                      border: 1px solid #c0c0c0;
-                      background-color: #f9f9f9;
-                      border-radius: 3px;
-                  }
-                  QCheckBox::indicator:checked {
-                      border: 1px solid #009faa;
-                      background-color: #009faa;
-                      border-radius: 3px;
-                  }
-                  QScrollBar:vertical {
-                      border: none;
-                      background: #f0f0f0;
-                      width: 10px;
-                      margin: 5px 0 5px 0;
-                      border-radius: 5px;
-                  }
-                  QScrollBar::handle:vertical {
-                      background: #b0b0b0;
-                      min-height: 20px;
-                      border-radius: 5px;
-                  }
-                  QScrollBar::handle:vertical:hover {
-                      background: #a0a0a0;
-                  }
-                  QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-                      background: none;
-                      height: 0px;
-                      width: 0px;
-                  }
-                  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-                      background: none;
-                  }
-              """)
+            QWidget {
+                background-color: white;                     
+                border-radius: 8px;
+            }
+            QCheckBox {
+                padding: 3px 0px;  /* Adjust padding to make better use of space */
+                font: 600 9pt "Segoe UI";
+            }
+            QCheckBox::indicator {
+                width: 14px;
+                height: 14px;
+                margin-left: 0px;  /* Reduce left margin to make use of full width */
+            }
+            QCheckBox::indicator:unchecked {
+                border: 1px solid #c0c0c0;
+                background-color: #f9f9f9;
+                border-radius: 3px;
+            }
+            QCheckBox::indicator:checked {
+                border: 1px solid #009faa;
+                background-color: #009faa;
+                border-radius: 3px;
+            }
+            QScrollBar:vertical {
+                border: none;
+                background: #f0f0f0;
+                width: 10px;
+                margin: 0px 0 0px 0;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:vertical {
+                background: #b0b0b0;
+                min-height: 20px;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background: #a0a0a0;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                background: none;
+                height: 0px;
+                width: 0px;
+            }
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
+            }
+        """)
+        # Additionally, ensure that the layout margins are set to zero
+        self.checkbox_layout.setContentsMargins(0, 0, 0, 0)
+        self.checkbox_layout.setSpacing(0)
 
         # Configure the checkbox container as a floating widget
         self.checkbox_container.setWindowFlags(Qt.Popup)
