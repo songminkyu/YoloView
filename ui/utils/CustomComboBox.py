@@ -1,5 +1,5 @@
-from PySide6.QtCore import (QPoint, Qt)
-from PySide6.QtWidgets import (QVBoxLayout,QWidget,QScrollArea,QCheckBox)
+from PySide6.QtCore import QPoint, Qt
+from PySide6.QtWidgets import QVBoxLayout,QWidget,QScrollArea,QCheckBox,QLabel
 from qfluentwidgets import ComboBox
 
 class MultiSelectComboBox(ComboBox):
@@ -24,8 +24,19 @@ class MultiSelectComboBox(ComboBox):
         # Add inner widget to the scroll area
         self.scroll_area.setWidget(self.inner_widget)
 
+        # 선택된 항목의 개수를 표시할 QLabel 추가
+        self.count_label = QLabel("Checked: 0 개", self.checkbox_container)
+        self.count_label.setStyleSheet("""
+                    QLabel {
+                        padding: 0px;
+                        font: 600 9pt "Segoe UI";
+                    }
+                """)
+
+
         # Main layout for the checkbox container
         layout = QVBoxLayout(self.checkbox_container)
+        layout.addWidget(self.count_label)  # QLabel을 상단에 추가
         layout.addWidget(self.scroll_area)
 
         # Apply custom styling to the checkbox container
@@ -91,8 +102,8 @@ class MultiSelectComboBox(ComboBox):
             checkbox.stateChanged.connect(self.on_checkbox_state_changed)
 
             # If the category is 'reset', set its object name and assign it directly
-            if category == 'reset':
-                checkbox.setObjectName('reset')
+            if category == 'reset category':
+                checkbox.setObjectName('reset category')
                 self.reset_checkbox = checkbox  # Directly assign the reset checkbox
 
             self.checkbox_layout.addWidget(checkbox)
@@ -141,7 +152,7 @@ class MultiSelectComboBox(ComboBox):
         self.selected_items = list({
             checkbox.text()
             for checkbox in self.inner_widget.findChildren(QCheckBox)
-            if checkbox.isChecked()
+            if checkbox.isChecked() and checkbox.text() != 'reset category'
         })
 
         # Update ComboBox display text with comma-separated selected items
@@ -149,6 +160,8 @@ class MultiSelectComboBox(ComboBox):
             self.setItemText(0, ", ".join(self.selected_items))
         else:
             self.setItemText(0, "Select categories...")
+
+        self.count_label.setText(f"Checked: {len(self.selected_items)} Count")
 
     def reset_display_text(self):
         self.setItemText(0, "Select categories...")
@@ -175,11 +188,11 @@ class MultiSelectComboBox(ComboBox):
 
     def on_checkbox_state_changed(self, state):
         checkbox = self.sender()  # Get the checkbox that sent the signal
-        if checkbox.text() == 'reset' and checkbox.isChecked():
+        if checkbox.text() == 'reset category' and checkbox.isChecked():
             for cb in self.inner_widget.findChildren(QCheckBox):
-                if cb.text() != 'reset':
+                if cb.text() != 'reset category':
                     cb.setChecked(False)
-        elif checkbox.text() != 'reset' and checkbox.isChecked():
+        elif checkbox.text() != 'reset category' and checkbox.isChecked():
             if self.reset_checkbox is not None:
                 self.reset_checkbox.setChecked(False)
             else:
