@@ -149,9 +149,6 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.showStatus("Welcome to YOLOSHOW")
         # --- MessageBar Init --- #
 
-        #self.categories = ["song", "min", "kyu", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-        #self.ui.category_box.addCategory(self.categories)
-
     def initThreads(self):
         self.yolo_threads = YOLOThreadPool()
         # 현재 모델 설정
