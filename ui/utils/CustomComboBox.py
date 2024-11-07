@@ -112,7 +112,7 @@ class TristateMultiSelectComboBox(ComboBox):
         # 리스트로 카테고리 체크박스를 관리
         self.category_checkboxes = []
 
-    def addCategory(self, categories):
+    def addCategories(self, categories):
         # Update the count label
         self.categories = categories
         self.categories_count = len(categories)
@@ -124,7 +124,7 @@ class TristateMultiSelectComboBox(ComboBox):
             self.checkbox_layout.addWidget(checkbox)
             self.category_checkboxes.append(checkbox)
 
-    def removeCategory(self, category):
+    def removeCategories(self, category):
         # Find the checkbox with the given text and remove it
         for checkbox in self.category_checkboxes:
             if checkbox.text() == category:

@@ -43,6 +43,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         BasePredictor.__init__(self, cfg=DEFAULT_CFG, overrides=None, _callbacks=None)
         self.used_model_name = None  # 사용할 감지 모델의 이름
         # YOLOSHOW 인터페이스 매개 변수 설정
+        self.categories = dict()
         self.track_history = defaultdict(lambda: [])
         self.track_mode = False
         self.current_model_name = None  # The detection model name to use

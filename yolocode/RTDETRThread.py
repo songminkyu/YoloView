@@ -39,6 +39,7 @@ class RTDETRThread(QThread,BasePredictor):
         super(RTDETRThread, self).__init__()
         BasePredictor.__init__(self, cfg=DEFAULT_CFG, overrides=None, _callbacks=None)
         # YOLOSHOW 인터페이스 매개 변수 설정
+        self.categories = dict()
         self.current_model_name = None  # The detection model name to use
         self.new_model_name = None  # Models that change in real time
         self.source = None  # input source

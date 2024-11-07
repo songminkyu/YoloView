@@ -117,7 +117,7 @@ class YOLOSHOWBASE:
         thread.send_result_picture.connect(lambda x: self.setResultStatistic(x))
         thread.send_result_table.connect(lambda x,y: self.setTableResult(x,y))
 
-        self.loadCategorys(thread, 'single')
+        self.loadCategories(thread, 'single')
 
     def updateTrackMode(self, thread):
         thread.track_mode = True if self.ui.track_box.currentText() == "On" else False
@@ -609,23 +609,32 @@ class YOLOSHOWBASE:
             self.ui.track_label.hide()
 
             return False
-    def loadCategorys(self, thread, mode):
+    def loadCategories(self, yolo_thread, mode):
         # 클래스 이름 가져오기
-        model = YOLO(thread.new_model_name)
+        model = YOLO(yolo_thread.new_model_name)
         class_names = model.names
 
         if mode == 'single':
             self.ui.category_box.clearCategories()
             self.ui.category_box.reset_display_text()
-            self.ui.category_box.addCategory(class_names)
+            self.ui.category_box.addCategories(class_names)
         elif mode == 'left':
             self.ui.category_box1.clearCategories()
             self.ui.category_box1.reset_display_text()
-            self.ui.category_box1.addCategory(class_names)
+            self.ui.category_box1.addCategories(class_names)
         elif mode == 'right':
             self.ui.category_box2.clearCategories()
             self.ui.category_box2.reset_display_text()
-            self.ui.category_box2.addCategory(class_names)
+            self.ui.category_box2.addCategories(class_names)
+
+    def updateCategories(self,yolo_thread, mode):
+        # 클래스 이름 가져오기
+        if mode == 'single':
+            yolo_thread.categories = self.ui.category_box.get_selected_categories()
+        elif mode == 'left':
+            yolo_thread.categories = self.ui.category_box1.get_selected_categories()
+        elif mode == 'right':
+            yolo_thread.categories = self.ui.category_box2.get_selected_categories()
 
     # 내보내기 결과 상태(탐지된 결과)
     def saveStatus(self):
