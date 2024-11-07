@@ -247,7 +247,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         yolo_thread = self.yolo_threads.get(current_model_name)
         if yolo_thread is not None:
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box.currentText()
-            self.loadCategorys(yolo_thread,'single')
+            self.loadCategories(yolo_thread,'single')
         else:
             self.yolo_threads.set(current_model_name, MODEL_THREAD_CLASSES[current_model_name]())
             self.initModel(yoloname=current_model_name)
@@ -260,6 +260,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         yolo_thread.stop_dtc = False
         if self.ui.run_button.isChecked():
             yolo_thread.is_continue = True
+            self.updateCategories(yolo_thread,'single')
             self.yolo_threads.start_thread(yolo_name)
         else:
             yolo_thread.is_continue = False
