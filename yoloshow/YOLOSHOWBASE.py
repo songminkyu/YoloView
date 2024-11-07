@@ -613,18 +613,18 @@ class YOLOSHOWBASE:
         # 클래스 이름 가져오기
         model = YOLO(thread.new_model_name)
         class_names = model.names.values()
-
+        class_count = len(class_names)
         if mode == 'single':
-            self.ui.category_box.reset_display_text()
             self.ui.category_box.clearCategories()
+            self.ui.category_box.reset_display_text()
             self.ui.category_box.addCategory(class_names)
         elif mode == 'left':
-            self.ui.category_box1.reset_display_text()
             self.ui.category_box1.clearCategories()
+            self.ui.category_box1.reset_display_text()
             self.ui.category_box1.addCategory(class_names)
         elif mode == 'right':
-            self.ui.category_box2.reset_display_text()
             self.ui.category_box2.clearCategories()
+            self.ui.category_box2.reset_display_text()
             self.ui.category_box2.addCategory(class_names)
 
     # 내보내기 결과 상태(탐지된 결과)

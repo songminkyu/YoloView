@@ -11,7 +11,7 @@ class TristateMultiSelectComboBox(ComboBox):
         self.addItem("Select categories...")
 
         self.selected_items = []
-
+        self.categories_count = 0
         # Container for checkboxes with scrolling capability
         self.checkbox_container = QWidget(self)
         self.scroll_area = QScrollArea(self.checkbox_container)
@@ -112,6 +112,10 @@ class TristateMultiSelectComboBox(ComboBox):
         self.category_checkboxes = []
 
     def addCategory(self, categories):
+        # Update the count label
+        self.categories_count = len(categories)
+        self.count_label.setText(f"Checked: 0 / {self.categories_count}")
+
         for category in categories:
             checkbox = QCheckBox(category, self.inner_widget)
             checkbox.stateChanged.connect(self.on_checkbox_state_changed)
@@ -144,9 +148,6 @@ class TristateMultiSelectComboBox(ComboBox):
         self.select_all_checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
         self.select_all_checkbox.blockSignals(False)
 
-        # Update the count label
-        self.count_label.setText("Checked: 0")
-
     def mousePressEvent(self, event):
         # Override mouse press to toggle dropdown immediately on click
         if self.checkbox_container.isVisible():
@@ -178,7 +179,7 @@ class TristateMultiSelectComboBox(ComboBox):
         else:
             self.setItemText(0, "Select categories...")
 
-        self.count_label.setText(f"Checked: {len(self.selected_items)}")
+        self.count_label.setText(f"Checked: {len(self.selected_items)} / {self.categories_count}")
 
     def reset_display_text(self):
         self.setItemText(0, "Select categories...")
@@ -192,8 +193,6 @@ class TristateMultiSelectComboBox(ComboBox):
             checkbox.blockSignals(True)
             checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
             checkbox.blockSignals(False)
-        # Update the count label
-        self.count_label.setText("Checked: 0")
 
     def get_selected_items(self):
         """Return the list of selected items."""
