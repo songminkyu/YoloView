@@ -612,8 +612,8 @@ class YOLOSHOWBASE:
     def loadCategorys(self, thread, mode):
         # 클래스 이름 가져오기
         model = YOLO(thread.new_model_name)
-        class_names = model.names.values()
-        class_count = len(class_names)
+        class_names = model.names
+
         if mode == 'single':
             self.ui.category_box.clearCategories()
             self.ui.category_box.reset_display_text()

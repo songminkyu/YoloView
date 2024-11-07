@@ -11,6 +11,7 @@ class TristateMultiSelectComboBox(ComboBox):
         self.addItem("Select categories...")
 
         self.selected_items = []
+        self.categories = dict()
         self.categories_count = 0
         # Container for checkboxes with scrolling capability
         self.checkbox_container = QWidget(self)
@@ -113,11 +114,12 @@ class TristateMultiSelectComboBox(ComboBox):
 
     def addCategory(self, categories):
         # Update the count label
+        self.categories = categories
         self.categories_count = len(categories)
         self.count_label.setText(f"Checked: 0 / {self.categories_count}")
 
-        for category in categories:
-            checkbox = QCheckBox(category, self.inner_widget)
+        for class_name in categories.values():
+            checkbox = QCheckBox(class_name, self.inner_widget)
             checkbox.stateChanged.connect(self.on_checkbox_state_changed)
             self.checkbox_layout.addWidget(checkbox)
             self.category_checkboxes.append(checkbox)
@@ -194,9 +196,12 @@ class TristateMultiSelectComboBox(ComboBox):
             checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
             checkbox.blockSignals(False)
 
-    def get_selected_items(self):
-        """Return the list of selected items."""
-        return self.selected_items
+    def get_selected_categories(self):
+        """Return the dictionary of selected items."""
+        # Create a dictionary of selected items where value matches with categories
+        selected_categories = {key: value for key, value in self.categories.items()
+                               if any(checkbox.text() == value and checkbox.isChecked() for checkbox in self.category_checkboxes)}
+        return selected_categories
 
     def check_categories_by_dict(self, category_dict):
         """
