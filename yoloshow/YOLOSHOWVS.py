@@ -363,6 +363,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             else:
                 self.yolo_threads.set(yoloname, MODEL_THREAD_CLASSES[yoloname]())
                 self.initModel(yoloname=yoloname)
+                self.loadConfig()
+                self.showStatus(f"Change Model to {yoloname} Successfully for Left Part")
             # Common 및 Yolo 모듈 오버로드
             glo.set_value('yoloname1', yoloname)
         else:
@@ -373,6 +375,8 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             else:
                 self.yolo_threads.set(yoloname, MODEL_THREAD_CLASSES[yoloname]())
                 self.initModel(yoloname=yoloname)
+                self.loadConfig()
+                self.showStatus(f"Change Model to {yoloname} Successfully for Right Part")
             # Common 및 Yolo 모듈 오버로드
             glo.set_value('yoloname2', yoloname)
 

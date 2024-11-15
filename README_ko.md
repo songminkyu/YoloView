@@ -1,4 +1,4 @@
-# YOLOSHOW - Pyside6 기반 YOLOv5 / YOLOv7 / YOLOv8 / YOLOv9 / YOLOv10 / RTDETR GUI
+# YoloView - Pyside6 기반 -  YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / RTDETR / SAM / MobileSAM GUI
 
 ## 소개
 
@@ -12,19 +12,16 @@
 
 ## 할 일 목록
 
-- [x] `YOLOv9` 알고리즘 추가
-- [x] 사용자 인터페이스 조정(메뉴 Bar)
-- [x] 완전한 Rtsp 함수
-- [x] 인스턴스 분할 지원(`YOLOv5` 및 `YOLOv8`)
-- [x] `RT-DETR` 알고리즘 추가(`Ultralytics` repo)
-- [x] 모델 비교 모드 추가(VS 모드)
-- [x] 포즈 추정 지원(`YOLOv8`)
-- [x] Rtsp 함수에서 HTTP 프로토콜 지원(단일 모드)
-- [x] 지향형 경계 상자 지원(`YOLOv8`)
-- [x] `YOLOv10` 알고리즘 추가
-- [x] 드래그 파일 입력 지원
-- [x] 추적(Track) 및 계산 (`YOLOv8` 및 `YOLO11`)
-- [x] `YOLOv11` 기능 추가 (obb,pose,deteced,segment,track)
+- [x] `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `RT-DETR` `SAM` `MobileSAM` `FastSAM` 모델 추가
+- [x] 인스턴스 분할(Instance Segmentation) 지원 （ `YOLOv5`  `YOLOv8`  `YOLOv11` `SAM`  `MobileSAM`  `FastSAM`）
+- [x] 포즈 추정 지원 （ `YOLOv8` `YOLOv11`）
+- [x] 지향형 경계 상자 지원 ( `YOLOv8` `YOLOv11` )
+- [x] `RTSP` 함수에서 HTTP 프로토콜 지원 ( `Single` 모드)
+- [x] 모델 비교 모드 추가 (VS 모드)
+- [x] 파일 입력 드래그 지원
+- [x] `YOLO11`에 추가 기능이 있습니다. (obb,pose,deteced,segment,track)
+- [x] 추적 및 계산(`YOLOv8` 및 `YOLO11`)
+- [x] Labal 저장
 
 ## 함수
 
@@ -47,7 +44,7 @@
 
 **알림:**
 
-1. 모든 `pt` 파일에는 `yolov5` / `yolov7` / `yolov8` / `yolov9` / `yolov10` / `yolo11` /`rtdetr` 등의 이름이 지정됩니다. (예: `yolov8-test.pt`)
+1. 모든 `pt` 파일에는 `yolov5` / `yolov8` / `yolov9` / `yolov10` / `yolo11` / `rtdetr` / `sam` / `samv2` / `mobilesam` / `fastsam`. 등의 이름이 지정됩니다. (예: `yolov8-test.pt`)
 2. 분할 모드의 `pt` 파일인 경우 `yolov5n-seg` / `yolov8s-seg`를 포함하여 이름을 지정하세요. (예: `yolov8n-seg-test.pt`)
 3. 포즈 추정 모드의 `pt` 파일인 경우 `yolov8n-pose`를 포함하여 이름을 지정하세요. (예: `yolov8n-pose-test.pt`)
 4. 지향 바운딩 박스 모드의 `pt` 파일인 경우 `yolov8n-obb`를 포함하여 이름을 지정하세요. (예: `yolov8n-obb-test.pt`)

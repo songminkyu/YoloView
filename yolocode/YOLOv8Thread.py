@@ -22,7 +22,7 @@ from ultralytics.engine.predictor import BasePredictor
 from ultralytics.cfg import get_cfg, get_save_dir
 
 from utils.image_save import ImageSaver
-
+from concurrent.futures import ThreadPoolExecutor
 
 class YOLOv8Thread(QThread,BasePredictor):
     # 입출력 메시지
@@ -61,6 +61,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.progress_value = 0  # progress bar
         self.res_status = False  # result status
         self.parent_workpath = None  # parent work path
+        self.executor = ThreadPoolExecutor(max_workers=1)  # 하나의 스레드만 실행되도록 허용
 
         # YOLOv8 매개변수 설정
         self.track_model = None
@@ -89,6 +90,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.results_picture = dict()  # 결과 사진
         self.results_table = list()  # 결과표
         self.results_error = list()  # detected가 실패한 파일 결과표
+        self.file_path = None  # 파일 경로
         self.callbacks = defaultdict(list, callbacks.default_callbacks)  # add callbacks
         callbacks.add_integration_callbacks(self)
 
@@ -127,6 +129,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         # --- 이미지 및 표 결과 보내기 --- #
         self.result_picture_and_table()
 
+    @torch.no_grad()
     def detect(self, is_folder_last=False, index=0, total_count=0):
 
         # warmup model
@@ -139,6 +142,9 @@ class YOLOv8Thread(QThread,BasePredictor):
         start_time = time.time()  # used to calculate the frame rate
         while True:
             if self.stop_dtc:
+                if self.is_folder and not is_folder_last:
+                    break
+
                 self.send_msg.emit('Stop Detection')
                 # 리소스 해제
                 self.dataset.running = False  # stop flag for Thread
@@ -225,7 +231,7 @@ class YOLOv8Thread(QThread,BasePredictor):
                         "postprocess": self.dt[2].dt * 1e3 / n,
                     }
                     p, im0 = path[i], None if self.source_type.tensor else im0s[i].copy()
-                    p = Path(p)
+                    self.file_path = p = Path(p)
 
                     label_str = self.write_results(i, self.results, (p, im, im0))  # labels   /// original :s +=
 
@@ -276,6 +282,9 @@ class YOLOv8Thread(QThread,BasePredictor):
                         time.sleep(self.speed_thres / 1000)  # delay , ms
 
                 if self.is_folder and not is_folder_last:
+                    # 현재 영상이 영상인지 확인
+                    if self.file_path and self.file_path.suffix[1:] in VID_FORMATS and percent != self.progress_value:
+                        continue
                     break
 
                 if percent == self.progress_value and not self.webcam:

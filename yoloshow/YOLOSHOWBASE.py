@@ -1,8 +1,10 @@
-
+import random
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb")
+glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 "
+                            "yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb "
+                            "fastsam sam samv2")
 from utils.logger import LoggerUtils
 import re
 import socket
@@ -31,7 +33,12 @@ from yolocode.YOLOv8SegThread import YOLOv8SegThread
 from yolocode.RTDETRThread import RTDETRThread
 from yolocode.YOLOv8PoseThread import YOLOv8PoseThread
 from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
+from yolocode.FastSAMThread import FastSAMThread
+from yolocode.SAMThread import SAMThread
+from yolocode.SAMv2Thread import SAMv2Thread
 from ultralytics import YOLO
+from ultralytics import SAM
+from ultralytics import FastSAM
 
 GLOBAL_WINDOW_STATE = True
 
@@ -56,6 +63,9 @@ MODEL_THREAD_CLASSES = {
     "yolov11-seg": YOLOv8SegThread,
     "yolov11-obb": YOLOv8ObbThread,
     "yolov11-pose": YOLOv8PoseThread,
+    "fastsam": FastSAMThread,
+    "sam": SAMThread,
+    "samv2": SAMv2Thread
 }
 # 扩展MODEL_THREAD_CLASSES字典
 MODEL_NAME_DICT = list(MODEL_THREAD_CLASSES.items())
@@ -64,7 +74,7 @@ for key, value in MODEL_NAME_DICT:
     MODEL_THREAD_CLASSES[f"{key}_right"] = value
 
 ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov10", "yolov11", "yolov5-seg", "yolov8-seg", "rtdetr",
-                   "yolov8-pose", "yolov8-obb"]
+                   "yolov8-pose", "yolov8-obb","fastsam", "sam", "samv2"]
 loggertool = LoggerUtils()
 
 
@@ -486,33 +496,38 @@ class YOLOSHOWBASE:
         # 모델과 해당 조건 간의 매핑 정의
         model_conditions = {
             "yolov5": lambda name: "yolov5" in name and not self.checkSegName(name),
-            "yolov8": lambda name: "yolov8" in name and not self.checkSegName(name) and not self.checkPoseName(
-                name) and not self.checkObbName(name),
+            "yolov8": lambda name: "yolov8" in name and not any(
+                func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName]),
             "yolov9": lambda name: "yolov9" in name,
             "yolov10": lambda name: "yolov10" in name,
-            "yolov11": lambda name: "yolo11" in name and not self.checkSegName(name) and not self.checkPoseName(
-                name) and not self.checkObbName(name),
+            "yolov11": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and not any(
+                func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName]),
             "rtdetr": lambda name: "rtdetr" in name,
             "yolov5-seg": lambda name: "yolov5" in name and self.checkSegName(name),
             "yolov8-seg": lambda name: "yolov8" in name and self.checkSegName(name),
-            "yolov11-seg": lambda name: "yolo11" in name and self.checkSegName(name),
+            "yolov11-seg": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkSegName(name),
             "yolov8-pose": lambda name: "yolov8" in name and self.checkPoseName(name),
-            "yolov11-pose": lambda name: "yolo11" in name and self.checkPoseName(name),
+            "yolov11-pose": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkPoseName(name),
             "yolov8-obb": lambda name: "yolov8" in name and self.checkObbName(name),
-            "yolov11-obb": lambda name: "yolo11" in name and self.checkObbName(name)
+            "yolov11-obb": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkObbName(name),
+            "fastsam": lambda name: "fastsam" in name,
+            "samv2": lambda name: any(sub in name for sub in ["sam2", "samv2"]),
+            "sam": lambda name: "sam" in name
         }
 
         if mode:
             # VS mode
             model_name = self.model_name1 if mode == "left" else self.model_name2
+            model_name = model_name.lower()
             for yoloname, condition in model_conditions.items():
                 if condition(model_name):
                     return f"{yoloname}_{mode}"
         else:
             # Single mode
-            for model_name, condition in model_conditions.items():
-                if condition(self.model_name):
-                    return model_name
+            model_name = self.model_name.lower()
+            for yoloname, condition in model_conditions.items():
+                if condition(model_name):
+                    return yoloname
         return None
 
     # 모델이 명명 요구 사항을 충족하는지 확인
@@ -522,44 +537,31 @@ class YOLOSHOWBASE:
                 return True
         return False
 
+    def checkTaskName(self, modelname, taskname):
+        if "yolov5" in modelname:
+            return bool(re.match(f'yolo.?5.?-{taskname}.*\.pt$', modelname))
+        elif "yolov7" in modelname:
+            return bool(re.match(f'yolo.?7.?-{taskname}.*\.pt$', modelname))
+        elif "yolov8" in modelname:
+            return bool(re.match(f'yolo.?8.?-{taskname}.*\.pt$', modelname))
+        elif "yolov9" in modelname:
+            return bool(re.match(f'yolo.?9.?-{taskname}.*\.pt$', modelname))
+        elif "yolov10" in modelname:
+            return bool(re.match(f'yolo.?10.?-{taskname}.*\.pt$', modelname))
+        elif "yolo11" in modelname:
+            return bool(re.match(f'yolo.?11.?-{taskname}.*\.pt$', modelname))
+
     # Modelname의 세그먼트 이름 지정 문제 해결
     def checkSegName(self, modelname):
-        if "yolov5" in modelname:
-            return bool(re.fullmatch(r'yolov5.?-seg.*\.pt$', modelname))
-        elif "yolov8" in modelname:
-            return bool(re.fullmatch(r'yolov8.?-seg.*\.pt$', modelname))
-        elif "yolov9" in modelname:
-            return bool(re.fullmatch(r'yolov9.?-seg.*\.pt$', modelname))
-        elif "yolov10" in modelname:
-            return bool(re.fullmatch(r'yolov10.?-seg.*\.pt$', modelname))
-        elif "yolo11" in modelname:
-            return bool(re.fullmatch(r'yolo11.?-seg.*\.pt$', modelname))
+        return self.checkTaskName(modelname, "seg")
 
     # Modelname의 포즈 명명 문제 해결
     def checkPoseName(self, modelname):
-        if "yolov5" in modelname:
-            return bool(re.fullmatch(r'yolov5.?-pose.*\.pt$', modelname))
-        elif "yolov8" in modelname:
-            return bool(re.fullmatch(r'yolov8.?-pose.*\.pt$', modelname))
-        elif "yolov9" in modelname:
-            return bool(re.fullmatch(r'yolov9.?-pose.*\.pt$', modelname))
-        elif "yolov10" in modelname:
-            return bool(re.fullmatch(r'yolov10.?-pose.*\.pt$', modelname))
-        elif "yolo11" in modelname:
-            return bool(re.fullmatch(r'yolo11.?-pose.*\.pt$', modelname))
+        return self.checkTaskName(modelname, "pose")
 
     # Modelname의 포즈 명명 문제 해결
     def checkObbName(self, modelname):
-        if "yolov5" in modelname:
-            return bool(re.fullmatch(r'yolov5.?-obb.*\.pt$', modelname))
-        elif "yolov8" in modelname:
-            return bool(re.fullmatch(r'yolov8.?-obb.*\.pt$', modelname))
-        elif "yolov9" in modelname:
-            return bool(re.fullmatch(r'yolov9.?-obb.*\.pt$', modelname))
-        elif "yolov10" in modelname:
-            return bool(re.fullmatch(r'yolov10.?-obb.*\.pt$', modelname))
-        elif "yolo11" in modelname:
-            return bool(re.fullmatch(r'yolo11.?-obb.*\.pt$', modelname))
+        return self.checkTaskName(modelname, "obb")
 
     # 실행 중인 모델 중지
     def quitRunningModel(self, stop_status=False):
@@ -611,7 +613,19 @@ class YOLOSHOWBASE:
             return False
     def loadCategories(self, yolo_thread, mode):
         # 클래스 이름 가져오기
-        model = YOLO(yolo_thread.new_model_name)
+        model = None
+        class_names = None
+        file_name = os.path.basename(yolo_thread.new_model_name)
+
+        if 'yolo' in file_name:
+            model = YOLO(yolo_thread.new_model_name)
+        elif 'FastSAM' in file_name:
+            model = FastSAM(yolo_thread.new_model_name)
+        else:
+            self.ui.category_box.clearCategories()
+            self.ui.category_box.reset_display_text()
+            return
+
         class_names = model.names
 
         if mode == 'single':
@@ -709,8 +723,18 @@ class YOLOSHOWBASE:
 
     # 로드 설정 표시줄
     def loadConfig(self):
+        params = {"iou": round(random.uniform(0, 1), 2),
+                  "conf": round(random.uniform(0, 1), 2),
+                  "delay": random.randint(10, 50),
+                  "line_thickness": random.randint(1, 5)}
+        self.updateParams(params)
+
         params = {"iou": 0.45, "conf": 0.25, "delay": 10, "line_thickness": 3}
         params = self.loadAndSetParams('config/setting.json', params)
+        self.updateParams(params)
+
+    # Config 모델 파라미터 업데이트
+    def updateParams(self, params):
         self.ui.iou_spinbox.setValue(params['iou'])
         self.ui.iou_slider.setValue(int(params['iou'] * 100))
         self.ui.conf_spinbox.setValue(params['conf'])
