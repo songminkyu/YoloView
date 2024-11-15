@@ -1,22 +1,3 @@
-
-import os.path
-import time
-
-import cv2
-import numpy as np
-import torch
-from PySide6.QtCore import QThread, Signal
-from pathlib import Path
-
-from ultralytics.data import load_inference_source
-from ultralytics.data.augment import classify_transforms, LetterBox
-from ultralytics.data.utils import IMG_FORMATS, VID_FORMATS
-from ultralytics.engine.predictor import STREAM_WARNING
-from ultralytics.engine.results import Results
-from ultralytics.utils import callbacks, ops, LOGGER, MACOS, WINDOWS,DEFAULT_CFG
-from collections import defaultdict
-from ultralytics.utils.files import increment_path
-from ultralytics.utils.checks import check_imgsz
 from yolocode.YOLOv8Thread import YOLOv8Thread
 from ultralytics.engine.results import Results
 from ultralytics.utils import ops

@@ -4,9 +4,8 @@ import torch
 import torch.nn.functional as F
 
 from ultralytics.data.augment import LetterBox
-from ultralytics.engine.predictor import BasePredictor
 from ultralytics.engine.results import Results
-from ultralytics.utils import DEFAULT_CFG, ops
+from ultralytics.utils import ops
 from ultralytics.utils.torch_utils import select_device
 from ultralytics.models.sam.amg import (
     batch_iterator,

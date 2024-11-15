@@ -66,7 +66,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         # YOLOv8 매개변수 설정
         self.track_model = None
         self.model = None
-        self.data = 'yolocode/yolov8/cfg/datasets/coco.yaml'  # data_dict
+        self.data = 'YoloView/ultralytics/cfg/datasets/coco.yaml'  # data_dict
         self.imgsz = 640
         self.device = None
         self.dataset = None

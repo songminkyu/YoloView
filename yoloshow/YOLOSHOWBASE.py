@@ -37,7 +37,6 @@ from yolocode.FastSAMThread import FastSAMThread
 from yolocode.SAMThread import SAMThread
 from yolocode.SAMv2Thread import SAMv2Thread
 from ultralytics import YOLO
-from ultralytics import SAM
 from ultralytics import FastSAM
 
 GLOBAL_WINDOW_STATE = True

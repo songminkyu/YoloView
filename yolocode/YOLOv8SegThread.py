@@ -6,7 +6,7 @@ class YOLOv8SegThread(YOLOv8Thread):
 
     def __init__(self):
         super(YOLOv8SegThread, self).__init__()
-        self.data = 'yolocode/yolov8/cfg/datasets/coco128-seg.yaml'  # data_dict
+        self.data = 'YoloView/ultralytics/cfg/datasets/coco128-seg.yaml'  # data_dict
         self.task = 'segment'
         self.project = 'runs/segment'
 
