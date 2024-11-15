@@ -404,8 +404,40 @@ class YOLOv8Thread(QThread,BasePredictor):
         except Exception as e:
             print("Error", e)
 
+    def filter_and_sort_preds(self, preds, categories, epsilon=1e-5):
+        """Filter and sort predictions based on category keys."""
+        if len(categories) == 0:  # categories가 비어 있는 경우
+            return preds, [True] * len(preds)  # 모든 pred를 그대로 반환
+
+        filtered_preds = []
+        has_filtered = []  # 필터링 결과가 있는지 여부를 저장하는 리스트
+
+        for pred in preds:
+            # 각 예측에 대해 카테고리별로 필터링된 결과를 저장할 리스트 초기화
+            filtered_pred = []
+
+            # categories의 키를 기준으로 pred[:, 5] 값이 거의 일치하는 행들을 필터링 및 정렬
+            for key in sorted(categories.keys()):
+                # pred[:, 5]가 key와 거의 일치하는 행만 필터링
+                category_preds = pred[torch.isclose(pred[:, 5], torch.tensor(float(key)), atol=epsilon)]
+                if category_preds.size(0) > 0:  # 필터링된 결과가 있으면 추가
+                    filtered_pred.append(category_preds)
+
+            # 필터링된 예측 결과가 있을 때는 결합하여 사용
+            if filtered_pred:
+                filtered_pred = torch.cat(filtered_pred, dim=0)
+                has_filtered.append(True)  # 필터링된 결과가 있음
+            else:
+                filtered_pred = None  # 필터링된 결과가 없음을 표시
+                has_filtered.append(False)
+
+            filtered_preds.append(filtered_pred)
+
+        return filtered_preds, has_filtered
+
     def postprocess(self, preds, img, orig_imgs):
         """Post-processes predictions and returns a list of Results objects."""
+        # Non-max suppression
         preds = ops.non_max_suppression(
             preds,
             self.conf_thres,
@@ -415,15 +447,26 @@ class YOLOv8Thread(QThread,BasePredictor):
             classes=self.classes,
         )
 
+        # 필터링 및 정렬된 preds를 미리 생성
+        preds, has_filtered = self.filter_and_sort_preds(preds, self.categories, epsilon=1e-5)
+
         if not isinstance(orig_imgs, list):  # input images are a torch.Tensor, not a list
             orig_imgs = ops.convert_torch2numpy_batch(orig_imgs)
 
         results = []
-        for i, pred in enumerate(preds):
+        for i, (pred, filtered) in enumerate(zip(preds, has_filtered)):
             orig_img = orig_imgs[i]
-            pred[:, :4] = ops.scale_boxes(img.shape[2:], pred[:, :4], orig_img.shape)
             img_path = self.batch[0][i]
-            results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred))
+
+            if len(self.categories) == 0 or (filtered and pred is not None):
+                # categories가 비어 있거나 필터링된 결과가 있는 경우: 원본 pred 사용
+                pred[:, :4] = ops.scale_boxes(img.shape[2:], pred[:, :4], orig_img.shape)
+                res = Results(orig_img, path=img_path, names=self.model.names, boxes=pred)
+                results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred))
+            else:
+                # 필터링된 결과가 없는 경우: 원본 이미지를 그대로 사용
+                results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=None))
+
         return results
 
     def preprocess(self, im):
@@ -500,7 +543,9 @@ class YOLOv8Thread(QThread,BasePredictor):
             im = im[None]  # expand for batch dim
         self.data_path = p
         result = results[idx]
-        log_string += result.verbose()
+        if result.boxes != None:
+            log_string += result.verbose()
+
         # Add bbox to image
         plot_args = {
             "line_width": self.line_thickness,

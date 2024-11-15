@@ -22,18 +22,26 @@ class YOLOv8SegThread(YOLOv8Thread):
             classes=self.classes,
         )
 
+        p, has_filtered = self.filter_and_sort_preds(p, self.categories, epsilon=1e-5)
+
         if not isinstance(orig_imgs, list):  # input images are a torch.Tensor, not a list
             orig_imgs = ops.convert_torch2numpy_batch(orig_imgs)
 
         results = []
         proto = preds[1][-1] if isinstance(preds[1], tuple) else preds[1]  # tuple if PyTorch model or array if exported
-        for i, pred in enumerate(p):
+        for i, (pred, filtered) in enumerate(zip(p, has_filtered)):
             orig_img = orig_imgs[i]
             img_path = self.batch[0][i]
-            if not len(pred):  # save empty boxes
-                masks = None
+
+            if len(self.categories) == 0 or (filtered and pred is not None):
+                # categories가 비어 있거나 필터링된 결과가 있는 경우: 원본 pred 사용
+                if not len(pred):  # save empty boxes
+                    masks = None
+                else:
+                    masks = ops.process_mask(proto[i], pred[:, 6:], pred[:, :4], img.shape[2:], upsample=True)  # HWC
+                    pred[:, :4] = ops.scale_boxes(img.shape[2:], pred[:, :4], orig_img.shape)
+                    results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred[:, :6], masks=masks))
             else:
-                masks = ops.process_mask(proto[i], pred[:, 6:], pred[:, :4], img.shape[2:], upsample=True)  # HWC
-                pred[:, :4] = ops.scale_boxes(img.shape[2:], pred[:, :4], orig_img.shape)
-            results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred[:, :6], masks=masks))
+                results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=None, masks=None))
+
         return results

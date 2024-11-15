@@ -236,7 +236,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.runModel(True)
 
     # 모델 변경
-    def changeModel(self):
+    def changeModel(self, categories_reset = True):
         self.model_name = self.ui.model_box.currentText()
         self.ui.Model_label.setText(str(self.model_name).replace(".pt", ""))  # 상태 표시줄 표시 수정
         current_model_name = self.checkCurrentModel()
@@ -247,6 +247,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         yolo_thread = self.yolo_threads.get(current_model_name)
         if yolo_thread is not None:
             yolo_thread.new_model_name = f'{self.current_workpath}/ptfiles/' + self.ui.model_box.currentText()
+            if categories_reset:
+                self.loadCategories(yolo_thread, 'single')
         else:
             self.yolo_threads.set(current_model_name, MODEL_THREAD_CLASSES[current_model_name]())
             self.initModel(yoloname=current_model_name)
@@ -284,7 +286,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
     def runorContinue(self):
         self.closeTableResult()
         if self.inputPath is not None:
-            self.changeModel()
+            self.changeModel(categories_reset=False)
             self.runModel()
         else:
             self.showStatus("Please select the Image/Video before starting detection...")
