@@ -270,7 +270,7 @@ class YOLOv8Thread(QThread,BasePredictor):
                     self.send_class_num.emit(class_nums)
                     self.send_target_num.emit(target_nums)
 
-                    if self.save_res:
+                    if self.save_res and label_str:
                         save_path = str(self.save_path / p.name)  # im.jpg
                         self.res_path = self.save_preds(self.vid_cap, i, save_path)
 
