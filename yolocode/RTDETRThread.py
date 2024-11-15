@@ -36,11 +36,20 @@ class RTDETRThread(YOLOv8Thread):
                 idx = (cls == torch.tensor(self.classes, device=cls.device)).any(1) & idx
             pred = torch.cat([bbox, score, cls], dim=-1)[idx]  # filter
             orig_img = orig_imgs[i]
-            oh, ow = orig_img.shape[:2]
-            pred[..., [0, 2]] *= ow
-            pred[..., [1, 3]] *= oh
             img_path = self.batch[0][i]
-            results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred))
+            preds, has_filtered = self.filter_and_sort_preds([pred], self.categories, epsilon=1e-5)
+            # filter_and_sort_preds returns in list form, so access the first element.
+            pred = preds[0]
+            filtered = has_filtered[0]
+
+            if len(self.categories) == 0 or (filtered and pred is not None):
+                oh, ow = orig_img.shape[:2]
+                pred[..., [0, 2]] *= ow
+                pred[..., [1, 3]] *= oh
+                results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred))
+            else:
+                results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=None))
+
         return results
 
     def pre_transform(self, im):

@@ -406,7 +406,7 @@ class YOLOv8Thread(QThread,BasePredictor):
 
     def filter_and_sort_preds(self, preds, categories, epsilon=1e-5):
         """Filter and sort predictions based on category keys."""
-        if len(categories) == 0:  # categories가 비어 있는 경우
+        if len(categories) == 0:  # If categories are empty
             return preds, [True] * len(preds)  # 모든 pred를 그대로 반환
 
         filtered_preds = []

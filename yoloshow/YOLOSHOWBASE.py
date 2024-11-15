@@ -38,6 +38,7 @@ from yolocode.SAMThread import SAMThread
 from yolocode.SAMv2Thread import SAMv2Thread
 from ultralytics import YOLO
 from ultralytics import FastSAM
+from ultralytics import RTDETR
 
 GLOBAL_WINDOW_STATE = True
 
@@ -618,7 +619,9 @@ class YOLOSHOWBASE:
 
         if 'yolo' in file_name:
             model = YOLO(yolo_thread.new_model_name)
-        elif 'FastSAM' in file_name:
+        elif 'rtdetr' in file_name:
+            model = RTDETR(yolo_thread.new_model_name)
+        elif 'fastsam' in file_name.lower():
             model = FastSAM(yolo_thread.new_model_name)
         else:
             self.ui.category_box.clearCategories()
