@@ -21,6 +21,7 @@
 - [x] Support Dragging File Input
 - [x] `YOLO11` has additional features (obb,pose,deteced,segment,track)
 - [x] Tracking & Counting ( `YOLOv8` & `YOLO11`)
+- [x] Added bbox and segment category filter functions
 - [x] Save Labal
 
 ## Functions
