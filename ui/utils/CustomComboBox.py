@@ -104,6 +104,7 @@ class TristateMultiSelectComboBox(ComboBox):
         # Ensure that the layout margins are set to zero
         self.checkbox_layout.setContentsMargins(0, 0, 0, 0)
         self.checkbox_layout.setSpacing(0)
+        self.checkbox_layout.setAlignment(Qt.AlignTop)
 
         # Configure the checkbox container as a floating widget
         self.checkbox_container.setWindowFlags(Qt.Popup)
