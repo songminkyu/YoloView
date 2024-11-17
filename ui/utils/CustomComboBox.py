@@ -1,6 +1,8 @@
 import PySide6
 from PySide6.QtCore import QPoint, Qt
-from PySide6.QtWidgets import QVBoxLayout, QWidget, QScrollArea, QCheckBox, QLabel
+from PySide6.QtWidgets import (
+    QVBoxLayout, QWidget, QScrollArea, QCheckBox, QLabel, QLineEdit
+)
 from qfluentwidgets import ComboBox
 
 class TristateMultiSelectComboBox(ComboBox):
@@ -22,6 +24,9 @@ class TristateMultiSelectComboBox(ComboBox):
         # Inner widget to hold category checkboxes inside the scroll area
         self.inner_widget = QWidget()
         self.checkbox_layout = QVBoxLayout(self.inner_widget)
+        self.checkbox_layout.setContentsMargins(0, 0, 0, 0)
+        self.checkbox_layout.setSpacing(0)
+        self.checkbox_layout.setAlignment(Qt.AlignTop)  # Align checkboxes to the top
 
         # Add inner widget to the scroll area
         self.scroll_area.setWidget(self.inner_widget)
@@ -35,16 +40,32 @@ class TristateMultiSelectComboBox(ComboBox):
             }
         """)
 
-        # "Selected All" 체크박스 추가
+        # Search bar for filtering categories
+        self.search_bar = QLineEdit(self.checkbox_container)
+        self.search_bar.setPlaceholderText("Search categories...")
+        self.search_bar.textChanged.connect(self.filter_categories)
+        self.search_bar.setStyleSheet("""
+            QLineEdit {
+                padding: 5px;
+                font: 600 9pt "Segoe UI";
+                border: 1px solid #c0c0c0;
+                border-radius: 4px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #009faa;
+            }
+        """)
+
+        # "Selected All" checkbox
         self.select_all_checkbox = QCheckBox("Selected All", self.checkbox_container)
         self.select_all_checkbox.setTristate(True)  # Enable tri-state
-        # 기존 stateChanged 시그널 연결을 클릭 시그널로 변경
         self.select_all_checkbox.clicked.connect(self.on_select_all_clicked)
 
         # Main layout for the checkbox container
         layout = QVBoxLayout(self.checkbox_container)
-        layout.addWidget(self.count_label)           # QLabel을 상단에 추가
-        layout.addWidget(self.select_all_checkbox)   # "Selected All" 체크박스 추가
+        layout.addWidget(self.search_bar)           # Add search bar at the top
+        layout.addWidget(self.count_label)          # QLabel below the search bar
+        layout.addWidget(self.select_all_checkbox)  # "Selected All" checkbox
         layout.addWidget(self.scroll_area)
 
         # Apply custom styling to the checkbox container
@@ -54,13 +75,13 @@ class TristateMultiSelectComboBox(ComboBox):
                 border-radius: 8px;
             }
             QCheckBox {
-                padding: 3px 0px;  /* Adjust padding to make better use of space */
+                padding: 3px 0px;
                 font: 600 9pt "Segoe UI";
             }
             QCheckBox::indicator {
                 width: 14px;
                 height: 14px;
-                margin-left: 0px;  /* Reduce left margin to make use of full width */
+                margin-left: 0px;
             }
             QCheckBox::indicator:unchecked {
                 border: 1px solid #c0c0c0;
@@ -73,7 +94,7 @@ class TristateMultiSelectComboBox(ComboBox):
                 border-radius: 3px;
             }
             QCheckBox::indicator:indeterminate {
-                background-color: #DB7093;  /* Match teal color */
+                background-color: #DB7093;
                 border: 1px solid #DB7093;
                 border-radius: 3px; 
             }
@@ -101,16 +122,12 @@ class TristateMultiSelectComboBox(ComboBox):
                 background: none;
             }
         """)
-        # Ensure that the layout margins are set to zero
-        self.checkbox_layout.setContentsMargins(0, 0, 0, 0)
-        self.checkbox_layout.setSpacing(0)
-        self.checkbox_layout.setAlignment(Qt.AlignTop)
 
         # Configure the checkbox container as a floating widget
         self.checkbox_container.setWindowFlags(Qt.Popup)
         self.checkbox_container.setFixedWidth(self.width())  # Match the ComboBox width
 
-        # 리스트로 카테고리 체크박스를 관리
+        # List to manage category checkboxes
         self.category_checkboxes = []
 
     def addCategories(self, categories):
@@ -130,25 +147,25 @@ class TristateMultiSelectComboBox(ComboBox):
         for checkbox in self.category_checkboxes:
             if checkbox.text() == category:
                 self.checkbox_layout.removeWidget(checkbox)
-                checkbox.deleteLater()  # Remove and delete the checkbox
+                checkbox.deleteLater()
                 self.category_checkboxes.remove(checkbox)
-                self.update_display()  # Update display after removal
+                self.update_display()
                 break
 
     def clearCategories(self):
         # Remove all category checkboxes
         for checkbox in self.category_checkboxes:
             self.checkbox_layout.removeWidget(checkbox)
-            checkbox.deleteLater()  # Properly delete each checkbox
+            checkbox.deleteLater()
         self.category_checkboxes.clear()
 
         # Clear the selected items list and reset the ComboBox display
         self.selected_items.clear()
-        self.setItemText(0, "Select categories...")  # Reset placeholder text
+        self.setItemText(0, "Select categories...")
 
         # Reset the 'Selected All' checkbox
         self.select_all_checkbox.blockSignals(True)
-        self.select_all_checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
+        self.select_all_checkbox.setCheckState(Qt.CheckState.Unchecked)
         self.select_all_checkbox.blockSignals(False)
 
     def mousePressEvent(self, event):
@@ -157,7 +174,6 @@ class TristateMultiSelectComboBox(ComboBox):
             self.checkbox_container.hide()
         else:
             self.show_dropdown()
-        # Call the parent class's mousePressEvent to maintain ComboBox behavior
         super().mousePressEvent(event)
 
     def show_dropdown(self):
@@ -186,22 +202,23 @@ class TristateMultiSelectComboBox(ComboBox):
 
     def reset_display_text(self):
         self.setItemText(0, "Select categories...")
-        self.selected_items.clear()  # Clear the current selection list
+        self.selected_items.clear()
         # Reset the 'Selected All' checkbox
         self.select_all_checkbox.blockSignals(True)
-        self.select_all_checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
+        self.select_all_checkbox.setCheckState(Qt.CheckState.Unchecked)
         self.select_all_checkbox.blockSignals(False)
         # Uncheck all category checkboxes
         for checkbox in self.category_checkboxes:
             checkbox.blockSignals(True)
-            checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
+            checkbox.setCheckState(Qt.CheckState.Unchecked)
             checkbox.blockSignals(False)
 
     def get_selected_categories(self):
         """Return the dictionary of selected items."""
-        # Create a dictionary of selected items where value matches with categories
-        selected_categories = {key: value for key, value in self.categories.items()
-                               if any(checkbox.text() == value and checkbox.isChecked() for checkbox in self.category_checkboxes)}
+        selected_categories = {
+            key: value for key, value in self.categories.items()
+            if any(checkbox.text() == value and checkbox.isChecked() for checkbox in self.category_checkboxes)
+        }
         return selected_categories
 
     def check_categories_by_dict(self, category_dict):
@@ -218,10 +235,10 @@ class TristateMultiSelectComboBox(ComboBox):
             should_check = category_dict.get(checkbox.text(), False)
             checkbox.blockSignals(True)
             if should_check:
-                checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Checked)
+                checkbox.setCheckState(Qt.CheckState.Checked)
                 any_checked = True
             else:
-                checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
+                checkbox.setCheckState(Qt.CheckState.Unchecked)
             checkbox.blockSignals(False)
             if not should_check:
                 all_checked = False
@@ -229,11 +246,11 @@ class TristateMultiSelectComboBox(ComboBox):
         # Set 'Selected All' checkbox based on all categories
         self.select_all_checkbox.blockSignals(True)
         if all_checked:
-            self.select_all_checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Checked)
+            self.select_all_checkbox.setCheckState(Qt.CheckState.Checked)
         elif any_checked:
-            self.select_all_checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.PartiallyChecked)
+            self.select_all_checkbox.setCheckState(Qt.CheckState.PartiallyChecked)
         else:
-            self.select_all_checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
+            self.select_all_checkbox.setCheckState(Qt.CheckState.Unchecked)
         self.select_all_checkbox.blockSignals(False)
 
         # Update the display text based on the new selections
@@ -244,7 +261,7 @@ class TristateMultiSelectComboBox(ComboBox):
         Handle the 'Select All' checkbox click event to toggle all category checkboxes.
         """
         # Determine if we need to check or uncheck all based on current state
-        if self.select_all_checkbox.checkState() == PySide6.QtCore.Qt.CheckState.Unchecked:
+        if self.select_all_checkbox.checkState() == Qt.CheckState.Unchecked:
             should_check = False
         else:
             should_check = True
@@ -252,15 +269,15 @@ class TristateMultiSelectComboBox(ComboBox):
         # Block signals to prevent recursive calls
         for checkbox in self.category_checkboxes:
             checkbox.blockSignals(True)
-            checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Checked if should_check else PySide6.QtCore.Qt.CheckState.Unchecked)
+            checkbox.setCheckState(Qt.CheckState.Checked if should_check else Qt.CheckState.Unchecked)
             checkbox.blockSignals(False)
 
         # Update the 'Select All' checkbox state
         self.select_all_checkbox.blockSignals(True)
         if should_check:
-            self.select_all_checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Checked)
+            self.select_all_checkbox.setCheckState(Qt.CheckState.Checked)
         else:
-            self.select_all_checkbox.setCheckState(PySide6.QtCore.Qt.CheckState.Unchecked)
+            self.select_all_checkbox.setCheckState(Qt.CheckState.Unchecked)
         self.select_all_checkbox.blockSignals(False)
 
         # Update the display and count
@@ -275,11 +292,11 @@ class TristateMultiSelectComboBox(ComboBox):
         total_count = len(self.category_checkboxes)
 
         if checked_count == total_count:
-            overall_state = PySide6.QtCore.Qt.CheckState.Checked
+            overall_state = Qt.CheckState.Checked
         elif checked_count == 0:
-            overall_state = PySide6.QtCore.Qt.CheckState.Unchecked
+            overall_state = Qt.CheckState.Unchecked
         else:
-            overall_state = PySide6.QtCore.Qt.CheckState.PartiallyChecked
+            overall_state = Qt.CheckState.PartiallyChecked
 
         # Update 'Select All' checkbox state accordingly
         self.select_all_checkbox.blockSignals(True)
@@ -288,3 +305,13 @@ class TristateMultiSelectComboBox(ComboBox):
 
         # Update the display and count
         self.update_display()
+
+    def filter_categories(self, text):
+        """
+        Filter the category checkboxes based on the search text.
+        """
+        for checkbox in self.category_checkboxes:
+            if text.lower() in checkbox.text().lower():
+                checkbox.show()
+            else:
+                checkbox.hide()
