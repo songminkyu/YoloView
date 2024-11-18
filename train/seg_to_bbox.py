@@ -1,54 +1,58 @@
 import os
+import numpy as np
+from ultralytics.utils.ops import segments2boxes
 
-"""
-https://github.com/ultralytics/yolov5/issues/11337
-"""
-def seg_to_bbox(seg_info):
-    # 예시 입력: '5 0.046875 0.369141 0.0644531 0.384766 0.0800781 0.402344 ...'
-    class_id, *points = seg_info.strip().split()
-    points = [float(p) for p in points]
-    x_min = min(points[0::2])
-    y_min = min(points[1::2])
-    x_max = max(points[0::2])
-    y_max = max(points[1::2])
-    width = x_max - x_min
-    height = y_max - y_min
-    x_center = (x_min + x_max) / 2
-    y_center = (y_min + y_max) / 2
-    if int(class_id) != 0:
-        cid = int(class_id)-1
-    else:
-        cid = int(class_id)
+def convert_label_file(label_path, output_path):
+    """
+    하나의 레이블 파일을 변환합니다.
+    Args:
+        label_path (str): 원본 세그멘테이션 레이블 파일 경로
+        output_path (str): 변환된 바운딩 박스 레이블 파일을 저장할 경로
+    """
+    with open(label_path, 'r') as f:
+        lines = f.readlines()
 
-    bbox_info = f"{cid} {x_center} {y_center} {width} {height}"
+    converted_labels = []
+    for line in lines:
+        if line.strip() == '':
+            continue
+        parts = line.strip().split()
+        class_id = int(parts[0])
+        coords = [float(x) for x in parts[1:]]
+        if len(coords) % 2 == 0 and len(coords) >= 6:
+            # 세그먼트(폴리곤)인 경우
+            segment = np.array(coords).reshape(-1, 2)
+            segments = [segment]
+            boxes = segments2boxes(segments)
+            for box in boxes:
+                x_center, y_center, width, height = box
+                converted_labels.append(f"{class_id} {x_center} {y_center} {width} {height}")
+        else:
+            # 좌표가 부족한 경우 (처리할 수 없는 라인)
+            print(f"파일 {label_path}의 라인을 건너뜁니다: {line.strip()}")
+            continue
 
-    return bbox_info
+    with open(output_path, 'w') as f:
+        for label in converted_labels:
+            f.write(label + '\n')
 
-# 레이블 파일이 저장된 디렉토리 경로를 설정하세요
-label_dir = '/path/to/your/labels'
+def convert_labels_in_directory(label_dir, output_dir):
+    """
+    디렉토리 내의 모든 레이블 파일을 변환합니다.
+    Args:
+        label_dir (str): 원본 레이블 파일들이 있는 디렉토리 경로
+        output_dir (str): 변환된 레이블 파일을 저장할 디렉토리 경로
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    label_files = [f for f in os.listdir(label_dir) if f.endswith('.txt')]
+    for label_file in label_files:
+        label_path = os.path.join(label_dir, label_file)
+        output_path = os.path.join(output_dir, label_file)
+        convert_label_file(label_path, output_path)
+        print(f"변환 완료: {label_file}")
 
-# 변환된 레이블을 저장할 디렉토리 경로를 설정하세요 (원본을 덮어쓰지 않도록 주의)
-output_dir = 'g:\\@Example\\AI\\@Python_AI\\yolov8\\test\\@datasets\\train_data\\Nude\\total_nude_content_seg\\test - 복사본\\convert_labels'
-os.makedirs(output_dir, exist_ok=True)
+# 사용 예시
+label_dir = 'g:\\Finalmobile6_git\\seg To bbbox\\valid\\labels'  # 원본 세그멘테이션 레이블 디렉토리 경로
+output_dir = 'g:\\Finalmobile6_git\\seg To bbbox\\valid\\convert_labels'       # 변환된 바운딩 박스 레이블 디렉토리 경로
 
-# 레이블 파일 목록 가져오기
-label_files = [f for f in os.listdir(label_dir) if f.endswith('.txt')]
-
-for label_file in label_files:
-    input_path = os.path.join(label_dir, label_file)
-    output_path = os.path.join(output_dir, label_file)
-
-    with open(input_path, 'r') as infile, open(output_path, 'w') as outfile:
-        lines = infile.readlines()
-        for line in lines:
-            # 빈 라인 또는 잘못된 형식의 라인 처리
-            if line.strip() == '':
-                continue
-            try:
-                bbox_info = seg_to_bbox(line)
-                outfile.write(bbox_info + '\n')
-            except Exception as e:
-                print(f"파일 {label_file}의 라인 처리 중 오류 발생: {e}")
-                continue
-
-    print(f"변환 완료: {label_file}")
+convert_labels_in_directory(label_dir, output_dir)
