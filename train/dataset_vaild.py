@@ -1,12 +1,24 @@
 import os
 import cv2
 
-# 이미지와 레이블 디렉토리 경로 설정
-image_dir = '/path/to/your/images'
-label_dir = '/path/to/your/labels'
+# 클래스 이름 리스트를 정의합니다.
+class_names = ['class0', 'class1', 'class2', 'class3', 'class4']
+# 실제 사용하시는 클래스 이름으로 변경하세요.
+
+# 상위 데이터셋 디렉토리를 설정합니다.
+'''
+train: ../train
+val: ../valid
+test: ../test
+'''
+dataset_dir = '<your dataset directory>'
+
+# 이미지와 레이블 디렉토리를 자동으로 설정합니다.
+image_dir = os.path.join(dataset_dir, 'images')
+label_dir = os.path.join(dataset_dir, 'labels')
 
 # 이미지 파일 목록 가져오기
-image_files = [f for f in os.listdir(image_dir) if f.endswith('.jpg') or f.endswith('.png')]
+image_files = [f for f in os.listdir(image_dir) if f.lower().endswith('.jpg') or f.lower().endswith('.png')]
 
 for image_file in image_files:
     # 이미지와 대응되는 레이블 파일 경로 설정
@@ -15,6 +27,9 @@ for image_file in image_files:
 
     # 이미지 로드
     img = cv2.imread(image_path)
+    if img is None:
+        print(f"이미지를 불러올 수 없습니다: {image_path}")
+        continue
     img_height, img_width = img.shape[:2]
 
     # 레이블 파일 존재 여부 확인
@@ -49,8 +64,13 @@ for image_file in image_files:
 
             # 바운딩 박스 그리기
             cv2.rectangle(img, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
-            # 클래스 ID 표시 (선택 사항)
-            cv2.putText(img, str(class_id), (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+            # 클래스 이름 표시 (클래스 ID 대신)
+            if 0 <= class_id < len(class_names):
+                class_name = class_names[class_id]
+            else:
+                class_name = f"Unknown({class_id})"
+            cv2.putText(img, class_name, (x_min, max(y_min - 10, 0)), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
     # 이미지 표시
     cv2.imshow('Labeled Image', img)
