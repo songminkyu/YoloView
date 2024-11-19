@@ -62,7 +62,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.res_status = False  # result status
         self.parent_workpath = None  # parent work path
         self.executor = ThreadPoolExecutor(max_workers=1)  # 하나의 스레드만 실행되도록 허용
-
+        self.track_pointlist = []
         # YOLOv8 매개변수 설정
         self.track_model = None
         self.model = None
@@ -164,10 +164,9 @@ class YOLOv8Thread(QThread,BasePredictor):
                     self.vid_writer[-1].release()
                 break
                 #  모델 변경 여부 결정
-            if self.current_model_name != self.new_model_name:
+            if (self.current_model_name != self.new_model_name or (self.track_mode is True and self.track_model is None)):
                 self.send_msg.emit('Loading Model: {}'.format(os.path.basename(self.new_model_name)))
                 self.init_setup_model(self.new_model_name)
-                self.current_model_name = self.new_model_name
             if self.is_continue:
                 if self.is_file:
                     self.send_msg.emit("Detecting File: {}".format(os.path.basename(self.source)))
@@ -217,7 +216,7 @@ class YOLOv8Thread(QThread,BasePredictor):
                     preds = self.inference(im)
                 # Postprocess
                 with self.dt[2]:
-                    if self.track_mode == True: # track 모드가 활성화 할경우
+                    if self.track_mode is True: # track 모드가 활성화 할경우
                         self.results, self.track_pointlist = self.track_postprocess(self.track_model, self.track_history, preds, im0s)
                     else:
                         self.results = self.postprocess(preds, im, im0s)
@@ -317,6 +316,7 @@ class YOLOv8Thread(QThread,BasePredictor):
 
         self.setup_model(self.new_model_name)  # 모델 설정
         self.used_model_name = self.new_model_name
+        self.current_model_name = self.new_model_name
 
     def setup_source(self, source):
         """Sets up source and inference mode."""
@@ -557,7 +557,7 @@ class YOLOv8Thread(QThread,BasePredictor):
 
         # track 모드에서 라인 이미지 생성
         self.im = self.plotted_img
-        if self.track_mode == True:
+        if self.track_mode is True and self.track_pointlist:
             for points in self.track_pointlist:
                 cv2.polylines(self.im, [points], isClosed=False, color=(203, 224, 252), thickness=5)
 
