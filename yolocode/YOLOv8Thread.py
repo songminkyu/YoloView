@@ -96,7 +96,7 @@ class YOLOv8Thread(QThread,BasePredictor):
 
     def run(self):
 
-        if not self.model:
+        if not self.model or (self.track_mode and not self.track_model):
             self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
             self.init_setup_model(self.new_model_name)
 
