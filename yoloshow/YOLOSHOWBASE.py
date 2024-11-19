@@ -333,7 +333,6 @@ class YOLOSHOWBASE:
         self.inputPath = int(cam)
 
     # 폴더 선택
-    
     def selectFolder(self):
         config_file = f'{self.current_workpath}/config/folder.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
