@@ -146,7 +146,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         # --- 설정 표시줄 초기화 --- #
 
         # --- MessageBar Init --- #
-        self.showStatus("Welcome to YOLOSHOW")
+        self.showStatus("Welcome to YoloView")
         # --- MessageBar Init --- #
 
     def initThreads(self):

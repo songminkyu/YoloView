@@ -2,8 +2,7 @@ from PySide6.QtCore import QUrl
 from PySide6.QtGui import QFont
 from qfluentwidgets import MessageBoxBase, SubtitleLabel, LineEdit, PushButton, setTheme, Theme
 
-
-class CustomMessageBox(MessageBoxBase):
+class RtspInputMessageBox(MessageBoxBase):
     """ Custom message box """
 
     def __init__(self, parent=None, mode=None):

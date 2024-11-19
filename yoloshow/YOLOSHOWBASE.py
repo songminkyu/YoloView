@@ -23,7 +23,8 @@ from PySide6.QtWidgets import QFileDialog, QGraphicsDropShadowEffect, QFrame, QP
 from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QParallelAnimationGroup, QPoint
 from qfluentwidgets import RoundMenu, MenuAnimationType, Action
 import importlib
-from ui.utils.rtspDialog import CustomMessageBox
+from ui.utils.rtspDialog import RtspInputMessageBox
+from ui.utils.CustomMessageBox import MessageBox
 
 from models import common
 from ui.utils.webCamera import Camera, WebcamThread
@@ -332,6 +333,8 @@ class YOLOSHOWBASE:
         self.inputPath = int(cam)
 
     # 폴더 선택
+    from PyQt5.QtWidgets import QMessageBox
+
     def selectFolder(self):
         config_file = f'{self.current_workpath}/config/folder.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
@@ -344,15 +347,25 @@ class YOLOSHOWBASE:
             folder_path  # 시작 디렉토리
         )
         if FolderPath:
-            FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png", ".heic", ".jpeg", ".bmp", ".dib", ".jpe", ".jp2"]
-            Foldername = [
-                os.path.join(FolderPath, filename)
-                for filename in os.listdir(FolderPath)
-                if os.path.splitext(filename)[1].lower() in FileFormat
-            ]
-            # self.yolov5_thread.source = Foldername
+            msgDialog = MessageBox(self,"Would you like to navigate through the subdirectories as well?",
+                                   "Navigating subdirectories may take some time.")
+
+            FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png", ".heic", ".jpeg", ".bmp", ".dib", ".jpe",
+                          ".jp2"]
+            Foldername = []
+            if msgDialog.exec():
+                # 하위 디렉토리까지 탐색
+                for root, dirs, files in os.walk(FolderPath):
+                    for filename in files:
+                        if os.path.splitext(filename)[1].lower() in FileFormat:
+                            Foldername.append(os.path.join(root, filename))
+            else:
+                # 현재 디렉토리만 탐색
+                for filename in os.listdir(FolderPath):
+                    if os.path.splitext(filename)[1].lower() in FileFormat:
+                        Foldername.append(os.path.join(FolderPath, filename))
             self.inputPath = Foldername
-            self.showStatus('Loaded Folder：{}'.format(os.path.basename(FolderPath)))
+            self.showStatus('Loaded Folder: {}'.format(os.path.basename(FolderPath)))
             config['folder_path'] = FolderPath
             config_json = json.dumps(config, ensure_ascii=False, indent=2)
             with open(config_file, 'w', encoding='utf-8') as f:
@@ -361,7 +374,7 @@ class YOLOSHOWBASE:
     # 웹캠 Rtsp 선택
     def selectRtsp(self):
         # rtsp://rtsp-test-server.viomic.com:554/stream
-        rtspDialog = CustomMessageBox(self, mode="single")
+        rtspDialog = RtspInputMessageBox(self, mode="single")
         self.rtspUrl = None
         if rtspDialog.exec():
             self.rtspUrl = rtspDialog.urlLineEdit.text()

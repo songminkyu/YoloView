@@ -157,7 +157,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # --- 설정 표시줄 초기화 --- #
 
         # --- MessageBar Init --- #
-        self.showStatus("Welcome to YOLOSHOW")
+        self.showStatus("Welcome to YoloView")
         # --- MessageBar Init --- #
 
 	# 모델 스레드 초기화
