@@ -985,9 +985,19 @@ class Ui_MainWindow(object):
         self.Model_label1.setMinimumSize(QSize(0, 30))
         self.Model_label1.setMaximumSize(QSize(16777215, 30))
         self.Model_label1.setFont(font1)
-        self.Model_label1.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-                                        "font: 12pt \"Microsoft YaHei UI\";\n"
-                                        "")
+        self.Model_label1.setStyleSheet(u"""
+                        QLabel {
+                            color: rgb(255, 255, 255); /* QLabel 텍스트 색상: 흰색 */
+                            font: 12pt "Microsoft YaHei UI"; /* 폰트 설정 */
+                            background-color: transparent; /* QLabel 배경 투명 */
+                        }
+                        QToolTip {
+                            color: black; /* 툴팁 텍스트 색상: 검정 */
+                            background-color: white; /* 툴팁 배경 색상: 흰색 */
+                            border: 1px solid black; /* 툴팁 테두리: 검정 */
+                            font-size: 12pt; /* 툴팁 폰트 크기 */
+                        }
+                    """)
         self.Model_label1.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.Model_label1, 0, Qt.AlignTop)
@@ -1365,9 +1375,19 @@ class Ui_MainWindow(object):
         self.Model_label2.setMinimumSize(QSize(0, 30))
         self.Model_label2.setMaximumSize(QSize(16777215, 30))
         self.Model_label2.setFont(font1)
-        self.Model_label2.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-                                        "font: 12pt \"Microsoft YaHei UI\";\n"
-                                        "")
+        self.Model_label2.setStyleSheet(u"""
+                  QLabel {
+                      color: rgb(255, 255, 255); /* QLabel 텍스트 색상: 흰색 */
+                      font: 12pt "Microsoft YaHei UI"; /* 폰트 설정 */
+                      background-color: transparent; /* QLabel 배경 투명 */
+                  }
+                  QToolTip {
+                      color: black; /* 툴팁 텍스트 색상: 검정 */
+                      background-color: white; /* 툴팁 배경 색상: 흰색 */
+                      border: 1px solid black; /* 툴팁 테두리: 검정 */
+                      font-size: 12pt; /* 툴팁 폰트 크기 */
+                  }
+              """)
         self.Model_label2.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_29.addWidget(self.Model_label2, 0, Qt.AlignTop)

@@ -856,13 +856,19 @@ class YOLOSHOWBASE:
             if self.table_result.isVisible():
                 self.table_result.close()
 
-    def modelnamethreshold(self,model_label,model_name, mode='single'):
-        thresholdTextSize = None
-        if mode == 'single':
-            thresholdTextSize = 170
-        else:
-            thresholdTextSize = 125
+    def modelnamethreshold(self, model_label, model_name, mode='single'):
+        thresholdTextSize = 170 if mode == 'single' else 125
 
-        model_label.setText(str(model_name).replace(".pt", ""))
-        elided_text = model_label.fontMetrics().elidedText(model_label.text(), Qt.ElideRight, thresholdTextSize)
+        # 원본 텍스트에서 ".pt" 제거
+        clean_model_name = str(model_name).replace(".pt", "")
+        model_label.setText(clean_model_name)
+
+        # 텍스트 길이를 제한하고 필요시 "..." 추가
+        elided_text = model_label.fontMetrics().elidedText(clean_model_name, Qt.ElideRight, thresholdTextSize)
         model_label.setText(elided_text)
+
+        # 전체 텍스트를 tooltip으로 설정 (비어있지 않을 경우에만)
+        if clean_model_name.strip():  # 텍스트가 비어있지 않은지 확인
+            model_label.setToolTip(clean_model_name)
+        else:
+            model_label.setToolTip("No model name provided")

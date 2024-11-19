@@ -1092,9 +1092,19 @@ class Ui_MainWindow(object):
         font2.setItalic(False)
         font2.setUnderline(False)
         self.Model_label.setFont(font2)
-        self.Model_label.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-                                       "font: 14pt \"Microsoft YaHei UI\";\n"
-                                       "")
+        self.Model_label.setStyleSheet(u"""
+            QLabel {
+                color: rgb(255, 255, 255); /* QLabel 텍스트 색상: 흰색 */
+                font: 14pt "Microsoft YaHei UI"; /* 폰트 설정 */
+                background-color: transparent; /* QLabel 배경 투명 */
+            }
+            QToolTip {
+                color: black; /* 툴팁 텍스트 색상: 검정 */
+                background-color: white; /* 툴팁 배경 색상: 흰색 */
+                border: 1px solid black; /* 툴팁 테두리: 검정 */
+                font-size: 12pt; /* 툴팁 폰트 크기 */
+            }
+        """)
         self.Model_label.setAlignment(Qt.AlignCenter)
 
         self.verticalLayout_14.addWidget(self.Model_label, 0, Qt.AlignTop)
