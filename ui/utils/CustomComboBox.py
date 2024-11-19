@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QFontMetrics
 from qfluentwidgets import ComboBox
 
-class TristateMultiSelectComboBox(ComboBox):
+class CustomCheckBoxWidget(ComboBox):
     def __init__(self, parent=None):
         super().__init__(parent)
 

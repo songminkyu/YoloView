@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QDoubleSpinBox, QFrame,
 
 from qfluentwidgets import ComboBox,CheckBox
 from ui.utils.UpdateFrame import DoubleClickQFrame
-from ui.utils.CustomComboBox import TristateMultiSelectComboBox
+from ui.utils.CustomComboBox import CustomCheckBoxWidget
 from . import YOLOSHOWUI_rc
 
 class Ui_MainWindow(object):
@@ -1410,7 +1410,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_21.addWidget(self.model_box)
 
-        self.category_box = TristateMultiSelectComboBox(self.Model_QF_2)
+        self.category_box = CustomCheckBoxWidget(self.Model_QF_2)
         self.category_box.setObjectName(u"category_box")
         self.category_box.setMinimumSize(QSize(240, 22))
         self.category_box.setMaximumSize(QSize(240, 20))
