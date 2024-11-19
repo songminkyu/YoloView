@@ -21,7 +21,9 @@
 - [x] 파일 입력 드래그 지원
 - [x] `YOLO11`에 추가 기능이 있습니다. (obb,pose,deteced,segment,track)
 - [x] 추적 및 계산(`YOLOv8` 및 `YOLO11`)
-- [x] bbox 및 segment 카테고리 필터 기능 추가
+- [x] bbox 및 segment 카테고리 필터 기능 추가 (모델 선택 기능 하위 위치)
+- [x] 하위 폴더 탐색기능 추가 (폴더 탐색일때만)
+- [x] 통계치 개선 및 고도화
 - [x] Labal 저장
 
 ## 함수
