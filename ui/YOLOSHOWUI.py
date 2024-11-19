@@ -1093,7 +1093,7 @@ class Ui_MainWindow(object):
         font2.setUnderline(False)
         self.Model_label.setFont(font2)
         self.Model_label.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-                                       "font: 15pt \"Microsoft YaHei UI\";\n"
+                                       "font: 14pt \"Microsoft YaHei UI\";\n"
                                        "")
         self.Model_label.setAlignment(Qt.AlignCenter)
 

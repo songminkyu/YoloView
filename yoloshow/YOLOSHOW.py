@@ -119,7 +119,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.Class_num.setText('--')
         self.ui.Target_num.setText('--')
         self.ui.fps_label.setText('--')
-        self.ui.Model_label.setText(str(self.model_name).replace(".pt", ""))
+        self.modelnamethreshold(self.ui.Model_label,self.model_name)
         # --- 상태 표시줄 초기화 --- #
 
         self.initThreads()
@@ -238,7 +238,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
     # 모델 변경
     def changeModel(self, categories_reset = True):
         self.model_name = self.ui.model_box.currentText()
-        self.ui.Model_label.setText(str(self.model_name).replace(".pt", ""))  # 상태 표시줄 표시 수정
+        self.modelnamethreshold(self.ui.Model_label,self.model_name)  # 상태 표시줄 표시 수정
         current_model_name = self.checkCurrentModel()
         if not current_model_name:
             return

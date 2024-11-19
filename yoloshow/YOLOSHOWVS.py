@@ -136,12 +136,12 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.ui.Class_num1.setText('--')
         self.ui.Target_num1.setText('--')
         self.ui.fps_label1.setText('--')
-        self.ui.Model_label1.setText(str(self.model_name1).replace(".pt", ""))
+        self.modelnamethreshold(self.ui.Model_label1, self.model_name1,mode="left")
         self.model_name2 = self.ui.model_box2.currentText()  # 기본 Model 가져오기
         self.ui.Class_num2.setText('--')
         self.ui.Target_num2.setText('--')
         self.ui.fps_label2.setText('--')
-        self.ui.Model_label2.setText(str(self.model_name2).replace(".pt", ""))
+        self.modelnamethreshold(self.ui.Model_label2, self.model_name2,mode="right")
 
         # --- 시작/중지 --- #
 
@@ -385,7 +385,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         if mode == "left":
             # 왼쪽 모델
             self.model_name1 = self.ui.model_box1.currentText()
-            self.ui.Model_label1.setText(str(self.model_name1).replace(".pt", ""))  # 修改状态栏显示
+            self.modelnamethreshold(self.ui.Model_label1,self.model_name1, mode="left")
             yolo_name = self.checkCurrentModel(mode="left")
             if yolo_name:
                 self.changeModelProcess(yolo_name, "left")
@@ -398,7 +398,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         else:
             # 오른쪽 모델
             self.model_name2 = self.ui.model_box2.currentText()
-            self.ui.Model_label2.setText(str(self.model_name2).replace(".pt", ""))
+            self.modelnamethreshold(self.ui.Model_label2, self.model_name2, mode="right")
             yolo_name = self.checkCurrentModel(mode="right")
             if yolo_name:
                 self.changeModelProcess(yolo_name, "right")

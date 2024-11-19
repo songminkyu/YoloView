@@ -855,3 +855,14 @@ class YOLOSHOWBASE:
         if isinstance(self.table_result, TableViewQWidget):
             if self.table_result.isVisible():
                 self.table_result.close()
+
+    def modelnamethreshold(self,model_label,model_name, mode='single'):
+        thresholdTextSize = None
+        if mode == 'single':
+            thresholdTextSize = 170
+        else:
+            thresholdTextSize = 125
+
+        model_label.setText(str(model_name).replace(".pt", ""))
+        elided_text = model_label.fontMetrics().elidedText(model_label.text(), Qt.ElideRight, thresholdTextSize)
+        model_label.setText(elided_text)
