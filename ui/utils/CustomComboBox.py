@@ -1,8 +1,8 @@
-import PySide6
 from PySide6.QtCore import QPoint, Qt
 from PySide6.QtWidgets import (
     QVBoxLayout, QWidget, QScrollArea, QCheckBox, QLabel, QLineEdit
 )
+from PySide6.QtGui import QFontMetrics
 from qfluentwidgets import ComboBox
 
 class TristateMultiSelectComboBox(ComboBox):
@@ -192,12 +192,24 @@ class TristateMultiSelectComboBox(ComboBox):
             if checkbox.isChecked()
         ]
 
-        # Update ComboBox display text with comma-separated selected items
+        # Calculate the display width using font metrics
+        font_metrics = QFontMetrics(self.font())
+        max_width = 200  # Maximum width for the placeholder text in pixels
+
+        # Build display text and truncate with "..." if it exceeds max_width
         if self.selected_items:
-            self.setItemText(0, ", ".join(self.selected_items))
+            display_text = ", ".join(self.selected_items)
+            if font_metrics.horizontalAdvance(display_text) > max_width:
+                # Truncate text to fit within max_width
+                display_text = font_metrics.elidedText(display_text, Qt.ElideRight, max_width)
+
+            self.setItemText(0, display_text)
+            self.setToolTip(", ".join(self.selected_items))  # Tooltip shows full list
         else:
             self.setItemText(0, "Select categories...")
+            self.setToolTip("Select categories...")
 
+        # Update the count label
         self.count_label.setText(f"Checked: {len(self.selected_items)} / {self.categories_count}")
 
     def reset_display_text(self):
