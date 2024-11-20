@@ -71,6 +71,7 @@ class CustomCheckBoxWidget(ComboBox):
         # Apply custom styling to the checkbox container
         self.checkbox_container.setStyleSheet("""
             QWidget {
+                color: black;                
                 background-color: white;                     
                 border-radius: 8px;
             }

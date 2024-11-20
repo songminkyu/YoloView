@@ -550,17 +550,17 @@ class YOLOSHOWBASE:
 
     def checkTaskName(self, modelname, taskname):
         if "yolov5" in modelname:
-            return bool(re.match(f'yolo.?5.?-{taskname}.*\.pt$', modelname))
+            return bool(re.match(r'yolo.?5.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolov7" in modelname:
-            return bool(re.match(f'yolo.?7.?-{taskname}.*\.pt$', modelname))
+            return bool(re.match(r'yolo.?7.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolov8" in modelname:
-            return bool(re.match(f'yolo.?8.?-{taskname}.*\.pt$', modelname))
+            return bool(re.match(r'yolo.?8.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolov9" in modelname:
-            return bool(re.match(f'yolo.?9.?-{taskname}.*\.pt$', modelname))
+            return bool(re.match(r'yolo.?9.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolov10" in modelname:
-            return bool(re.match(f'yolo.?10.?-{taskname}.*\.pt$', modelname))
+            return bool(re.match(r'yolo.?10.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolo11" in modelname:
-            return bool(re.match(f'yolo.?11.?-{taskname}.*\.pt$', modelname))
+            return bool(re.match(r'yolo.?11.?-' + taskname + r'.*\.pt$', modelname))
 
     # Modelname의 세그먼트 이름 지정 문제 해결
     def checkSegName(self, modelname):
@@ -820,7 +820,7 @@ class YOLOSHOWBASE:
     def showResultStatics(self):
         self.resutl_statistic = dict()
         # JSON 파일 읽기
-        with open(self.current_workpath + r'\config\result.json', 'r', encoding='utf-8') as file:
+        with open(self.current_workpath + r'/config/result.json', 'r', encoding='utf-8') as file:
             self.result_statistic = json.load(file)
 
         if self.result_statistic:
