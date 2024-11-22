@@ -333,6 +333,14 @@ class YOLOSHOWBASE:
         self.inputPath = int(cam)
 
     # 폴더 선택
+    import os
+    import json
+    from PySide6.QtWidgets import QFileDialog, QMessageBox
+
+    import os
+    import json
+    from PySide6.QtWidgets import QFileDialog, QMessageBox
+
     def selectFolder(self):
         config_file = f'{self.current_workpath}/config/folder.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
@@ -345,13 +353,31 @@ class YOLOSHOWBASE:
             folder_path  # 시작 디렉토리
         )
         if FolderPath:
-            msgDialog = MessageBox(self,"Would you like to navigate through the subdirectories as well?",
-                                   "Navigating subdirectories may take some time.")
+            # 하위 디렉토리 존재 여부 확인
+            has_subdirectories = any(
+                os.path.isdir(os.path.join(FolderPath, subdir))
+                for subdir in os.listdir(FolderPath)
+            )
 
-            FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png", ".heic", ".jpeg", ".bmp", ".dib", ".jpe",
-                          ".jp2"]
+            FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png",
+                          ".heic", ".jpeg", ".bmp", ".dib", ".jpe",".jp2"]
+
             Foldername = []
-            if msgDialog.exec():
+
+            # 기본적으로 현재 디렉토리만 탐색
+            search_subdirs = False
+
+            if has_subdirectories:
+                # 하위 디렉토리가 있을 경우 메시지 박스 표시
+                msgDialog = MessageBox(
+                    self,
+                    "Would you like to include subdirectories in the search?",
+                    "Please note that searching through subdirectories may take additional time."
+                )
+                if msgDialog.exec():
+                    search_subdirs = True
+
+            if search_subdirs:
                 # 하위 디렉토리까지 탐색
                 for root, dirs, files in os.walk(FolderPath):
                     for filename in files:
@@ -362,6 +388,7 @@ class YOLOSHOWBASE:
                 for filename in os.listdir(FolderPath):
                     if os.path.splitext(filename)[1].lower() in FileFormat:
                         Foldername.append(os.path.join(FolderPath, filename))
+
             self.inputPath = Foldername
             self.showStatus('Loaded Folder: {}'.format(os.path.basename(FolderPath)))
             config['folder_path'] = FolderPath
