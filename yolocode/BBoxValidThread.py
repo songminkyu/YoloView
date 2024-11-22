@@ -1,5 +1,7 @@
+import os.path
 from yolocode.YOLOv8Thread import YOLOv8Thread
 from pathlib import Path
+from utils.image_save import ImageSaver
 import cv2
 import yaml
 
@@ -16,7 +18,6 @@ class BBoxValidThread(YOLOv8Thread):
 
     def load_classes(self):
         """data.yaml에서 클래스 이름 로드"""
-        # self.source 경로 기준으로 data.yaml 위치 확인
         source = self.source[0]
         data_yaml_path = Path(source).parent / self.data_yaml
         if not data_yaml_path.exists():
@@ -31,14 +32,18 @@ class BBoxValidThread(YOLOv8Thread):
         except Exception as e:
             self.send_msg.emit(f"Failed to load data.yaml: {str(e)}")
 
-    def load_labels(self, label_file):
-        """YOLO 텍스트 파일에서 라벨 읽기"""
-        labels = []
+    def load_bbox_labels(self, label_file):
+        """YOLO 텍스트 파일에서 bbox 라벨만 읽기"""
+        bbox_labels = []
         with open(label_file, 'r') as file:
             for line in file:
                 parts = line.strip().split()
-                labels.append([int(parts[0]), float(parts[1]), float(parts[2]), float(parts[3]), float(parts[4])])
-        return labels
+                if len(parts) == 5:  # YOLO bbox 형식: class x_center y_center width height
+                    try:
+                        bbox_labels.append([int(parts[0]), float(parts[1]), float(parts[2]), float(parts[3]), float(parts[4])])
+                    except ValueError:
+                        self.send_msg.emit(f"Invalid bbox format in {label_file}: {line.strip()}")
+        return bbox_labels
 
     def draw_bboxes(self, image, labels):
         """Bounding Box를 이미지에 그리기"""
@@ -55,7 +60,6 @@ class BBoxValidThread(YOLOv8Thread):
         return image
 
     def postprocess(self, preds, img, orig_imgs):
-        v = self.save_path
         """메인 스레드 실행"""
         self.load_classes()  # 클래스 이름 로드
 
@@ -74,7 +78,8 @@ class BBoxValidThread(YOLOv8Thread):
         index = 0
         total_count = len(image_files)
         for image_file in image_files:
-            index = index + 1
+            index += 1
+
             # labels 폴더에서 라벨 파일 경로 생성
             label_file = labels_path / f"{image_file.stem}.txt"
             if not label_file.exists():
@@ -87,7 +92,13 @@ class BBoxValidThread(YOLOv8Thread):
                 self.send_msg.emit(f"Failed to read image: {image_file}")
                 continue
 
-            labels = self.load_labels(label_file)
+            # YOLO bbox 형식의 라벨만 로드
+            labels = self.load_bbox_labels(label_file)
+
+            # bbox 라벨이 없으면 건너뛰기
+            if not labels:
+                self.send_msg.emit(f"No valid bbox labels found in {label_file}")
+                continue
 
             # 원본 이미지 전송
             self.send_input.emit(image)
@@ -99,7 +110,16 @@ class BBoxValidThread(YOLOv8Thread):
             self.send_output.emit(result_image)
 
             # 상태 메시지 전송
-            self.send_msg.emit("bbox validation: ({} / {}) {}".format(index, total_count, image_file))
+            self.send_msg.emit(f"bbox validation: ({index} / {total_count}) {image_file}")
 
             percent = (index / total_count) * 100 if total_count > 0 else 0
             self.send_progress.emit(percent)
+
+            # 이미지 저장
+            if self.save_res and self.save_path:
+                self.save_bbox_preds(self.save_path, image_file, result_image)
+
+    def save_bbox_preds(self, save_path, image_file, result_image):
+        image_name = os.path.basename(image_file)
+        image_saver = ImageSaver(result_image)
+        image_saver.save_image(save_path / image_name)

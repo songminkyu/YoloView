@@ -390,10 +390,11 @@ class YOLOSHOWBASE:
                 self.inputPath = Foldername
                 self.showStatus('Loaded Folder: {}'.format(os.path.basename(FolderPath)))
 
-        config['folder_path'] = FolderPath
-        config_json = json.dumps(config, ensure_ascii=False, indent=2)
-        with open(config_file, 'w', encoding='utf-8') as f:
-            f.write(config_json)
+        if os.path.exists(FolderPath):
+            config['folder_path'] = FolderPath
+            config_json = json.dumps(config, ensure_ascii=False, indent=2)
+            with open(config_file, 'w', encoding='utf-8') as f:
+                f.write(config_json)
 
     # 웹캠 Rtsp 선택
     def selectRtsp(self):
