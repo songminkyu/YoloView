@@ -4,12 +4,13 @@ from pathlib import Path
 from utils.image_save import ImageSaver
 import cv2
 import yaml
+import numpy as np
 
-class BBoxValidThread(YOLOv8Thread):
+class SegValidThread(YOLOv8Thread):
     def __init__(self):
-        super(BBoxValidThread, self).__init__()
-        self.task = 'bbox_valid'
-        self.project = 'runs/bbox_valid'
+        super(SegValidThread, self).__init__()
+        self.task = 'seg_valid'
+        self.project = 'runs/seg_valid'
         self.data_yaml = 'data.yaml'  # data.yaml 파일 이름만 지정
         self.labels_path = None  # 라벨 파일 경로
         self.save_res = None
@@ -32,32 +33,53 @@ class BBoxValidThread(YOLOv8Thread):
         except Exception as e:
             self.send_msg.emit(f"Failed to load data.yaml: {str(e)}")
 
-    def load_bbox_labels(self, label_file):
-        """YOLO 텍스트 파일에서 bbox 라벨만 읽기"""
-        bbox_labels = []
+    def load_segmentation_labels(self, label_file):
+        """YOLO 텍스트 파일에서 Segmentation 라벨 읽기"""
+        seg_labels = []
         with open(label_file, 'r') as file:
             for line in file:
                 parts = line.strip().split()
-                if len(parts) == 5:  # YOLO bbox 형식: class x_center y_center width height
-                    try:
-                        bbox_labels.append([int(parts[0]), float(parts[1]), float(parts[2]), float(parts[3]), float(parts[4])])
-                    except ValueError:
-                        self.send_msg.emit(f"Invalid bbox format in {label_file}: {line.strip()}")
-        return bbox_labels
+                if len(parts) > 5:  # 클래스 ID와 좌표가 있어야 함
+                    class_id = int(parts[0])  # 클래스 ID
+                    points = list(map(float, parts[1:]))  # 폴리곤 좌표
+                    if len(points) % 2 == 0:  # (x, y) 쌍으로 나뉘어야 함
+                        seg_labels.append({
+                            'class_id': class_id,
+                            'polygon': np.array(points, dtype=np.float32).reshape(-1, 2)  # (x, y) 형태로 변환
+                        })
+        return seg_labels
 
-    def draw_bboxes(self, image, labels):
-        """Bounding Box를 이미지에 그리기"""
+    def draw_segmentation_masks(self, image, seg_labels):
+        """Segmentation 마스크와 라벨을 이미지에 그리기"""
         h, w = image.shape[:2]
-        for label in labels:
-            class_id, x_center, y_center, box_width, box_height = label
-            x1 = int((x_center - box_width / 2) * w)
-            y1 = int((y_center - box_height / 2) * h)
-            x2 = int((x_center + box_width / 2) * w)
-            y2 = int((y_center + box_height / 2) * h)
-            color = (0, 255, 0)
-            cv2.rectangle(image, (x1, y1), (x2, y2), color, 2)
-            cv2.putText(image, self.classes[class_id], (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-        return image
+        overlay = image.copy()
+
+        for seg_label in seg_labels:
+            class_id = seg_label['class_id']
+            polygon = seg_label['polygon']
+
+            # 좌표를 이미지 크기에 맞게 스케일링
+            scaled_polygon = (polygon * [w, h]).astype(np.int32)
+
+            # 랜덤 색상 생성
+            color = (np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
+
+            # 마스크를 이미지에 적용
+            cv2.fillPoly(overlay, [scaled_polygon], color)
+
+            # 좌측 상단 좌표 계산 (x, y 값이 모두 가장 작은 점)
+            top_left_point = scaled_polygon[np.lexsort((scaled_polygon[:, 1], scaled_polygon[:, 0]))][0]
+
+            # 라벨 텍스트
+            label_text = self.classes[class_id] if self.classes else str(class_id)
+
+            # 라벨 텍스트 추가
+            cv2.putText(overlay, label_text, (top_left_point[0], top_left_point[1] - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+
+        # 마스크와 원본 이미지를 병합
+        blended = cv2.addWeighted(image, 0.7, overlay, 0.3, 0)
+        return blended
 
     def postprocess(self, preds, img, orig_imgs):
         """메인 스레드 실행"""
@@ -92,12 +114,12 @@ class BBoxValidThread(YOLOv8Thread):
                 self.send_msg.emit(f"Failed to read image: {image_file}")
                 continue
 
-            # YOLO bbox 형식의 라벨만 로드
-            labels = self.load_bbox_labels(label_file)
+            # YOLO segment 형식의 라벨만 로드
+            labels = self.load_segmentation_labels(label_file)
 
-            # bbox 라벨이 없으면 건너뛰기
+            # segment 라벨이 없으면 건너뛰기
             if not labels:
-                self.send_msg.emit(f"No valid bbox labels found in {label_file}")
+                self.send_msg.emit(f"No valid seg labels found in {label_file}")
                 percent = (index / total_count) * 100 if total_count > 0 else 0
                 self.send_progress.emit(percent)
                 continue
@@ -105,23 +127,23 @@ class BBoxValidThread(YOLOv8Thread):
             # 원본 이미지 전송
             self.send_input.emit(image)
 
-            # BBox 그리기
-            result_image = self.draw_bboxes(image.copy(), labels)
+            # segment 그리기
+            result_image = self.draw_segmentation_masks(image.copy(), labels)
 
             # 결과 이미지 전송
             self.send_output.emit(result_image)
 
             # 상태 메시지 전송
-            self.send_msg.emit(f"bbox validation: ({index} / {total_count}) {image_file}")
+            self.send_msg.emit(f"seg validation: ({index} / {total_count}) {image_file}")
 
             percent = (index / total_count) * 100 if total_count > 0 else 0
             self.send_progress.emit(percent)
 
             # 이미지 저장
             if self.save_res and self.save_path:
-                self.save_bbox_preds(self.save_path, image_file, result_image)
+                self.save_seg_preds(self.save_path, image_file, result_image)
 
-    def save_bbox_preds(self, save_path, image_file, result_image):
+    def save_seg_preds(self, save_path, image_file, result_image):
         image_name = os.path.basename(image_file)
         image_saver = ImageSaver(result_image)
         image_saver.save_image(save_path / image_name)

@@ -4,7 +4,7 @@ from utils import glo
 glo._init()
 glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 "
                             "yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb "
-                            "fastsam sam samv2 bbox-valid ")
+                            "fastsam sam samv2 bbox-valid seg-valid ")
 from utils.logger import LoggerUtils
 import re
 import socket
@@ -38,6 +38,7 @@ from yolocode.FastSAMThread import FastSAMThread
 from yolocode.SAMThread import SAMThread
 from yolocode.SAMv2Thread import SAMv2Thread
 from yolocode.BBoxValidThread import BBoxValidThread
+from yolocode.SegValidThread import SegValidThread
 from ultralytics import YOLO
 from ultralytics import FastSAM
 from ultralytics import RTDETR
@@ -69,6 +70,7 @@ MODEL_THREAD_CLASSES = {
     "sam": SAMThread,
     "samv2": SAMv2Thread,
     "bbox-valid": BBoxValidThread,
+    "seg-valid": SegValidThread,
 }
 # 扩展MODEL_THREAD_CLASSES字典
 MODEL_NAME_DICT = list(MODEL_THREAD_CLASSES.items())
@@ -77,7 +79,7 @@ for key, value in MODEL_NAME_DICT:
     MODEL_THREAD_CLASSES[f"{key}_right"] = value
 
 ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov10", "yolov11", "yolov5-seg", "yolov8-seg", "rtdetr",
-                   "yolov8-pose", "yolov8-obb","fastsam", "sam", "samv2", "bbox-valid"]
+                   "yolov8-pose", "yolov8-obb","fastsam", "sam", "samv2", "bbox-valid", "seg-valid"]
 loggertool = LoggerUtils()
 
 
@@ -347,7 +349,7 @@ class YOLOSHOWBASE:
             folder_path  # 시작 디렉토리
         )
         current_model = self.checkCurrentModel()
-        if current_model == 'bbox-valid' and FolderPath:
+        if current_model in ['bbox-valid', 'seg-valid']:
             self.inputPath = [FolderPath]
         else:
             if FolderPath:
@@ -551,7 +553,8 @@ class YOLOSHOWBASE:
             "fastsam": lambda name: "fastsam" in name,
             "samv2": lambda name: any(sub in name for sub in ["sam2", "samv2"]),
             "sam": lambda name: "sam" in name,
-            "bbox-valid": lambda name: "bbox-valid" in name
+            "bbox-valid": lambda name: "bbox-valid" in name,
+            "seg-valid": lambda name: "seg-valid" in name
         }
 
         if mode:

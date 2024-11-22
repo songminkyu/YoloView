@@ -96,7 +96,7 @@ class YOLOv8Thread(QThread,BasePredictor):
 
     def run(self):
 
-        if self.task != 'bbox_valid':
+        if self.task not in ['bbox_valid', 'seg_valid']:
             if not self.model or (self.track_mode and not self.track_model):
                 self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
                 self.init_setup_model(self.new_model_name)
@@ -119,6 +119,9 @@ class YOLOv8Thread(QThread,BasePredictor):
 
         if self.task == 'bbox_valid' and self.is_folder:
             self.postprocess(None,None,None)
+            return
+        elif self.task == 'seg_valid' and self.is_folder:
+            self.postprocess(None, None, None)
             return
         elif self.is_folder:
             total_count = len(self.source)
