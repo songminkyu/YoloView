@@ -348,6 +348,37 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.vid_writer = [None] * self.dataset.bs
         self.vid_frame = [None] * self.dataset.bs
 
+    def filter_and_sort_preds(self, preds, categories, epsilon=1e-5):
+        """Filter and sort predictions based on category keys."""
+        if len(categories) == 0:  # If categories are empty
+            return preds, [True] * len(preds)  # 모든 pred를 그대로 반환
+
+        filtered_preds = []
+        has_filtered = []  # 필터링 결과가 있는지 여부를 저장하는 리스트
+
+        for pred in preds:
+            # 각 예측에 대해 카테고리별로 필터링된 결과를 저장할 리스트 초기화
+            filtered_pred = []
+
+            # categories의 키를 기준으로 pred[:, 5] 값이 거의 일치하는 행들을 필터링 및 정렬
+            for key in sorted(categories.keys()):
+                # pred[:, 5]가 key와 거의 일치하는 행만 필터링
+                category_preds = pred[torch.isclose(pred[:, 5], torch.tensor(float(key)), atol=epsilon)]
+                if category_preds.size(0) > 0:  # 필터링된 결과가 있으면 추가
+                    filtered_pred.append(category_preds)
+
+            # 필터링된 예측 결과가 있을 때는 결합하여 사용
+            if filtered_pred:
+                filtered_pred = torch.cat(filtered_pred, dim=0)
+                has_filtered.append(True)  # 필터링된 결과가 있음
+            else:
+                filtered_pred = None  # 필터링된 결과가 없음을 표시
+                has_filtered.append(False)
+
+            filtered_preds.append(filtered_pred)
+
+        return filtered_preds, has_filtered
+
     def track_postprocess(self, model, track_history, preds, orig_imgs):
 
         try:
@@ -370,7 +401,6 @@ class YOLOv8Thread(QThread,BasePredictor):
             results = []
 
             # Visualize the results on the frame
-
 
             for i, pred in enumerate(preds):
                 orig_img = orig_imgs[i]
@@ -403,37 +433,6 @@ class YOLOv8Thread(QThread,BasePredictor):
 
         except Exception as e:
             print("Error", e)
-
-    def filter_and_sort_preds(self, preds, categories, epsilon=1e-5):
-        """Filter and sort predictions based on category keys."""
-        if len(categories) == 0:  # If categories are empty
-            return preds, [True] * len(preds)  # 모든 pred를 그대로 반환
-
-        filtered_preds = []
-        has_filtered = []  # 필터링 결과가 있는지 여부를 저장하는 리스트
-
-        for pred in preds:
-            # 각 예측에 대해 카테고리별로 필터링된 결과를 저장할 리스트 초기화
-            filtered_pred = []
-
-            # categories의 키를 기준으로 pred[:, 5] 값이 거의 일치하는 행들을 필터링 및 정렬
-            for key in sorted(categories.keys()):
-                # pred[:, 5]가 key와 거의 일치하는 행만 필터링
-                category_preds = pred[torch.isclose(pred[:, 5], torch.tensor(float(key)), atol=epsilon)]
-                if category_preds.size(0) > 0:  # 필터링된 결과가 있으면 추가
-                    filtered_pred.append(category_preds)
-
-            # 필터링된 예측 결과가 있을 때는 결합하여 사용
-            if filtered_pred:
-                filtered_pred = torch.cat(filtered_pred, dim=0)
-                has_filtered.append(True)  # 필터링된 결과가 있음
-            else:
-                filtered_pred = None  # 필터링된 결과가 없음을 표시
-                has_filtered.append(False)
-
-            filtered_preds.append(filtered_pred)
-
-        return filtered_preds, has_filtered
 
     def postprocess(self, preds, img, orig_imgs):
         """Post-processes predictions and returns a list of Results objects."""
