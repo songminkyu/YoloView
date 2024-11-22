@@ -4,7 +4,7 @@ from utils import glo
 glo._init()
 glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 "
                             "yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb "
-                            "fastsam sam samv2")
+                            "fastsam sam samv2 bbox-valid ")
 from utils.logger import LoggerUtils
 import re
 import socket
@@ -37,6 +37,7 @@ from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
 from yolocode.FastSAMThread import FastSAMThread
 from yolocode.SAMThread import SAMThread
 from yolocode.SAMv2Thread import SAMv2Thread
+from yolocode.BBoxValidThread import BBoxValidThread
 from ultralytics import YOLO
 from ultralytics import FastSAM
 from ultralytics import RTDETR
@@ -66,7 +67,8 @@ MODEL_THREAD_CLASSES = {
     "yolov11-pose": YOLOv8PoseThread,
     "fastsam": FastSAMThread,
     "sam": SAMThread,
-    "samv2": SAMv2Thread
+    "samv2": SAMv2Thread,
+    "bbox-valid": BBoxValidThread,
 }
 # 扩展MODEL_THREAD_CLASSES字典
 MODEL_NAME_DICT = list(MODEL_THREAD_CLASSES.items())
@@ -75,7 +77,7 @@ for key, value in MODEL_NAME_DICT:
     MODEL_THREAD_CLASSES[f"{key}_right"] = value
 
 ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov10", "yolov11", "yolov5-seg", "yolov8-seg", "rtdetr",
-                   "yolov8-pose", "yolov8-obb","fastsam", "sam", "samv2"]
+                   "yolov8-pose", "yolov8-obb","fastsam", "sam", "samv2", "bbox-valid"]
 loggertool = LoggerUtils()
 
 
@@ -344,49 +346,54 @@ class YOLOSHOWBASE:
             "Select your Folder",
             folder_path  # 시작 디렉토리
         )
-        if FolderPath:
-            # 하위 디렉토리 존재 여부 확인
-            has_subdirectories = any(
-                os.path.isdir(os.path.join(FolderPath, subdir))
-                for subdir in os.listdir(FolderPath)
-            )
-
-            FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png",
-                          ".heic", ".jpeg", ".bmp", ".dib", ".jpe",".jp2"]
-
-            Foldername = []
-
-            # 기본적으로 현재 디렉토리만 탐색
-            search_subdirs = False
-
-            if has_subdirectories:
-                # 하위 디렉토리가 있을 경우 메시지 박스 표시
-                msgDialog = MessageBox(
-                    self,
-                    "Would you like to include subdirectories in the search?",
-                    "Please note that searching through subdirectories may take additional time."
+        current_model = self.checkCurrentModel()
+        if current_model == 'bbox-valid' and FolderPath:
+            self.inputPath = [FolderPath]
+        else:
+            if FolderPath:
+                # 하위 디렉토리 존재 여부 확인
+                has_subdirectories = any(
+                    os.path.isdir(os.path.join(FolderPath, subdir))
+                    for subdir in os.listdir(FolderPath)
                 )
-                if msgDialog.exec():
-                    search_subdirs = True
 
-            if search_subdirs:
-                # 하위 디렉토리까지 탐색
-                for root, dirs, files in os.walk(FolderPath):
-                    for filename in files:
+                FileFormat = [".mp4", ".mkv", ".avi", ".flv", ".jpg", ".png",
+                              ".heic", ".jpeg", ".bmp", ".dib", ".jpe",".jp2"]
+
+                Foldername = []
+
+                # 기본적으로 현재 디렉토리만 탐색
+                search_subdirs = False
+
+                if has_subdirectories:
+                    # 하위 디렉토리가 있을 경우 메시지 박스 표시
+                    msgDialog = MessageBox(
+                        self,
+                        "Would you like to include subdirectories in the search?",
+                        "Please note that searching through subdirectories may take additional time."
+                    )
+                    if msgDialog.exec():
+                        search_subdirs = True
+
+                if search_subdirs:
+                    # 하위 디렉토리까지 탐색
+                    for root, dirs, files in os.walk(FolderPath):
+                        for filename in files:
+                            if os.path.splitext(filename)[1].lower() in FileFormat:
+                                Foldername.append(os.path.join(root, filename))
+                else:
+                    # 현재 디렉토리만 탐색
+                    for filename in os.listdir(FolderPath):
                         if os.path.splitext(filename)[1].lower() in FileFormat:
-                            Foldername.append(os.path.join(root, filename))
-            else:
-                # 현재 디렉토리만 탐색
-                for filename in os.listdir(FolderPath):
-                    if os.path.splitext(filename)[1].lower() in FileFormat:
-                        Foldername.append(os.path.join(FolderPath, filename))
+                            Foldername.append(os.path.join(FolderPath, filename))
 
-            self.inputPath = Foldername
-            self.showStatus('Loaded Folder: {}'.format(os.path.basename(FolderPath)))
-            config['folder_path'] = FolderPath
-            config_json = json.dumps(config, ensure_ascii=False, indent=2)
-            with open(config_file, 'w', encoding='utf-8') as f:
-                f.write(config_json)
+                self.inputPath = Foldername
+                self.showStatus('Loaded Folder: {}'.format(os.path.basename(FolderPath)))
+
+        config['folder_path'] = FolderPath
+        config_json = json.dumps(config, ensure_ascii=False, indent=2)
+        with open(config_file, 'w', encoding='utf-8') as f:
+            f.write(config_json)
 
     # 웹캠 Rtsp 선택
     def selectRtsp(self):
@@ -542,7 +549,8 @@ class YOLOSHOWBASE:
             "yolov11-obb": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkObbName(name),
             "fastsam": lambda name: "fastsam" in name,
             "samv2": lambda name: any(sub in name for sub in ["sam2", "samv2"]),
-            "sam": lambda name: "sam" in name
+            "sam": lambda name: "sam" in name,
+            "bbox-valid": lambda name: "bbox-valid" in name
         }
 
         if mode:

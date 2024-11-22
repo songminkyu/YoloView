@@ -96,9 +96,10 @@ class YOLOv8Thread(QThread,BasePredictor):
 
     def run(self):
 
-        if not self.model or (self.track_mode and not self.track_model):
-            self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
-            self.init_setup_model(self.new_model_name)
+        if self.task != 'bbox_valid':
+            if not self.model or (self.track_mode and not self.track_model):
+                self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
+                self.init_setup_model(self.new_model_name)
 
         source = str(self.source)
         # 입력 소스 유형 결정
@@ -116,7 +117,10 @@ class YOLOv8Thread(QThread,BasePredictor):
             self.save_path = increment_path(Path(self.project) / self.name, exist_ok=self.exist_ok)  # increment run
             self.save_path.mkdir(parents=True, exist_ok=True)  # make dir
 
-        if self.is_folder:
+        if self.task == 'bbox_valid' and self.is_folder:
+            self.postprocess(None,None,None)
+            return
+        elif self.is_folder:
             total_count = len(self.source)
             for index, source in enumerate(self.source):
                 is_folder_last = True if index + 1 == len(self.source) else False
@@ -460,7 +464,6 @@ class YOLOv8Thread(QThread,BasePredictor):
             if len(self.categories) == 0 or (filtered and pred is not None):
                 # categories가 비어 있거나 필터링된 결과가 있는 경우: 원본 pred 사용
                 pred[:, :4] = ops.scale_boxes(img.shape[2:], pred[:, :4], orig_img.shape)
-                res = Results(orig_img, path=img_path, names=self.model.names, boxes=pred)
                 results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred))
             else:
                 # 필터링된 결과가 없는 경우: 원본 이미지를 그대로 사용
