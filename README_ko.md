@@ -36,7 +36,7 @@
 
 프로그램이 대상을 감지하기 위해 실행 중일 때 모델/하이퍼 매개변수를 변경할 수 있습니다.
 
-1. `YOLOv5` / `YOLOv7` / `YOLOv8` / `YOLOv9` / `RTDETR` / `YOLOv5-seg` / `YOLOv8-seg` / `YOLOv10` / `YOLOv11` 에서 동적으로 모델을 변경하는 것을 지원합니다.
+1. `YOLOv5` / `YOLOv8` / `YOLOv9` / `RTDETR` / `YOLOv5-seg` / `YOLOv8-seg` / `YOLOv10` / `YOLOv11` 에서 동적으로 모델을 변경하는 것을 지원합니다.
 2. `IOU` / `Confidence` / `Delay time` / `line thick`를 동적으로 변경하는 것을 지원합니다.
 
 ### 3. 모델을 자동으로 로드합니다.

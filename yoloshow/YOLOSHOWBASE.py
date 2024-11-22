@@ -74,7 +74,7 @@ for key, value in MODEL_NAME_DICT:
     MODEL_THREAD_CLASSES[f"{key}_left"] = value
     MODEL_THREAD_CLASSES[f"{key}_right"] = value
 
-ALL_MODEL_NAMES = ["yolov5", "yolov7", "yolov8", "yolov9", "yolov10", "yolov11", "yolov5-seg", "yolov8-seg", "rtdetr",
+ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov10", "yolov11", "yolov5-seg", "yolov8-seg", "rtdetr",
                    "yolov8-pose", "yolov8-obb","fastsam", "sam", "samv2"]
 loggertool = LoggerUtils()
 
@@ -551,8 +551,6 @@ class YOLOSHOWBASE:
     def checkTaskName(self, modelname, taskname):
         if "yolov5" in modelname:
             return bool(re.match(r'yolo.?5.?-' + taskname + r'.*\.pt$', modelname))
-        elif "yolov7" in modelname:
-            return bool(re.match(r'yolo.?7.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolov8" in modelname:
             return bool(re.match(r'yolo.?8.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolov9" in modelname:
@@ -803,7 +801,7 @@ class YOLOSHOWBASE:
             for yolo_thread in self.yolo_threads.threads_pool.values():
                 yolo_thread.line_thickness = x
 
-    # YOLOv5, YOLOv7 및 YOLOv9를 수정하여 yolo.py 충돌 해결
+    # YOLOv5 및 YOLOv9를 수정하여 yolo.py 충돌 해결
     def solveYoloConflict(self, ptnamelst):
         glo.set_value("yoloname", "yolov5 yolov8 yolov9 yolov9-seg yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose")
         self.reloadModel()

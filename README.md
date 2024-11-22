@@ -36,12 +36,12 @@ Choose Image / Video / Webcam / Folder (Batch) / IPCam in the menu bar on the le
 
 When the program is running to detect targets, you can change models / hyper Parameters
 
-1. Support changing model in YOLOv5 / YOLOv7 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / RTDETR / YOLOv5-seg / YOLOv8-seg YOLOv11-seg / YOLOv8-pose / YOLOv11-pose / YOLOv8-obb / YOLOv11-obb / SAM / MobileSAM / FastSAM dynamically
+1. Support changing model in YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / RTDETR / YOLOv5-seg / YOLOv8-seg YOLOv11-seg / YOLOv8-pose / YOLOv11-pose / YOLOv8-obb / YOLOv11-obb / SAM / MobileSAM / FastSAM dynamically
 2. Support changing `IOU` / `Confidence` / `Delay time ` / `line thickness` dynamically
 
 ### 3. Loading Model Automatically
 
-Our program will automatically detect  `pt` files including [YOLOv5 Models](https://github.com/ultralytics/yolov5/releases) /  [YOLOv7 Models](https://github.com/WongKinYiu/yolov7/releases/)  /  [YOLOv8 Models](https://github.com/ultralytics/assets/releases/)  / [YOLOv9 Models](https://github.com/WongKinYiu/yolov9/releases/)  / [YOLOv10 Models](https://github.com/THU-MIG/yolov10/releases/)  that were previously added to the `ptfiles` folder.
+Our program will automatically detect  `pt` files including [YOLOv5 Models](https://github.com/ultralytics/yolov5/releases) /  [YOLOv8 Models](https://github.com/ultralytics/assets/releases/)  / [YOLOv9 Models](https://github.com/WongKinYiu/yolov9/releases/)  / [YOLOv10 Models](https://github.com/THU-MIG/yolov10/releases/)  that were previously added to the `ptfiles` folder.
 
 If you need add the new `pt` file, please click `Import Model` button in `Settings` box to select your `pt` file. Then our program will put it into  `ptfiles` folder.
 
