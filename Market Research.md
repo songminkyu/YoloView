@@ -174,7 +174,7 @@
      - **데이터베이스**: PostgreSQL
      - **클라우드**: GCP
    - **평판**: API 기반의 효율성과 확장성으로 주목받음.
-   - **웹사이트**: [https://labelr.kr](https://labelr.kr)
+   - **웹사이트**: [https://labelr.io](https://labelr.io)
 
 ---
 
@@ -198,7 +198,7 @@
 
 ## 본 조사의 성격 및 의의
 
-본 조사는 **데이터 라벨링 서비스 산업**의 글로벌 및 국내 주요 기업들을 중심으로 진행된 **시장 조사(Market Research)**, **경쟁 분석(Competitive Analysis)**, **산업 분석(Industry Analysis)**, **기업 프로파일링(Company Profiling)**, 그리고 **기술 스택 분석(Technology Stack Analysis)**의 성격을 갖는 연구입니다. 아래는 본 조사의 주요 구성 요소와 그 연관성을 상세히 설명합니다:
+본 조사는 **데이터 라벨링 서비스 산업**의 글로벌 및 국내 주요 기업들을 중심으로 진행된 **시장 조사(Market Research)**, **경쟁 분석(Competitive Analysis)**, **산업 분석(Industry Analysis)**, **기업 프로파일링(Company Profiling)**, 그리고 **기술 스택 분석(Technology Stack Analysis)** 의 성격을 갖는 연구입니다. 아래는 본 조사의 주요 구성 요소와 그 연관성을 상세히 설명합니다:
 
 ---
 
