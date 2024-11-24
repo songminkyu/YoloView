@@ -138,7 +138,7 @@
      - **데이터베이스**: MySQL
      - **클라우드**: AWS
    - **평판**: 산업별 특화된 데이터 라벨링으로 경쟁력을 인정받음.
-   - **웹사이트**: [https://datamaker.kr](https://datamaker.kr)
+   - **웹사이트**: [https://www.datamaker.io](https://www.datamaker.io)
 
 5. **알체라 (Alchera)**
    - **특징**: 이미지 및 비전 AI 데이터 처리에 강점이 있으며, 특히 공공 및 의료 분야에서 두각을 나타냄.
