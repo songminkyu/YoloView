@@ -174,7 +174,7 @@
      - **데이터베이스**: PostgreSQL
      - **클라우드**: GCP
    - **평판**: API 기반의 효율성과 확장성으로 주목받음.
-   - **웹사이트**: [https://labelr.kr](https://labelr.kr)
+   - **웹사이트**: [https://labelr.io](https://labelr.io)
 
 ---
 
