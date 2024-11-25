@@ -176,6 +176,8 @@
    - **평판**: API 기반의 효율성과 확장성으로 주목받음.
    - **웹사이트**: [https://labelr.io](https://labelr.io)
 
+7. **데이타쳐 (datature)**
+   - **웹사이트**: [https://kr.datature.io/](https://kr.datature.io/)
 ---
 
 ## 최종 순위 (글로벌 & 국내)
