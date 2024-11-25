@@ -22,6 +22,7 @@
 - [x] `YOLO11` has additional features (obb,pose,deteced,segment,track)
 - [x] Tracking & Counting ( `YOLOv8` & `YOLO11`)
 - [x] Added bbox and segment category filter functions (under model selection function)
+- [x] Added bbox and segment label verification function(`bbox-valid.pt` & `seg-valid.pt`)
 - [x] Added subfolder navigation feature (only when browsing folders)
 - [x] Improved and enhanced statistics
 - [x] Save Labal
