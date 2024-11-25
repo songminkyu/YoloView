@@ -615,7 +615,18 @@ class YOLOSHOWBASE:
 
     # MessageBar에 메시지 표시
     def showStatus(self, msg):
-        self.ui.message_bar.setText(msg)
+        max_width = self.ui.message_bar.width()  # QLabel의 현재 너비
+        font_metrics = self.ui.message_bar.fontMetrics()  # QLabel의 폰트 정보 가져오기
+
+        # 텍스트가 QLabel 너비를 초과하면 "..."으로 축약
+        if font_metrics.horizontalAdvance(msg) > max_width:
+            shortened_msg = font_metrics.elidedText(msg, Qt.ElideRight, max_width)
+            self.ui.message_bar.setText(shortened_msg)
+            self.ui.message_bar.setToolTip(msg)  # 툴팁에 전체 텍스트 설정
+        else:
+            self.ui.message_bar.setText(msg)
+            self.ui.message_bar.setToolTip("")  # 툴팁 초기화
+
         if msg == 'Finish Detection':
             self.quitRunningModel()
             self.ui.run_button.setChecked(False)
