@@ -61,8 +61,14 @@ class SegValidThread(YOLOv8Thread):
             # 좌표를 이미지 크기에 맞게 스케일링
             scaled_polygon = (polygon * [w, h]).astype(np.int32)
 
-            # 랜덤 색상 생성
-            color = (np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
+            # 랜덤 색상 생성 (COCO 스타일처럼 눈에 띄는 색상)
+            while True:
+                color = (np.random.randint(50, 205),  # 최소 50, 최대 205 (너무 어둡거나 밝지 않게)
+                         np.random.randint(50, 205),
+                         np.random.randint(50, 205))
+                brightness = 0.299 * color[2] + 0.587 * color[1] + 0.114 * color[0]
+                if 100 < brightness < 220:  # 밝기가 적당한 색상 선택
+                    break
 
             # 마스크를 이미지에 적용
             cv2.fillPoly(overlay, [scaled_polygon], color)
@@ -73,12 +79,20 @@ class SegValidThread(YOLOv8Thread):
             # 라벨 텍스트
             label_text = self.classes[class_id] if self.classes else str(class_id)
 
-            # 라벨 텍스트 추가
-            cv2.putText(overlay, label_text, (top_left_point[0], top_left_point[1] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+            # 텍스트 배경 박스 설정
+            text_size = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
+            text_x, text_y = top_left_point[0], top_left_point[1] - 10
+            box_coords = ((text_x, text_y - text_size[1] - 4), (text_x + text_size[0] + 4, text_y + 4))
 
-        # 마스크와 원본 이미지를 병합
-        blended = cv2.addWeighted(image, 0.7, overlay, 0.3, 0)
+            # 반투명 배경 박스
+            cv2.rectangle(overlay, box_coords[0], box_coords[1], (0, 0, 0), -1)
+
+            # 라벨 텍스트 추가
+            cv2.putText(overlay, label_text, (text_x + 2, text_y - 2),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+
+        # 마스크와 원본 이미지를 병합 (불투명도를 높임)
+        blended = cv2.addWeighted(image, 0.4, overlay, 0.6, 0)  # 원본 이미지 비중 낮춤, 마스크 비중 높임
         return blended
 
     def postprocess(self, preds, img, orig_imgs):
