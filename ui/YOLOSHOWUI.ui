@@ -534,6 +534,9 @@ QPushButton{
 	font-weight: bold;
 	padding-left: 15px;
 }
+QFrame#distributeBox:hover{
+	background-color: rgba(114, 129, 214, 59);
+}
 QFrame#cameraBox:hover{
 	background-color: rgba(114, 129, 214, 59);
 }
