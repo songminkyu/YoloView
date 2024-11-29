@@ -14,7 +14,7 @@ WIDTH_LEFT_BOX_STANDARD = 80
 WIDTH_LEFT_BOX_EXTENDED = 200
 WIDTH_LOGO = 60
 UI_FILE_PATH = "ui/YOLOSHOWUI.ui"
-KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting']
+KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting', 'src_distribute']
 
 
 # # YOLOSHOW 윈도우 클래스는 UI 파일과 Ui_mainWindow를 동적으로 로드합니다.

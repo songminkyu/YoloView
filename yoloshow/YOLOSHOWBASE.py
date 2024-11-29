@@ -50,7 +50,7 @@ WIDTH_LEFT_BOX_EXTENDED = 200
 WIDTH_SETTING_BAR = 300
 WIDTH_LOGO = 60
 WINDOW_SPLIT_BODY = 20
-KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting']
+KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting', 'src_distribute']
 # 모델 이름 및 스레드 클래스 매핑
 MODEL_THREAD_CLASSES = {
     "yolov5": YOLOv8Thread,
