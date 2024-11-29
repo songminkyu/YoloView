@@ -675,8 +675,15 @@ class YOLOSHOWBASE:
         elif 'fastsam' in file_name.lower():
             model = FastSAM(yolo_thread.new_model_name)
         else:
-            self.ui.category_box.clearCategories()
-            self.ui.category_box.reset_display_text()
+            if mode == 'single':
+                self.ui.category_box.clearCategories()
+                self.ui.category_box.reset_display_text()
+            elif mode == 'left':
+                self.ui.category_box1.clearCategories()
+                self.ui.category_box1.reset_display_text()
+            elif mode == 'right':
+                self.ui.category_box2.clearCategories()
+                self.ui.category_box2.reset_display_text()
             return
 
         class_names = model.names
