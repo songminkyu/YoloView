@@ -308,6 +308,9 @@ class Ui_MainWindow(object):
                                           "QPushButton#src_img{\n"
                                           "	background-image: url(:/leftbox/images/newsize/gallery.png);\n"
                                           "}\n"
+                                          "QPushButton#src_distribute{\n"
+                                          " background-image: url(:/leftbox/images/newsize/pyramid.png);\n"
+                                          "}\n"
                                           "QPushButton#src_webcam{\n"
                                           "	background-image: url(:/leftbox/images/newsize/photo-camera.png);\n"
                                           "}\n"
@@ -334,6 +337,9 @@ class Ui_MainWindow(object):
                                           "	font: 12pt \"Times New Roman\";\n"
                                           "	font-weight: bold;\n"
                                           "	padding-left: 15px;\n"
+                                          "}\n"
+                                          "QFrame#distributeBox:hover{\n"
+                                          "	background-color: rgba(114, 129, 214, 59);\n"
                                           "}\n"
                                           "QFrame#cameraBox:hover{\n"
                                           "	background-color: rgba(114, 129, 214, 59);\n"
@@ -516,6 +522,33 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addItem(self.zSpacer3)
 
+        self.distributeBox = QFrame(self.leftbox_bottom)
+        self.distributeBox.setObjectName(u"distributeBox")
+        self.distributeBox.setMinimumSize(QSize(180, 0))
+        self.distributeBox.setMaximumSize(QSize(180, 16777215))
+        self.distributeBox.setLayoutDirection(Qt.LeftToRight)
+        self.distributeBox.setFrameShape(QFrame.StyledPanel)
+        self.distributeBox.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_d = QHBoxLayout(self.distributeBox)
+        self.horizontalLayout_d.setSpacing(0)
+        self.horizontalLayout_d.setObjectName(u"horizontalLayout_d")
+        self.horizontalLayout_d.setContentsMargins(0, 0, 0, 0)
+        self.src_distribute = QPushButton(self.distributeBox)
+        self.src_distribute.setObjectName(u"src_distribute")
+        sizePolicy2.setHeightForWidth(self.src_distribute.sizePolicy().hasHeightForWidth())
+        self.src_distribute.setSizePolicy(sizePolicy2)
+        self.src_distribute.setMinimumSize(QSize(180, 0))
+        self.src_distribute.setMaximumSize(QSize(180, 16777215))
+        self.src_distribute.setIconSize(QSize(30, 30))
+
+        self.horizontalLayout_d.addWidget(self.src_distribute)
+
+        self.verticalLayout_3.addWidget(self.distributeBox)
+
+        self.zSpacerd = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_3.addItem(self.zSpacerd)
+
         self.resultBox = QFrame(self.leftbox_bottom)
         self.resultBox.setObjectName(u"resultBox")
         self.resultBox.setFrameShape(QFrame.StyledPanel)
@@ -634,6 +667,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setStretch(15, 4)
         self.verticalLayout_3.setStretch(16, 1)
         self.verticalLayout_3.setStretch(17, 4)
+        self.verticalLayout_3.setStretch(18, 1)
+        self.verticalLayout_3.setStretch(19, 4)
 
         self.verticalLayout_2.addWidget(self.leftbox_bottom)
 
@@ -2133,6 +2168,7 @@ class Ui_MainWindow(object):
         self.src_folder.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+S", None))
 #endif // QT_CONFIG(shortcut)
         self.src_camera.setText(QCoreApplication.translate("MainWindow", u"IPcam  ", None))
+        self.src_distribute.setText(QCoreApplication.translate("MainWindow", u"    Distribute  ", None))
         self.src_result.setText(QCoreApplication.translate("MainWindow", u"    Result Pic  ", None))
         self.src_table.setText(QCoreApplication.translate("MainWindow", u"    Result Tab  ", None))
         self.src_vsmode.setText(QCoreApplication.translate("MainWindow", u"VS Mode", None))
