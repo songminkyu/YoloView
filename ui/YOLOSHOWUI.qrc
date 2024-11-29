@@ -15,6 +15,7 @@
     <file>../images/newsize/menu.png</file>
     <file>../images/newsize/photo-camera.png</file>
     <file>../images/newsize/security-camera.png</file>
+    <file>../images/newsize/pyramid.png</file>
   </qresource>
   <qresource prefix="statusbarVS">
     <file>../images/newsize/classesBarVS.png</file>
