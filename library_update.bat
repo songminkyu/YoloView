@@ -29,11 +29,9 @@ IF EXIST "%DEST_ULTRALYTICS%" (
 REM Copy the ultralytics source code to its destination
 xcopy /E /I /Y "%TEMP_DIR%\ultralytics" "%DEST_ULTRALYTICS%"
 
-REM Check if docs/en exists, and copy it to docs at the same level as ultralytics
+REM Check if docs/en exists, and copy its content to docs at the same level as ultralytics
 IF EXIST "%TEMP_DIR%\docs\en" (
-    rd /s /q "%DEST_DOCS%" 2>nul
-    mkdir "%DEST_DOCS%"
-    xcopy /E /I /Y "%TEMP_DIR%\docs\en" "%DEST_DOCS%"
+    xcopy /E /I /Y "%TEMP_DIR%\docs\en" "%DEST_DOCS%\Ultralytics"
 )
 
 REM Remove the temporary directory
