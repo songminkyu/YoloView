@@ -61,7 +61,7 @@ class DatasetCleaner:
             os.remove(duplicate)
             print(f"Deleted duplicate label: {duplicate}")
 
-    def remove_unmatched_images_and_labels(self, images_folder, labels_folder):
+    def remove_unmatched_images_and_labels_proc(self, images_folder, labels_folder):
         for label_file in os.listdir(labels_folder):
             label_path = os.path.join(labels_folder, label_file)
             base_name = os.path.splitext(label_file)[0]
@@ -145,5 +145,5 @@ class DatasetCleaner:
                 labels_folder = os.path.join(subfolder_path, "labels")
 
                 if os.path.exists(images_folder) and os.path.exists(labels_folder):
-                    self.remove_unmatched_images_and_labels(images_folder, labels_folder)
+                    self.remove_unmatched_images_and_labels_proc(images_folder, labels_folder)
 
