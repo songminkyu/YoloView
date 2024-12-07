@@ -125,6 +125,11 @@ library_update.bat 실행
 ```shell
 pyside6-rcc {YOLOSHOW_New_Path}\ui\YOLOSHOWUI.qrc -o {YOLOSHOW_New_Path}\ui\YOLOSHOWUI_rc.py
 ```
+
+Qt widget designer를 통한 편집된 ui 빌드는 아래처럼 실행 해야함.
+```shell
+pyside6-uic {YOLOSHOW_New_Path}\ui\YOLOSHOWUI.ui -o {YOLOSHOW_New_Path}\ui\YOLOSHOWUI_result.py
+```
 ### 5. 글꼴 추가
 
 #### Windows 사용자
