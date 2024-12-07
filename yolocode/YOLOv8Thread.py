@@ -117,10 +117,7 @@ class YOLOv8Thread(QThread,BasePredictor):
             self.save_path = increment_path(Path(self.project) / self.name, exist_ok=self.exist_ok)  # increment run
             self.save_path.mkdir(parents=True, exist_ok=True)  # make dir
 
-        if self.task == 'bbox_valid' and self.is_folder:
-            self.postprocess(None,None,None)
-            return
-        elif self.task == 'seg_valid' and self.is_folder:
+        if self.task in {'bbox_valid', 'seg_valid'} and self.is_folder:
             self.postprocess(None, None, None)
             return
         elif self.is_folder:
