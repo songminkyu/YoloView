@@ -145,5 +145,5 @@ class DatasetCleaner:
                 labels_folder = os.path.join(subfolder_path, "labels")
 
                 if os.path.exists(images_folder) and os.path.exists(labels_folder):
-                    self._remove_unmatched_images_and_labels(images_folder, labels_folder)
+                    self.remove_unmatched_images_and_labels(images_folder, labels_folder)
 
