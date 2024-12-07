@@ -86,6 +86,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.src_camera.clicked.connect(self.selectRtsp)
         self.ui.src_result.clicked.connect(self.showResultStatics)
         self.ui.src_table.clicked.connect(self.showTableResult)
+        self.ui.src_curation.clicked.connect(self.datasetCuration)
         # --- 사진/동영상 가져오기, 카메라 호출, 폴더 가져오기(일괄 처리), 웹 카메라 호출, 결과 통계 사진, 결과 통계 테이블 --- #
 
         # --- 모델 가져오기, 결과 내보내기 --- #

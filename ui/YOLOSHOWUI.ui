@@ -505,7 +505,7 @@ QPushButton#src_camera{
 QPushButton#src_img{
 	background-image: url(:/leftbox/images/newsize/gallery.png);
 }
-QPushButton#src_distribute{
+QPushButton#src_curation{
 	background-image: url(:/leftbox/images/newsize/pyramid.png);
 }
 QPushButton#src_webcam{
@@ -534,7 +534,7 @@ QPushButton{
 	font-weight: bold;
 	padding-left: 15px;
 }
-QFrame#distributeBox:hover{
+QFrame#curationBox:hover{
 	background-color: rgba(114, 129, 214, 59);
 }
 QFrame#cameraBox:hover{
@@ -1049,7 +1049,7 @@ QFrame#tableBox:hover{
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QFrame" name="distributeBox">
+                 <widget class="QFrame" name="curationBox">
                   <property name="minimumSize">
                    <size>
                     <width>180</width>
@@ -1088,7 +1088,7 @@ QFrame#tableBox:hover{
                     <number>0</number>
                    </property>
                    <item alignment="">
-                    <widget class="QPushButton" name="src_distribute">
+                    <widget class="QPushButton" name="src_curation">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                        <horstretch>0</horstretch>

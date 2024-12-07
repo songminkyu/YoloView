@@ -469,6 +469,10 @@ class YOLOSHOWBASE:
         except Exception as e:
             return False
 
+    # 데이터셋 curation
+    def datasetCuration(self):
+        v = 1
+
     # 라벨 이미지 표시
     def showImg(self, img, label, flag):
         try:
