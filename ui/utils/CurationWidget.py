@@ -93,6 +93,8 @@ class CurationQWidget(QDialog):
         """Handle the proceed button click."""
         print("진행 버튼 클릭됨!")
 
+        current_path = self.directory_path_edit.text()
+        print(f"현재 경로: {current_path}")
         # 모든 체크박스의 상태를 확인하고 출력
         for idx, checkbox in enumerate(self.checkboxes):
             state = checkbox.isChecked()  # 체크박스의 상태 확인 (True/False)
