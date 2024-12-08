@@ -18,6 +18,7 @@ import numpy as np
 from ui.utils.AcrylicFlyout import ResultChartView
 from ui.utils.TableView import TableViewQWidget
 from ui.utils.drawFigure import PlotWindow
+from ui.utils.CurationWidget import CurationQWidget
 from PySide6.QtGui import QPixmap, QImage
 from PySide6.QtWidgets import QFileDialog, QGraphicsDropShadowEffect, QFrame, QPushButton
 from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QParallelAnimationGroup, QPoint
@@ -95,6 +96,7 @@ class YOLOSHOWBASE:
         self.detect_result = None
         self.detect_errors = None
         self.table_result = None
+        self.curation_widget = None
         self.allModelNames = ALL_MODEL_NAMES
 
     # 왼쪽 메뉴바 초기화
@@ -471,7 +473,8 @@ class YOLOSHOWBASE:
 
     # 데이터셋 curation
     def datasetCuration(self):
-        v = 1
+        self.curation_widget = CurationQWidget()
+        self.curation_widget.exec()
 
     # 라벨 이미지 표시
     def showImg(self, img, label, flag):
