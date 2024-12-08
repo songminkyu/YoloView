@@ -56,16 +56,16 @@ class CurationQWidget(QDialog):
         self.feature_layout = QVBoxLayout()
         self.feature_layout.setSpacing(15)  # 체크박스 간 간격 조정
         features = [
-            "라벨 및 이미지 이름이 매칭 안되는 데이터 제거",  # DatasetCleaner.py
-            "라벨 텍스트 사이즈 0인 경우 매칭되는 이미지와 같이 제거",
-            "라벨 및 이미지 파일 이름을 매칭하여 변경 (파일명 패딩 추가)",
-            "이미지 품질 평가 후 낮은 품질 제거",  # DatasetImageQualityEvaluator.py
-            "Segmentation 제거",  # DatasetCleaner.py
-            "Bounding Box 제거",  # DatasetCleaner.py
-            "제거할 클래스 id를 통해서 이미지 및 라벨 제거",
-            "클래스 ID 변경",  # DatasetChangeClassId.py
-            "데이터 분할 비율 조정",  # DatasetDistributionbalance.py
-            "이미지 및 라벨 정렬",  # DatasetSorting.py
+            "Remove data with mismatched label and image names",  # 라벨 및 이미지 이름이 매칭 안되는 데이터 제거 DatasetCleaner.py
+            "Remove matching images if label text size is 0", # 라벨 텍스트 사이즈 0인 경우 매칭되는 이미지와 같이 제거 DatasetCleaner.py
+            "Change label and image file names by matching them (add padding to file name)", # 라벨 및 이미지 파일 이름을 매칭하여 변경 (파일명 패딩 추가) DatasetCleaner.py
+            "Remove low quality after image quality evaluation",  # 이미지 품질 평가 후 낮은 품질 제거 DatasetImageQualityEvaluator.py
+            "Remove segmentation",  # Segmentation 제거 DatasetCleaner.py
+            "Remove bounding box",  # Bounding Box 제거 DatasetCleaner.py
+            "Remove images and labels through class id to be removed", # 제거할 클래스 id를 통해서 이미지 및 라벨 제거 DatasetCleaner.py
+            "Change class ID",  # DatasetChangeClassId.py
+            "Adjust data split ratio",  # 데이터 분할 비율 조정 클래스 ID 변경 DatasetDistributionbalance.py
+            "Sort images and labels",  # 이미지 및 라벨 정렬 DatasetSorting.py
         ]
         self.checkboxes = []
 
