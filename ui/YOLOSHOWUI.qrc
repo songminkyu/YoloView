@@ -33,6 +33,10 @@
     <file>../images/newsize/stop.png</file>
     <file>../images/newsize/pause.png</file>
     <file>../images/newsize/play.png</file>
+    <file>../images/newsize/left_move.png</file>
+    <file>../images/newsize/left_skip.png</file>
+    <file>../images/newsize/rigt_move.png</file>
+    <file>../images/newsize/rigit_skip.png</file>
   </qresource>
   <qresource prefix="setting ">
     <file>../images/newsize/check_no.png</file>

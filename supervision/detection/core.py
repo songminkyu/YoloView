@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from contextlib import suppress
 from dataclasses import dataclass, field
 from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 
@@ -606,8 +605,10 @@ class Detections:
             detections = sv.Detections.from_inference(result)
             ```
         """
-        with suppress(AttributeError):
+        if hasattr(roboflow_result, "dict"):
             roboflow_result = roboflow_result.dict(exclude_none=True, by_alias=True)
+        elif hasattr(roboflow_result, "json"):
+            roboflow_result = roboflow_result.json()
         xyxy, confidence, class_id, masks, trackers, data = process_roboflow_result(
             roboflow_result=roboflow_result
         )
@@ -1201,6 +1202,8 @@ class Detections:
         """
         if isinstance(index, str):
             return self.data.get(index)
+        if self.is_empty():
+            return Detections.empty()
         if isinstance(index, int):
             index = [index]
         return Detections(
