@@ -1192,6 +1192,22 @@ class Ui_MainWindow(object):
         self.horizontalLayout_20.setObjectName(u"horizontalLayout_20")
         self.horizontalLayout_20.setContentsMargins(5, 5, 5, 5)
 
+        # Create the combo box
+        self.track_box = ComboBox(self.rightBox)
+        self.track_box.setObjectName(u"track_box")
+        self.track_box.addItem("Off")  # Default Off
+        self.track_box.addItem("On")
+
+        # Optionally, add a label next to the combo box to explain its purpose
+        self.track_label = QLabel("Track Mode ", self.rightBox)
+        self.track_label.setStyleSheet(u"font: 700 11pt \"Segoe UI\";\n"
+                                       "color: rgba(0, 0, 0, 140);")
+
+        self.track_box.setFixedSize(70, 26)  # 100px width, 40px height
+        # Add the combo box and the label to the layout of the red bordered area (likely horizontalLayout_9)
+        self.horizontalLayout_20.addWidget(self.track_label)  # Add label
+        self.horizontalLayout_20.addWidget(self.track_box)  # Add combo box
+
         # 오브젝트 이동 버튼
         # left skip
         self.left_skip_button = QPushButton(self.rightbox_play)
@@ -1208,9 +1224,9 @@ class Ui_MainWindow(object):
                                             "QPushButton:hover{\n"
                                             "\n"
                                             "}")
-        leftskip_icon = QIcon()
-        leftskip_icon.addFile(u":/rightbox/images/newsize/left_skip.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.left_skip_button.setIcon(leftskip_icon)
+        left_skip_icon = QIcon()
+        left_skip_icon.addFile(u":/rightbox/images/newsize/left_skip.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.left_skip_button.setIcon(left_skip_icon)
         self.left_skip_button.setIconSize(QSize(16, 16))
         self.left_skip_button.setCheckable(True)
         self.left_skip_button.setChecked(False)
@@ -1231,9 +1247,9 @@ class Ui_MainWindow(object):
                                             "QPushButton:hover{\n"
                                             "\n"
                                             "}")
-        move_icon = QIcon()
-        move_icon.addFile(u":/rightbox/images/newsize/left_move.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.left_move_button.setIcon(move_icon)
+        left_move_icon = QIcon()
+        left_move_icon.addFile(u":/rightbox/images/newsize/left_move.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.left_move_button.setIcon(left_move_icon)
         self.left_move_button.setIconSize(QSize(16, 16))
         self.left_move_button.setCheckable(True)
         self.left_move_button.setChecked(False)
@@ -1254,9 +1270,9 @@ class Ui_MainWindow(object):
                                             "QPushButton:hover{\n"
                                             "\n"
                                             "}")
-        rightmove_icon = QIcon()
-        rightmove_icon.addFile(u":/rightbox/images/newsize/right_move.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.right_move_button.setIcon(rightmove_icon)
+        right_move_icon = QIcon()
+        right_move_icon.addFile(u":/rightbox/images/newsize/right_move.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.right_move_button.setIcon(right_move_icon)
         self.right_move_button.setIconSize(QSize(16, 16))
         self.right_move_button.setCheckable(True)
         self.right_move_button.setChecked(False)
@@ -1277,33 +1293,14 @@ class Ui_MainWindow(object):
                                             "QPushButton:hover{\n"
                                             "\n"
                                             "}")
-        rightskip_icon = QIcon()
-        rightskip_icon.addFile(u":/rightbox/images/newsize/right_skip.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.right_skip_button.setIcon(rightskip_icon)
+        right_skip_icon = QIcon()
+        right_skip_icon.addFile(u":/rightbox/images/newsize/right_skip.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.right_skip_button.setIcon(right_skip_icon)
         self.right_skip_button.setIconSize(QSize(16, 16))
         self.right_skip_button.setCheckable(True)
         self.right_skip_button.setChecked(False)
         self.horizontalLayout_20.addWidget(self.right_skip_button)
         # 오브젝트 이동 버튼
-
-        # Create the combo box
-        self.track_box = ComboBox(self.rightBox)
-        self.track_box.setObjectName(u"track_box")
-        self.track_box.addItem("Off")  # Default Off
-        self.track_box.addItem("On")
-
-        # Optionally, add a label next to the combo box to explain its purpose
-        self.track_label = QLabel("Track Mode ", self.rightBox)
-        self.track_label.setStyleSheet(u"font: 700 11pt \"Segoe UI\";\n"
-                                       "color: rgba(0, 0, 0, 140);")
-
-        self.track_box.setFixedSize(70, 26)  # 100px width, 40px height
-        # Add the combo box and the label to the layout of the red bordered area (likely horizontalLayout_9)
-        self.horizontalLayout_20.addWidget(self.track_label)  # Add label
-        self.horizontalLayout_20.addWidget(self.track_box)  # Add combo box
-        # 기능 임시 숨김 처리
-        # self.track_box.hide()  # Hide the combo box
-        # self.track_label.hide()  # Hide the label
 
         self.run_button = QPushButton(self.rightbox_play)
         self.run_button.setObjectName(u"run_button")

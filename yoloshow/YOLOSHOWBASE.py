@@ -97,6 +97,7 @@ class YOLOSHOWBASE:
         self.detect_errors = None
         self.table_result = None
         self.curation_widget = None
+        self.current_index = 0
         self.allModelNames = ALL_MODEL_NAMES
 
     # 왼쪽 메뉴바 초기화
@@ -340,6 +341,7 @@ class YOLOSHOWBASE:
 
     # 폴더 선택
     def selectFolder(self):
+        self.current_index = 0
         config_file = f'{self.current_workpath}/config/folder.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
         folder_path = config['folder_path']

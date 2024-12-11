@@ -138,6 +138,10 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         # --- 하이퍼파라미터 조정 --- #
 
         # --- 시작/중지 --- #
+        self.ui.left_skip_button.clicked.connect(self.runLeftSkip)
+        self.ui.left_move_button.clicked.connect(self.runLeftMove)
+        self.ui.right_move_button.clicked.connect(self.runRightMove)
+        self.ui.right_skip_button.clicked.connect(self.runRightSkip)
         self.ui.run_button.clicked.connect(self.runorContinue)
         self.ui.stop_button.clicked.connect(self.stopDetect)
         # --- 시작/중지 --- #
@@ -261,9 +265,16 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
     def runModelProcess(self, yolo_name):
         yolo_thread = self.yolo_threads.get(yolo_name)
         self.updateCategories(yolo_thread, 'single')
-        yolo_thread.source = self.inputPath
+        # 기존 self.inputPath가 전체 이미지 리스트라면 현재 인덱스에 해당하는 이미지 1장만 처리하도록 source를 변경
+        if hasattr(self, 'current_index') and self.checkedNavigationButton():
+            current_source = [self.inputPath[self.current_index]]
+        else:
+            # current_index 미정이면 그냥 전체 리스트 사용 (초기 상태)
+            current_source = self.inputPath
+
+        yolo_thread.source = current_source
         yolo_thread.stop_dtc = False
-        if self.ui.run_button.isChecked():
+        if self.ui.run_button.isChecked() or self.checkedNavigationButton():
             yolo_thread.is_continue = True
             self.yolo_threads.start_thread(yolo_name)
         else:
@@ -282,16 +293,106 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             if self.ui.run_button.isChecked():
                 self.ui.run_button.setChecked(False)
 
-    
-    # 예측 시작/일시 중지
+        # 모델 실행 후 버튼 상태 업데이트
+        self.updateNavigationButtons()
+
     def runorContinue(self):
         self.closeTableResult()
-        if self.inputPath is not None:
+        if self.inputPath is not None and len(self.inputPath) > 0:
             self.changeModel(categories_reset=False)
             self.runModel()
         else:
             self.showStatus("Please select the Image/Video before starting detection...")
             self.ui.run_button.setChecked(False)
+
+        # 실행 후 버튼 상태 업데이트
+        self.updateNavigationButtons()
+
+    def runLeftSkip(self):
+        self.closeTableResult()
+        if self.inputPath is not None and isinstance(self.inputPath, list) and len(self.inputPath) > 0:
+            # 첫 번째 이미지로 이동
+            self.current_index = 0
+            self.runorContinue()
+        else:
+            self.showStatus("Please select the Image/Video before starting detection...")
+            self.ui.left_skip_button.setChecked(False)
+
+        # 이동 후 버튼 상태 업데이트
+        self.updateNavigationButtons()
+
+    def runLeftMove(self):
+        self.closeTableResult()
+        if self.inputPath is not None and isinstance(self.inputPath, list) and len(self.inputPath) > 0:
+            # 현재 인덱스가 0보다 클 때만 왼쪽으로 이동
+            if self.current_index > 0:
+                self.current_index -= 1
+                self.runorContinue()
+            else:
+                self.showStatus("Already at the first image.")
+                self.ui.left_move_button.setChecked(False)
+        else:
+            self.showStatus("Please select the Image/Video before starting detection...")
+            self.ui.left_move_button.setChecked(False)
+
+        # 이동 후 버튼 상태 업데이트
+        self.updateNavigationButtons()
+
+    def runRightMove(self):
+        self.closeTableResult()
+        if self.inputPath is not None and isinstance(self.inputPath, list) and len(self.inputPath) > 0:
+            # 현재 인덱스가 마지막 인덱스보다 작을 때 오른쪽으로 이동
+            if self.current_index < len(self.inputPath) - 1:
+                self.current_index += 1
+                self.runorContinue()
+            else:
+                self.showStatus("Already at the last image.")
+                self.ui.right_move_button.setChecked(False)
+        else:
+            self.showStatus("Please select the Image/Video before starting detection...")
+            self.ui.right_move_button.setChecked(False)
+
+        # 이동 후 버튼 상태 업데이트
+        self.updateNavigationButtons()
+
+    def runRightSkip(self):
+        self.closeTableResult()
+        if self.inputPath is not None and isinstance(self.inputPath, list) and len(self.inputPath) > 0:
+            # 마지막 이미지로 이동
+            self.current_index = len(self.inputPath) - 1
+            self.runorContinue()
+        else:
+            self.showStatus("Please select the Image/Video before starting detection...")
+            self.ui.right_skip_button.setChecked(False)
+
+        # 이동 후 버튼 상태 업데이트
+        self.updateNavigationButtons()
+
+    def updateNavigationButtons(self):
+        # inputPath가 존재하고, 그 길이가 1 이상일 때만 버튼 활성화 로직을 진행
+        if self.inputPath and len(self.inputPath) > 0:
+            # 첫 번째 이미지인지 판단
+            is_first_image = (self.current_index == 0)
+            # 마지막 이미지인지 판단
+            is_last_image = (self.current_index == len(self.inputPath) - 1)
+
+            # 첫 번째 이미지일 경우 '처음으로', '이전' 버튼 비활성화
+            self.ui.left_skip_button.setEnabled(not is_first_image)
+            self.ui.left_move_button.setEnabled(not is_first_image)
+
+            # 마지막 이미지일 경우 '다음', '마지막으로' 버튼 비활성화
+            self.ui.right_move_button.setEnabled(not is_last_image)
+            self.ui.right_skip_button.setEnabled(not is_last_image)
+        else:
+            # inputPath가 비어있거나 없을 경우 모든 이동 관련 버튼 비활성화
+            self.ui.left_skip_button.setEnabled(False)
+            self.ui.left_move_button.setEnabled(False)
+            self.ui.right_move_button.setEnabled(False)
+            self.ui.right_skip_button.setEnabled(False)
+
+    def checkedNavigationButton(self):
+        return (self.ui.left_skip_button.isChecked() or self.ui.right_skip_button.isChecked() or
+                self.ui.left_move_button.isChecked() or self.ui.right_move_button.isChecked())
 
     # 인식 중지
     def stopDetect(self):
