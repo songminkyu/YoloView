@@ -1192,6 +1192,100 @@ class Ui_MainWindow(object):
         self.horizontalLayout_20.setObjectName(u"horizontalLayout_20")
         self.horizontalLayout_20.setContentsMargins(5, 5, 5, 5)
 
+        # 오브젝트 이동 버튼
+        # left skip
+        self.left_skip_button = QPushButton(self.rightbox_play)
+        self.left_skip_button.setObjectName(u"left_skip_button")
+        self.left_skip_button.setMinimumSize(QSize(0, 20))
+        self.left_skip_button.setMaximumSize(QSize(16777215, 20))
+        self.left_skip_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.left_skip_button.setMouseTracking(True)
+        self.left_skip_button.setStyleSheet(u"QPushButton{\n"
+                                            "background-repeat: no-repeat;\n"
+                                            "background-position: center;\n"
+                                            "border: none;\n"
+                                            "}\n"
+                                            "QPushButton:hover{\n"
+                                            "\n"
+                                            "}")
+        leftskip_icon = QIcon()
+        leftskip_icon.addFile(u":/rightbox/images/newsize/left_skip.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.left_skip_button.setIcon(leftskip_icon)
+        self.left_skip_button.setIconSize(QSize(16, 16))
+        self.left_skip_button.setCheckable(True)
+        self.left_skip_button.setChecked(False)
+        self.horizontalLayout_20.addWidget(self.left_skip_button)
+
+        # left move
+        self.left_move_button = QPushButton(self.rightbox_play)
+        self.left_move_button.setObjectName(u"left_move_button")
+        self.left_move_button.setMinimumSize(QSize(0, 20))
+        self.left_move_button.setMaximumSize(QSize(16777215, 20))
+        self.left_move_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.left_move_button.setMouseTracking(True)
+        self.left_move_button.setStyleSheet(u"QPushButton{\n"
+                                            "background-repeat: no-repeat;\n"
+                                            "background-position: center;\n"
+                                            "border: none;\n"
+                                            "}\n"
+                                            "QPushButton:hover{\n"
+                                            "\n"
+                                            "}")
+        move_icon = QIcon()
+        move_icon.addFile(u":/rightbox/images/newsize/left_move.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.left_move_button.setIcon(move_icon)
+        self.left_move_button.setIconSize(QSize(16, 16))
+        self.left_move_button.setCheckable(True)
+        self.left_move_button.setChecked(False)
+        self.horizontalLayout_20.addWidget(self.left_move_button)
+
+        # right move
+        self.right_move_button = QPushButton(self.rightbox_play)
+        self.right_move_button.setObjectName(u"right_move_button")
+        self.right_move_button.setMinimumSize(QSize(0, 20))
+        self.right_move_button.setMaximumSize(QSize(16777215, 20))
+        self.right_move_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.right_move_button.setMouseTracking(True)
+        self.right_move_button.setStyleSheet(u"QPushButton{\n"
+                                            "background-repeat: no-repeat;\n"
+                                            "background-position: center;\n"
+                                            "border: none;\n"
+                                            "}\n"
+                                            "QPushButton:hover{\n"
+                                            "\n"
+                                            "}")
+        rightmove_icon = QIcon()
+        rightmove_icon.addFile(u":/rightbox/images/newsize/right_move.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.right_move_button.setIcon(rightmove_icon)
+        self.right_move_button.setIconSize(QSize(16, 16))
+        self.right_move_button.setCheckable(True)
+        self.right_move_button.setChecked(False)
+        self.horizontalLayout_20.addWidget(self.right_move_button)
+
+        # right skip
+        self.right_skip_button = QPushButton(self.rightbox_play)
+        self.right_skip_button.setObjectName(u"right_skip_button")
+        self.right_skip_button.setMinimumSize(QSize(0, 20))
+        self.right_skip_button.setMaximumSize(QSize(16777215, 20))
+        self.right_skip_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.right_skip_button.setMouseTracking(True)
+        self.right_skip_button.setStyleSheet(u"QPushButton{\n"
+                                            "background-repeat: no-repeat;\n"
+                                            "background-position: center;\n"
+                                            "border: none;\n"
+                                            "}\n"
+                                            "QPushButton:hover{\n"
+                                            "\n"
+                                            "}")
+        rightskip_icon = QIcon()
+        rightskip_icon.addFile(u":/rightbox/images/newsize/right_skip.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.right_skip_button.setIcon(rightskip_icon)
+        self.right_skip_button.setIconSize(QSize(16, 16))
+        self.right_skip_button.setCheckable(True)
+        self.right_skip_button.setChecked(False)
+        self.horizontalLayout_20.addWidget(self.right_skip_button)
+        # 오브젝트 이동 버튼
+
         # Create the combo box
         self.track_box = ComboBox(self.rightBox)
         self.track_box.setObjectName(u"track_box")
