@@ -1,7 +1,7 @@
 # coding: utf-8
 import sys
 from PySide6.QtWidgets import (
-    QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit
+    QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit, QLabel
 )
 from PySide6.QtCore import Qt
 from qfluentwidgets import (
@@ -16,7 +16,7 @@ class CurationQWidget(QDialog):
         # Style adjustments
         self.setWindowTitle("Curation")
         self.setStyleSheet("CurationQWidget{background: rgb(255, 255, 255)}")
-        self.setFixedSize(600, 500)  # 창 크기 고정
+        self.setFixedSize(600, 540)  # 창 크기 고정
 
         # Main layout
         self.mainLayout = QVBoxLayout(self)
@@ -56,29 +56,85 @@ class CurationQWidget(QDialog):
         self.feature_layout = QVBoxLayout()
         self.feature_layout.setSpacing(15)  # 체크박스 간 간격 조정
         features = [
-            "Remove data with mismatched label and image names",  # 라벨 및 이미지 이름이 매칭 안되는 데이터 제거 DatasetCleaner.py
-            "Remove matching images if label text size is 0", # 라벨 텍스트 사이즈 0인 경우 매칭되는 이미지와 같이 제거 DatasetCleaner.py
-            "Change label and image file names by matching them (add padding to file name)", # 라벨 및 이미지 파일 이름을 매칭하여 변경 (파일명 패딩 추가) DatasetCleaner.py
-            "Remove low quality after image quality evaluation",  # 이미지 품질 평가 후 낮은 품질 제거 DatasetImageQualityEvaluator.py
-            "Remove segmentation",  # Segmentation 제거 DatasetCleaner.py
-            "Remove bounding box",  # Bounding Box 제거 DatasetCleaner.py
-            "Remove images and labels through class id to be removed", # 제거할 클래스 id를 통해서 이미지 및 라벨 제거 DatasetCleaner.py
-            "Change class ID",  # DatasetChangeClassId.py
-            "Adjust data split ratio",  # 데이터 분할 비율 조정 클래스 ID 변경 DatasetDistributionbalance.py
-            "Sort images and labels",  # 이미지 및 라벨 정렬 DatasetSorting.py
+            "Remove data with mismatched label and image names",  # 라벨 및 이미지 이름이 매칭 안되는 데이터 제거
+            "Remove matching images if label text size is 0",  # 라벨 텍스트 사이즈 0인 경우 매칭되는 이미지 제거
+            "Change label and image file names by matching them (add padding to file name)",  # 라벨 및 이미지 파일 이름 매칭 후 변경
+            "Remove low quality after image quality evaluation",  # 이미지 품질 평가 후 낮은 품질 제거
+            "Remove segmentation",  # Segmentation 제거
+            "Remove bounding box",  # Bounding Box 제거
+            "Remove images and labels through class id to be removed",  # 제거할 클래스 id를 통해 이미지 및 라벨 제거
+            "Change class ID",  # 클래스 ID 변경
+            "Adjust data split ratio",  # 데이터 분할 비율 조정
+            "Sort images and labels",  # 이미지 및 라벨 정렬
         ]
         self.checkboxes = []
+
+        # Ratio edits
+        self.train_ratio_edit = QLineEdit(self)
+        self.train_ratio_edit.setFixedHeight(30)
+        self.train_ratio_edit.setPlaceholderText("Train ratio")
+        self.train_ratio_edit.setStyleSheet("""
+            QLineEdit {
+                padding: 5px;
+                font: 600 9pt "Segoe UI";
+                border: 1px solid #c0c0c0;
+                border-radius: 4px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #009faa;
+            }
+        """)
+
+        self.valid_ratio_edit = QLineEdit(self)
+        self.valid_ratio_edit.setFixedHeight(30)
+        self.valid_ratio_edit.setPlaceholderText("Valid ratio")
+        self.valid_ratio_edit.setStyleSheet("""
+            QLineEdit {
+                padding: 5px;
+                font: 600 9pt "Segoe UI";
+                border: 1px solid #c0c0c0;
+                border-radius: 4px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #009faa;
+            }
+        """)
+
+        self.test_ratio_edit = QLineEdit(self)
+        self.test_ratio_edit.setFixedHeight(30)
+        self.test_ratio_edit.setPlaceholderText("Test ratio")
+        self.test_ratio_edit.setStyleSheet("""
+            QLineEdit {
+                padding: 5px;
+                font: 600 9pt "Segoe UI";
+                border: 1px solid #c0c0c0;
+                border-radius: 4px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #009faa;
+            }
+        """)
 
         for feature in features:
             checkbox = CheckBox(feature, self)
             self.feature_layout.addWidget(checkbox)
             self.checkboxes.append(checkbox)
+            if feature == "Adjust data split ratio":
+                self.feature_layout.addSpacing(5)
+                self.ratio_layout = QHBoxLayout()
 
-        self.mainLayout.addLayout(self.feature_layout)
+                self.ratio_layout.addWidget(self.train_ratio_edit)
+                self.ratio_layout.addWidget(self.valid_ratio_edit)
+                self.ratio_layout.addWidget(self.test_ratio_edit)
+
+                self.feature_layout.addLayout(self.ratio_layout)
+                self.feature_layout.addSpacing(15)
+
+                self.mainLayout.addLayout(self.feature_layout)
 
         # Add bottom button layout
         self.button_layout = QHBoxLayout()
-        self.button_layout.setContentsMargins(0, 30, 0, 0)  # 버튼 위쪽 마진 추가
+        self.button_layout.setContentsMargins(0, 50, 0, 0)  # 버튼 위쪽 마진 추가
         self.button_layout.setSpacing(10)
         self.button_layout.setAlignment(Qt.AlignRight)  # 버튼을 오른쪽으로 정렬
 
@@ -110,6 +166,13 @@ class CurationQWidget(QDialog):
             state = checkbox.isChecked()  # 체크박스의 상태 확인 (True/False)
             feature_name = checkbox.text()  # 체크박스의 라벨
             print(f"[{idx + 1}] {feature_name} 선택됨: {state}")
+
+        # 분할 비율 출력
+        if self.adjust_ratio_checkbox and self.adjust_ratio_checkbox.isChecked():
+            train_ratio = self.train_ratio_edit.text()
+            valid_ratio = self.valid_ratio_edit.text()
+            test_ratio = self.test_ratio_edit.text()
+            print(f"Train ratio: {train_ratio}, Valid ratio: {valid_ratio}, Test ratio: {test_ratio}")
 
     def cancel_action(self):
         """Handle the cancel button click."""
