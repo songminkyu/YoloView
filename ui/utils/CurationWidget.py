@@ -72,7 +72,7 @@ class CurationQWidget(QDialog):
         # Ratio edits
         self.train_ratio_edit = QLineEdit(self)
         self.train_ratio_edit.setFixedHeight(30)
-        self.train_ratio_edit.setPlaceholderText("Train ratio")
+        self.train_ratio_edit.setPlaceholderText("Train ratio (0.70)")
         self.train_ratio_edit.setStyleSheet("""
             QLineEdit {
                 padding: 5px;
@@ -87,7 +87,7 @@ class CurationQWidget(QDialog):
 
         self.valid_ratio_edit = QLineEdit(self)
         self.valid_ratio_edit.setFixedHeight(30)
-        self.valid_ratio_edit.setPlaceholderText("Valid ratio")
+        self.valid_ratio_edit.setPlaceholderText("Valid ratio (0.15)")
         self.valid_ratio_edit.setStyleSheet("""
             QLineEdit {
                 padding: 5px;
@@ -102,7 +102,7 @@ class CurationQWidget(QDialog):
 
         self.test_ratio_edit = QLineEdit(self)
         self.test_ratio_edit.setFixedHeight(30)
-        self.test_ratio_edit.setPlaceholderText("Test ratio")
+        self.test_ratio_edit.setPlaceholderText("Test ratio (0.15)")
         self.test_ratio_edit.setStyleSheet("""
             QLineEdit {
                 padding: 5px;
