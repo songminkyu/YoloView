@@ -1,5 +1,6 @@
 # coding: utf-8
 import sys
+from enum import Enum, auto
 from PySide6.QtWidgets import (
     QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit, QLabel
 )
@@ -8,6 +9,33 @@ from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
 )
 
+class Features(Enum):
+    remove_mismatched_label_image_data = auto()
+    remove_zero_textsize_images = auto()
+    change_label_image_filenames = auto()
+    remove_low_quality_images = auto()
+    remove_segmentation = auto()
+    remove_bounding_box = auto()
+    remove_images_by_class_id = auto()
+    change_class_id = auto()
+    adjust_data_split_ratio = auto()
+    sort_images_labels = auto()
+
+    @property
+    def description(self):
+        descriptions = {
+            Features.remove_mismatched_label_image_data: "Remove data with mismatched label and image names",
+            Features.remove_zero_textsize_images: "Remove matching images if label text size is 0",
+            Features.change_label_image_filenames: "Change label and image file names by matching them (add padding to file name)",
+            Features.remove_low_quality_images: "Remove low quality after image quality evaluation",
+            Features.remove_segmentation: "Remove segmentation",
+            Features.remove_bounding_box: "Remove bounding box",
+            Features.remove_images_by_class_id: "Remove images and labels through class id to be removed",
+            Features.change_class_id: "Change class ID",
+            Features.adjust_data_split_ratio: "Adjust data split ratio",
+            Features.sort_images_labels: "Sort images and labels"
+        }
+        return descriptions[self]
 
 class CurationQWidget(QDialog):
     def __init__(self):
@@ -16,7 +44,7 @@ class CurationQWidget(QDialog):
         # Style adjustments
         self.setWindowTitle("Curation")
         self.setStyleSheet("CurationQWidget{background: rgb(255, 255, 255)}")
-        self.setFixedSize(600, 540)  # 창 크기 고정
+        self.setFixedSize(600, 580)  # 창 크기 고정
 
         # Main layout
         self.mainLayout = QVBoxLayout(self)
@@ -52,27 +80,62 @@ class CurationQWidget(QDialog):
         # Add directory layout at the top
         self.mainLayout.addLayout(self.directory_layout)
 
-        # Add qfluentwidgets styled checkboxes for features
+        # feature layout
         self.feature_layout = QVBoxLayout()
-        self.feature_layout.setSpacing(15)  # 체크박스 간 간격 조정
-        features = [
-            "Remove data with mismatched label and image names",  # 라벨 및 이미지 이름이 매칭 안되는 데이터 제거
-            "Remove matching images if label text size is 0",  # 라벨 텍스트 사이즈 0인 경우 매칭되는 이미지 제거
-            "Change label and image file names by matching them (add padding to file name)",  # 라벨 및 이미지 파일 이름 매칭 후 변경
-            "Remove low quality after image quality evaluation",  # 이미지 품질 평가 후 낮은 품질 제거
-            "Remove segmentation",  # Segmentation 제거
-            "Remove bounding box",  # Bounding Box 제거
-            "Remove images and labels through class id to be removed",  # 제거할 클래스 id를 통해 이미지 및 라벨 제거
-            "Change class ID",  # 클래스 ID 변경
-            "Adjust data split ratio",  # 데이터 분할 비율 조정
-            "Sort images and labels",  # 이미지 및 라벨 정렬
-        ]
-        self.checkboxes = []
+        self.feature_layout.setSpacing(15)
+
+        self.checkboxes = {}
+
+        # changed class id
+        self.target_classid_edit = QLineEdit(self)
+        self.target_classid_edit.setFixedHeight(30)
+        self.target_classid_edit.setPlaceholderText("Class Id to Change (ex : 0,1,2,3)")
+        self.target_classid_edit.setStyleSheet("""
+                                  QLineEdit {
+                                      padding: 5px;
+                                      font: 600 9pt "Segoe UI";
+                                      border: 1px solid #c0c0c0;
+                                      border-radius: 4px;
+                                  }
+                                  QLineEdit:focus {
+                                      border: 1px solid #009faa;
+                                  }
+                              """)
+        self.new_classid_edit = QLineEdit(self)
+        self.new_classid_edit.setFixedHeight(30)
+        self.new_classid_edit.setPlaceholderText("New class id (ex : 1)")
+        self.new_classid_edit.setStyleSheet("""
+                                  QLineEdit {
+                                      padding: 5px;
+                                      font: 600 9pt "Segoe UI";
+                                      border: 1px solid #c0c0c0;
+                                      border-radius: 4px;
+                                  }
+                                  QLineEdit:focus {
+                                      border: 1px solid #009faa;
+                                  }
+                              """)
+
+        # Delete class id
+        self.delete_classid_edit = QLineEdit(self)
+        self.delete_classid_edit.setFixedHeight(30)
+        self.delete_classid_edit.setPlaceholderText("Remove class id (ex : 0,1,2,3)")
+        self.delete_classid_edit.setStyleSheet("""
+                          QLineEdit {
+                              padding: 5px;
+                              font: 600 9pt "Segoe UI";
+                              border: 1px solid #c0c0c0;
+                              border-radius: 4px;
+                          }
+                          QLineEdit:focus {
+                              border: 1px solid #009faa;
+                          }
+                      """)
 
         # Ratio edits
         self.train_ratio_edit = QLineEdit(self)
         self.train_ratio_edit.setFixedHeight(30)
-        self.train_ratio_edit.setPlaceholderText("Train ratio (0.70)")
+        self.train_ratio_edit.setPlaceholderText("Train ratio (ex : 0.70)")
         self.train_ratio_edit.setStyleSheet("""
             QLineEdit {
                 padding: 5px;
@@ -87,7 +150,7 @@ class CurationQWidget(QDialog):
 
         self.valid_ratio_edit = QLineEdit(self)
         self.valid_ratio_edit.setFixedHeight(30)
-        self.valid_ratio_edit.setPlaceholderText("Valid ratio (0.15)")
+        self.valid_ratio_edit.setPlaceholderText("Valid ratio (ex : 0.15)")
         self.valid_ratio_edit.setStyleSheet("""
             QLineEdit {
                 padding: 5px;
@@ -102,7 +165,7 @@ class CurationQWidget(QDialog):
 
         self.test_ratio_edit = QLineEdit(self)
         self.test_ratio_edit.setFixedHeight(30)
-        self.test_ratio_edit.setPlaceholderText("Test ratio (0.15)")
+        self.test_ratio_edit.setPlaceholderText("Test ratio (ex : 0.15)")
         self.test_ratio_edit.setStyleSheet("""
             QLineEdit {
                 padding: 5px;
@@ -115,22 +178,39 @@ class CurationQWidget(QDialog):
             }
         """)
 
-        for feature in features:
-            checkbox = CheckBox(feature, self)
+        # 체크박스 생성
+        for feature in Features:
+            checkbox = CheckBox(feature.description, self)
             self.feature_layout.addWidget(checkbox)
-            self.checkboxes.append(checkbox)
-            if feature == "Adjust data split ratio":
+            self.checkboxes[feature] = checkbox
+
+            if feature == Features.remove_images_by_class_id:
+                self.feature_layout.addSpacing(5)
+                self.deleteid_layout = QHBoxLayout()
+                self.deleteid_layout.addWidget(self.delete_classid_edit)
+                self.feature_layout.addLayout(self.deleteid_layout)
+                self.feature_layout.addSpacing(15)
+
+            elif feature == Features.adjust_data_split_ratio:
                 self.feature_layout.addSpacing(5)
                 self.ratio_layout = QHBoxLayout()
-
                 self.ratio_layout.addWidget(self.train_ratio_edit)
                 self.ratio_layout.addWidget(self.valid_ratio_edit)
                 self.ratio_layout.addWidget(self.test_ratio_edit)
-
                 self.feature_layout.addLayout(self.ratio_layout)
                 self.feature_layout.addSpacing(15)
 
-                self.mainLayout.addLayout(self.feature_layout)
+
+            elif feature == Features.change_class_id:
+                self.feature_layout.addSpacing(5)
+                self.changeid_layout = QHBoxLayout()
+                self.changeid_layout.addWidget(self.target_classid_edit)
+                self.changeid_layout.addWidget(self.new_classid_edit)
+                self.feature_layout.addLayout(self.changeid_layout)
+                self.feature_layout.addSpacing(15)
+
+
+        self.mainLayout.addLayout(self.feature_layout)
 
         # Add bottom button layout
         self.button_layout = QHBoxLayout()
@@ -158,17 +238,16 @@ class CurationQWidget(QDialog):
     def proceed_action(self):
         """Handle the proceed button click."""
         print("진행 버튼 클릭됨!")
-
         current_path = self.directory_path_edit.text()
         print(f"현재 경로: {current_path}")
-        # 모든 체크박스의 상태를 확인하고 출력
-        for idx, checkbox in enumerate(self.checkboxes):
-            state = checkbox.isChecked()  # 체크박스의 상태 확인 (True/False)
-            feature_name = checkbox.text()  # 체크박스의 라벨
-            print(f"[{idx + 1}] {feature_name} 선택됨: {state}")
 
-        # 분할 비율 출력
-        if self.adjust_ratio_checkbox and self.adjust_ratio_checkbox.isChecked():
+        # Enum을 통한 체크박스 상태 확인
+        for feature, checkbox in self.checkboxes.items():
+            state = checkbox.isChecked()
+            print(f"{feature.name} ( {feature.description} ) 선택됨: {state}")
+
+        # Adjust data split ratio 체크 시
+        if self.checkboxes[Features.ADJUST_DATA_SPLIT_RATIO].isChecked():
             train_ratio = self.train_ratio_edit.text()
             valid_ratio = self.valid_ratio_edit.text()
             test_ratio = self.test_ratio_edit.text()
@@ -182,10 +261,7 @@ class CurationQWidget(QDialog):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-    # Apply the qfluentwidgets theme
     setTheme(Theme.LIGHT)
-
     w = CurationQWidget()
     w.show()
     app.exec()
