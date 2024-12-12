@@ -54,7 +54,7 @@ class CurationQWidget(QDialog):
 
         # Add directory path selection section with top margin
         self.directory_layout = QHBoxLayout()
-        self.directory_layout.setContentsMargins(0, 0, 0, 20)  # 하단 마진 추가
+        self.directory_layout.setContentsMargins(0, 0, 0, 15)  # 하단 마진 추가
         self.directory_path_edit = QLineEdit(self)
         self.directory_path_edit.setReadOnly(True)  # 텍스트 박스를 읽기 전용으로 설정
         self.directory_path_edit.setPlaceholderText("The selected directory path will be displayed here.")
@@ -87,96 +87,17 @@ class CurationQWidget(QDialog):
         self.checkboxes = {}
 
         # changed class id
-        self.target_classid_edit = QLineEdit(self)
-        self.target_classid_edit.setFixedHeight(30)
-        self.target_classid_edit.setPlaceholderText("Class Id to Change (ex : 0,1,2,3)")
-        self.target_classid_edit.setStyleSheet("""
-                                  QLineEdit {
-                                      padding: 5px;
-                                      font: 600 9pt "Segoe UI";
-                                      border: 1px solid #c0c0c0;
-                                      border-radius: 4px;
-                                  }
-                                  QLineEdit:focus {
-                                      border: 1px solid #009faa;
-                                  }
-                              """)
-        self.new_classid_edit = QLineEdit(self)
-        self.new_classid_edit.setFixedHeight(30)
-        self.new_classid_edit.setPlaceholderText("New class id (ex : 1)")
-        self.new_classid_edit.setStyleSheet("""
-                                  QLineEdit {
-                                      padding: 5px;
-                                      font: 600 9pt "Segoe UI";
-                                      border: 1px solid #c0c0c0;
-                                      border-radius: 4px;
-                                  }
-                                  QLineEdit:focus {
-                                      border: 1px solid #009faa;
-                                  }
-                              """)
+        self.target_classid_edit = self.create_line_edit("Class Id to Change (ex : 0,1,2,3)")
+        self.new_classid_edit = self.create_line_edit("New class id (ex : 1)")
 
         # Delete class id
-        self.delete_classid_edit = QLineEdit(self)
-        self.delete_classid_edit.setFixedHeight(30)
-        self.delete_classid_edit.setPlaceholderText("Remove class id (ex : 0,1,2,3)")
-        self.delete_classid_edit.setStyleSheet("""
-                          QLineEdit {
-                              padding: 5px;
-                              font: 600 9pt "Segoe UI";
-                              border: 1px solid #c0c0c0;
-                              border-radius: 4px;
-                          }
-                          QLineEdit:focus {
-                              border: 1px solid #009faa;
-                          }
-                      """)
+        self.delete_classid_edit = self.create_line_edit("Remove class id (ex : 0,1,2,3)")
 
         # Ratio edits
-        self.train_ratio_edit = QLineEdit(self)
-        self.train_ratio_edit.setFixedHeight(30)
-        self.train_ratio_edit.setPlaceholderText("Train ratio (ex : 0.70)")
-        self.train_ratio_edit.setStyleSheet("""
-            QLineEdit {
-                padding: 5px;
-                font: 600 9pt "Segoe UI";
-                border: 1px solid #c0c0c0;
-                border-radius: 4px;
-            }
-            QLineEdit:focus {
-                border: 1px solid #009faa;
-            }
-        """)
+        self.train_ratio_edit = self.create_line_edit("Train ratio (ex : 0.70)")
+        self.valid_ratio_edit = self.create_line_edit("Valid ratio (ex : 0.15)")
+        self.test_ratio_edit = self.create_line_edit("Test ratio (ex : 0.15)")
 
-        self.valid_ratio_edit = QLineEdit(self)
-        self.valid_ratio_edit.setFixedHeight(30)
-        self.valid_ratio_edit.setPlaceholderText("Valid ratio (ex : 0.15)")
-        self.valid_ratio_edit.setStyleSheet("""
-            QLineEdit {
-                padding: 5px;
-                font: 600 9pt "Segoe UI";
-                border: 1px solid #c0c0c0;
-                border-radius: 4px;
-            }
-            QLineEdit:focus {
-                border: 1px solid #009faa;
-            }
-        """)
-
-        self.test_ratio_edit = QLineEdit(self)
-        self.test_ratio_edit.setFixedHeight(30)
-        self.test_ratio_edit.setPlaceholderText("Test ratio (ex : 0.15)")
-        self.test_ratio_edit.setStyleSheet("""
-            QLineEdit {
-                padding: 5px;
-                font: 600 9pt "Segoe UI";
-                border: 1px solid #c0c0c0;
-                border-radius: 4px;
-            }
-            QLineEdit:focus {
-                border: 1px solid #009faa;
-            }
-        """)
 
         # 체크박스 생성
         for feature in Features:
@@ -228,6 +149,25 @@ class CurationQWidget(QDialog):
         self.button_layout.addWidget(self.cancel_button)
 
         self.mainLayout.addLayout(self.button_layout)
+
+    def create_line_edit(self, placeholder, validator=None):
+        line_edit = QLineEdit(self)
+        line_edit.setFixedHeight(30)
+        line_edit.setPlaceholderText(placeholder)
+        line_edit.setStyleSheet("""
+               QLineEdit {
+                   padding: 5px;
+                   font: 600 9pt "Segoe UI";
+                   border: 1px solid #c0c0c0;
+                   border-radius: 4px;
+               }
+               QLineEdit:focus {
+                   border: 1px solid #009faa;
+               }
+           """)
+        if validator:
+            line_edit.setValidator(validator)
+        return line_edit
 
     def open_directory_dialog(self):
         """Open a dialog to select a directory and display the selected path."""
