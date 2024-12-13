@@ -8,6 +8,7 @@ from PySide6.QtCore import Qt
 from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
 )
+from functools import partial
 from sympy import false
 
 
@@ -56,7 +57,7 @@ class CurationQWidget(QDialog):
 
         # Please specify the directory to be curated
         (self.curation_directory_layout, self.curation_directory_path_edit,
-         self.curation_select_directory) = self.create_directory("The selected directory path will be displayed here.")
+         self.curation_select_directory) = self.create_directory("The selected directory path will be displayed here.","curation")
 
         self.mainLayout.addLayout(self.curation_directory_layout)
 
@@ -78,7 +79,7 @@ class CurationQWidget(QDialog):
         self.test_ratio_edit = self.create_line_edit("Test ratio (ex : 0.15)")
 
         self.classify_directory_layout, self.classify_directory_path_edit, self.classify_select_directory = self.create_directory(
-                    "If you prefer classification over deletion, please specify the directory to classify.")
+                    "If you prefer classification over deletion, please specify the directory to classify.","classify")
         self.classify_directory_path_edit.setEnabled(False)
         self.classify_select_directory.setEnabled(False)
         self.classify_directory_layout.setContentsMargins(0, 1, 0, 20)
@@ -187,7 +188,7 @@ class CurationQWidget(QDialog):
             line_edit.setValidator(validator)
         return line_edit
 
-    def create_directory(self, placeholder, validator=None):
+    def create_directory(self, placeholder, type, validator=None):
         directory_layout = QHBoxLayout()
         directory_layout.setContentsMargins(0, 5, 0, 15)
 
@@ -196,35 +197,41 @@ class CurationQWidget(QDialog):
         directory_path_edit.setPlaceholderText(placeholder)
         directory_path_edit.setFixedHeight(30)
         directory_path_edit.setStyleSheet("""
-                      QLineEdit {
-                          padding: 5px;
-                          font: 600 9pt "Segoe UI";
-                          border: 1px solid #c0c0c0;  /* 기본 테두리 */
-                          border-radius: 4px;
-                      }
-                      QLineEdit:focus {
-                          border: 1px solid #009faa;  /* 포커스 시 동일한 두께의 색상만 변경 */
-                      }
-                  """)
+            QLineEdit {
+                padding: 5px;
+                font: 600 9pt "Segoe UI";
+                border: 1px solid #c0c0c0;
+                border-radius: 4px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #009faa;
+            }
+        """)
 
         if validator:
             directory_path_edit.setValidator(validator)
 
         select_directory_button = PrimaryPushButton("...", self)
         select_directory_button.setFixedHeight(30)
-        select_directory_button.clicked.connect(self.open_directory_dialog)
+
+        # 방법1: functools.partial 활용
+        select_directory_button.clicked.connect(lambda :  self.open_directory_dialog(type))
 
         directory_layout.addWidget(directory_path_edit)
         directory_layout.addWidget(select_directory_button)
 
-        # 레이아웃과 directory_path_edit를 함께 반환
         return directory_layout, directory_path_edit, select_directory_button
 
-    def open_directory_dialog(self):
+    def open_directory_dialog(self, type):
         """Open a dialog to select a directory and display the selected path."""
         selected_directory = QFileDialog.getExistingDirectory(self, "Select directory", "")
-        if selected_directory:
+        if type == "curation" and selected_directory:
+            # separator를 활용한 처리
             self.curation_directory_path_edit.setText(selected_directory)
+
+        if type == "classify" and self.checkboxes[Features.classify_zero_textsize_images].isChecked():
+            self.classify_directory_path_edit.setText(selected_directory)
+
 
     def proceed_action(self):
         """Handle the proceed button click."""
