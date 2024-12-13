@@ -187,7 +187,7 @@ class CurationQWidget(QDialog):
             print(f"{feature.name} ( {feature.description} ) 선택됨: {state}")
 
         # Adjust data split ratio 체크 시
-        if self.checkboxes[Features.ADJUST_DATA_SPLIT_RATIO].isChecked():
+        if self.checkboxes[Features.adjust_data_split_ratio].isChecked():
             train_ratio = self.train_ratio_edit.text()
             valid_ratio = self.valid_ratio_edit.text()
             test_ratio = self.test_ratio_edit.text()
