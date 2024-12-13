@@ -190,7 +190,7 @@ class CurationQWidget(QDialog):
 
     def create_directory(self, placeholder, type, validator=None):
         directory_layout = QHBoxLayout()
-        directory_layout.setContentsMargins(0, 5, 0, 15)
+        directory_layout.setContentsMargins(0, 0, 0, 15)
 
         directory_path_edit = QLineEdit(self)
         directory_path_edit.setReadOnly(True)
