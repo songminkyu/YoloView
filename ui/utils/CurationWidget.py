@@ -8,10 +8,12 @@ from PySide6.QtCore import Qt
 from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
 )
+from sympy import false
+
 
 class Features(Enum):
     remove_mismatched_label_image_data = auto()
-    remove_zero_textsize_images = auto()
+    classify_zero_textsize_images = auto()
     change_label_image_filenames = auto()
     remove_low_quality_images = auto()
     remove_segmentation = auto()
@@ -25,7 +27,7 @@ class Features(Enum):
     def description(self):
         descriptions = {
             Features.remove_mismatched_label_image_data: "Remove data with mismatched label and image names",
-            Features.remove_zero_textsize_images: "Remove matching images if label text size is 0",
+            Features.classify_zero_textsize_images: "Classify or remove matching images if the label text size is 0",
             Features.change_label_image_filenames: "Change label and image file names by matching them (add padding to file name)",
             Features.remove_low_quality_images: "Remove low quality after image quality evaluation",
             Features.remove_segmentation: "Remove segmentation",
@@ -44,7 +46,7 @@ class CurationQWidget(QDialog):
         # Style adjustments
         self.setWindowTitle("Curation")
         self.setStyleSheet("CurationQWidget{background: rgb(255, 255, 255)}")
-        self.setFixedSize(600, 580)  # 창 크기 고정
+        self.setFixedSize(600, 600)  # 창 크기 고정
 
         # Main layout
         self.mainLayout = QVBoxLayout(self)
@@ -52,37 +54,14 @@ class CurationQWidget(QDialog):
         self.mainLayout.setSpacing(5)  # 컨트롤 간의 간격 조정
         self.mainLayout.setContentsMargins(20, 20, 20, 20)  # 여백 조정
 
-        # Add directory path selection section with top margin
-        self.directory_layout = QHBoxLayout()
-        self.directory_layout.setContentsMargins(0, 0, 0, 15)  # 하단 마진 추가
-        self.directory_path_edit = QLineEdit(self)
-        self.directory_path_edit.setReadOnly(True)  # 텍스트 박스를 읽기 전용으로 설정
-        self.directory_path_edit.setPlaceholderText("The selected directory path will be displayed here.")
-        self.directory_path_edit.setFixedHeight(30)
-        self.directory_path_edit.setStyleSheet("""
-            QLineEdit {
-                padding: 5px;
-                font: 600 9pt "Segoe UI";
-                border: 1px solid #c0c0c0;  /* 기본 테두리 */
-                border-radius: 4px;
-            }
-            QLineEdit:focus {
-                border: 1px solid #009faa;  /* 포커스 시 동일한 두께의 색상만 변경 */
-            }
-        """)
-        self.select_directory_button = PrimaryPushButton("...", self)
-        self.select_directory_button.setFixedHeight(30)
-        self.select_directory_button.clicked.connect(self.open_directory_dialog)
+        # Please specify the directory to be curated
+        (self.curation_directory_layout, self.curation_directory_path_edit,
+         self.curation_select_directory) = self.create_directory("The selected directory path will be displayed here.")
 
-        self.directory_layout.addWidget(self.directory_path_edit)
-        self.directory_layout.addWidget(self.select_directory_button)
-
-        # Add directory layout at the top
-        self.mainLayout.addLayout(self.directory_layout)
+        self.mainLayout.addLayout(self.curation_directory_layout)
 
         # feature layout
         self.feature_layout = QVBoxLayout()
-        self.feature_layout.setSpacing(15)
 
         self.checkboxes = {}
 
@@ -98,38 +77,45 @@ class CurationQWidget(QDialog):
         self.valid_ratio_edit = self.create_line_edit("Valid ratio (ex : 0.15)")
         self.test_ratio_edit = self.create_line_edit("Test ratio (ex : 0.15)")
 
+        self.classify_directory_layout, self.classify_directory_path_edit, self.classify_select_directory = self.create_directory(
+                    "If you prefer classification over deletion, please specify the directory to classify.")
+        self.classify_directory_path_edit.setEnabled(False)
+        self.classify_select_directory.setEnabled(False)
+        self.classify_directory_layout.setContentsMargins(0, 1, 0, 20)
 
         # 체크박스 생성
         for feature in Features:
             checkbox = CheckBox(feature.description, self)
+            checkbox.stateChanged.connect(lambda state, f=feature: self.checkbox_state_changed(state, f))
             self.feature_layout.addWidget(checkbox)
             self.checkboxes[feature] = checkbox
 
+            if feature == Features.classify_zero_textsize_images:
+                self.feature_layout.addLayout(self.classify_directory_layout)
+
             if feature == Features.remove_images_by_class_id:
-                self.feature_layout.addSpacing(5)
                 self.deleteid_layout = QHBoxLayout()
+                self.deleteid_layout.setContentsMargins(0, 1, 0, 20)
+                self.deleteid_layout.setSpacing(15)
                 self.deleteid_layout.addWidget(self.delete_classid_edit)
                 self.feature_layout.addLayout(self.deleteid_layout)
-                self.feature_layout.addSpacing(15)
 
             elif feature == Features.adjust_data_split_ratio:
-                self.feature_layout.addSpacing(5)
                 self.ratio_layout = QHBoxLayout()
+                self.ratio_layout.setContentsMargins(0, 1, 0, 20)
+                self.ratio_layout.setSpacing(15)
                 self.ratio_layout.addWidget(self.train_ratio_edit)
                 self.ratio_layout.addWidget(self.valid_ratio_edit)
                 self.ratio_layout.addWidget(self.test_ratio_edit)
                 self.feature_layout.addLayout(self.ratio_layout)
-                self.feature_layout.addSpacing(15)
-
 
             elif feature == Features.change_class_id:
-                self.feature_layout.addSpacing(5)
                 self.changeid_layout = QHBoxLayout()
+                self.changeid_layout.setContentsMargins(0, 1, 0, 20)
+                self.changeid_layout.setSpacing(15)
                 self.changeid_layout.addWidget(self.target_classid_edit)
                 self.changeid_layout.addWidget(self.new_classid_edit)
                 self.feature_layout.addLayout(self.changeid_layout)
-                self.feature_layout.addSpacing(15)
-
 
         self.mainLayout.addLayout(self.feature_layout)
 
@@ -150,9 +136,41 @@ class CurationQWidget(QDialog):
 
         self.mainLayout.addLayout(self.button_layout)
 
+    def checkbox_state_changed(self, state, feature):
+        if self.checkboxes[Features.classify_zero_textsize_images].isChecked():
+            self.classify_directory_path_edit.setEnabled(True)
+            self.classify_select_directory.setEnabled(True)
+        else:
+            self.classify_directory_path_edit.setEnabled(False)
+            self.classify_select_directory.setEnabled(False)
+
+        if self.checkboxes[Features.remove_images_by_class_id].isChecked():
+            self.delete_classid_edit.setEnabled(True)
+        else:
+            self.delete_classid_edit.setEnabled(False)
+
+        if self.checkboxes[Features.adjust_data_split_ratio].isChecked():
+            self.train_ratio_edit.setEnabled(True)
+            self.valid_ratio_edit.setEnabled(True)
+            self.test_ratio_edit.setEnabled(True)
+
+        else:
+            self.train_ratio_edit.setEnabled(False)
+            self.valid_ratio_edit.setEnabled(False)
+            self.test_ratio_edit.setEnabled(False)
+
+        if self.checkboxes[Features.change_class_id].isChecked():
+            self.target_classid_edit.setEnabled(True)
+            self.new_classid_edit.setEnabled(True)
+        else:
+            self.target_classid_edit.setEnabled(False)
+            self.new_classid_edit.setEnabled(False)
+
+
     def create_line_edit(self, placeholder, validator=None):
         line_edit = QLineEdit(self)
         line_edit.setFixedHeight(30)
+        line_edit.setEnabled(False)
         line_edit.setPlaceholderText(placeholder)
         line_edit.setStyleSheet("""
                QLineEdit {
@@ -169,16 +187,49 @@ class CurationQWidget(QDialog):
             line_edit.setValidator(validator)
         return line_edit
 
+    def create_directory(self, placeholder, validator=None):
+        directory_layout = QHBoxLayout()
+        directory_layout.setContentsMargins(0, 5, 0, 15)
+
+        directory_path_edit = QLineEdit(self)
+        directory_path_edit.setReadOnly(True)
+        directory_path_edit.setPlaceholderText(placeholder)
+        directory_path_edit.setFixedHeight(30)
+        directory_path_edit.setStyleSheet("""
+                      QLineEdit {
+                          padding: 5px;
+                          font: 600 9pt "Segoe UI";
+                          border: 1px solid #c0c0c0;  /* 기본 테두리 */
+                          border-radius: 4px;
+                      }
+                      QLineEdit:focus {
+                          border: 1px solid #009faa;  /* 포커스 시 동일한 두께의 색상만 변경 */
+                      }
+                  """)
+
+        if validator:
+            directory_path_edit.setValidator(validator)
+
+        select_directory_button = PrimaryPushButton("...", self)
+        select_directory_button.setFixedHeight(30)
+        select_directory_button.clicked.connect(self.open_directory_dialog)
+
+        directory_layout.addWidget(directory_path_edit)
+        directory_layout.addWidget(select_directory_button)
+
+        # 레이아웃과 directory_path_edit를 함께 반환
+        return directory_layout, directory_path_edit, select_directory_button
+
     def open_directory_dialog(self):
         """Open a dialog to select a directory and display the selected path."""
         selected_directory = QFileDialog.getExistingDirectory(self, "Select directory", "")
         if selected_directory:
-            self.directory_path_edit.setText(selected_directory)
+            self.curation_directory_path_edit.setText(selected_directory)
 
     def proceed_action(self):
         """Handle the proceed button click."""
         print("진행 버튼 클릭됨!")
-        current_path = self.directory_path_edit.text()
+        current_path = self.curation_directory_path_edit.text()
         print(f"현재 경로: {current_path}")
 
         # Enum을 통한 체크박스 상태 확인
