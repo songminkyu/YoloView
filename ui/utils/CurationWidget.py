@@ -93,7 +93,7 @@ class CurationQWidget(QDialog):
             if feature == Features.classify_zero_textsize_images:
                 self.feature_layout.addLayout(self.classify_directory_layout)
 
-            if feature == Features.remove_images_by_class_id:
+            elif feature == Features.remove_images_by_class_id:
                 self.deleteid_layout = QHBoxLayout()
                 self.deleteid_layout.setContentsMargins(0, 1, 0, 20)
                 self.deleteid_layout.setSpacing(15)
