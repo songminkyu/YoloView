@@ -1,5 +1,5 @@
 import os
-from DatasetHashClac import DatasetHashClac
+from .DatasetHashClac import DatasetHashClac
 
 class DatasetSorting:
     def __init__(self, root_folder, subfolders):

@@ -1,6 +1,6 @@
 import os
 import shutil
-from DatasetHashClac import DatasetHashClac
+from .DatasetHashClac import DatasetHashClac
 
 class DatasetCleaner:
     def __init__(self, root_folder, subfolders, is_delete, classification_folder):

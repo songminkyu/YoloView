@@ -2,14 +2,14 @@
 import sys
 from enum import Enum, auto
 from PySide6.QtWidgets import (
-    QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit, QLabel
+    QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit, QProgressBar
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
 )
-from functools import partial
-from sympy import false
+
+from utils.curation.DatasetCleaner import DatasetCleaner
 
 
 class Features(Enum):
@@ -47,7 +47,7 @@ class CurationQWidget(QDialog):
         # Style adjustments
         self.setWindowTitle("Curation")
         self.setStyleSheet("CurationQWidget{background: rgb(255, 255, 255)}")
-        self.setFixedSize(600, 600)  # 창 크기 고정
+        self.setFixedSize(600, 680)  # 창 크기 고정
 
         # Main layout
         self.mainLayout = QVBoxLayout(self)
@@ -82,7 +82,7 @@ class CurationQWidget(QDialog):
                     "If you prefer classification over deletion, please specify the directory to classify.","classify")
         self.classify_directory_path_edit.setEnabled(False)
         self.classify_select_directory.setEnabled(False)
-        self.classify_directory_layout.setContentsMargins(0, 1, 0, 20)
+        self.classify_directory_layout.setContentsMargins(0, 5, 0, 20)
 
         # 체크박스 생성
         for feature in Features:
@@ -96,14 +96,14 @@ class CurationQWidget(QDialog):
 
             elif feature == Features.remove_images_by_class_id:
                 self.deleteid_layout = QHBoxLayout()
-                self.deleteid_layout.setContentsMargins(0, 1, 0, 20)
+                self.deleteid_layout.setContentsMargins(0, 5, 0, 20)
                 self.deleteid_layout.setSpacing(15)
                 self.deleteid_layout.addWidget(self.delete_classid_edit)
                 self.feature_layout.addLayout(self.deleteid_layout)
 
             elif feature == Features.adjust_data_split_ratio:
                 self.ratio_layout = QHBoxLayout()
-                self.ratio_layout.setContentsMargins(0, 1, 0, 20)
+                self.ratio_layout.setContentsMargins(0, 5, 0, 20)
                 self.ratio_layout.setSpacing(15)
                 self.ratio_layout.addWidget(self.train_ratio_edit)
                 self.ratio_layout.addWidget(self.valid_ratio_edit)
@@ -112,13 +112,39 @@ class CurationQWidget(QDialog):
 
             elif feature == Features.change_class_id:
                 self.changeid_layout = QHBoxLayout()
-                self.changeid_layout.setContentsMargins(0, 1, 0, 20)
+                self.changeid_layout.setContentsMargins(0, 5, 0, 20)
                 self.changeid_layout.setSpacing(15)
                 self.changeid_layout.addWidget(self.target_classid_edit)
                 self.changeid_layout.addWidget(self.new_classid_edit)
                 self.feature_layout.addLayout(self.changeid_layout)
 
         self.mainLayout.addLayout(self.feature_layout)
+
+        self.progress_bar_layout = QVBoxLayout(self)
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setObjectName(u"progress_bar")
+        self.progress_bar.setMinimumSize(QSize(0, 20))
+        self.progress_bar.setMaximumSize(QSize(16777215, 20))
+        self.progress_bar.setStyleSheet(u"QProgressBar{ \n"
+                                        "font: 700 10pt \"Nirmala UI\";\n"
+                                        "color: #8EC5FC; \n"
+                                        "text-align:center; \n"
+                                        "border:3px solid rgb(255, 255, 255);\n"
+                                        "border-radius: 7px; \n"
+                                        "background-color: rgba(215, 215, 215,100);\n"
+                                        "} \n"
+                                        "\n"
+                                        "QProgressBar:chunk{ \n"
+                                        "border-radius:0px; \n"
+                                        "background:  #00A7B3;\n"
+                                        "border-radius: 5px;\n"
+                                        "}")
+        self.progress_bar.setMaximum(100)
+        self.progress_bar.setValue(100)
+        self.progress_bar_layout.addSpacing(20)
+        self.progress_bar_layout.addWidget(self.progress_bar)
+
+        self.mainLayout.addLayout(self.progress_bar_layout)
 
         # Add bottom button layout
         self.button_layout = QHBoxLayout()
@@ -250,6 +276,10 @@ class CurationQWidget(QDialog):
             valid_ratio = self.valid_ratio_edit.text()
             test_ratio = self.test_ratio_edit.text()
             print(f"Train ratio: {train_ratio}, Valid ratio: {valid_ratio}, Test ratio: {test_ratio}")
+
+        subfolders = ['train', 'valid', 'test']
+        cleaner = DatasetCleaner(current_path,subfolders,True,None)
+        cleaner.remove_zero_and_duplicate()
 
     def cancel_action(self):
         """Handle the cancel button click."""
