@@ -1,11 +1,12 @@
 import cv2
 import numpy as np
-from skimage.metrics import structural_similarity as ssim
-from typing import Tuple, Dict, List
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
-from imquality import brisque
+from typing import Tuple, Dict, List
+from skimage.metrics import structural_similarity as ssim
+from utils.brisque.brisque import BRISQUE
+import scipy
 
 class ImageQualityEvaluator:
     def __init__(self, blur_threshold=100.0, noise_threshold=20.0, jpeg_artifact_threshold=0.5, model_path=None):
@@ -83,9 +84,9 @@ class ImageQualityEvaluator:
         Returns:
             float: BRISQUE 점수
         """
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        brisque_score = brisque.score(gray)
-        return brisque_score
+        brisque_score = BRISQUE(url=False)
+        score = brisque_score.score(image)
+        return score
 
     def evaluate(self, image_path: str) -> Dict[str, Tuple[bool, float]]:
         image = cv2.imread(image_path)
@@ -123,7 +124,7 @@ if __name__ == "__main__":
         jpeg_artifact_threshold=0.6
     )
 
-    image_path = "your_image.jpg"
+    image_path = "c:\\Users\\USER\\Downloads\\rock-paper-scissors.v14i.yolov11\\train\\images\\IMG_7077_MOV-152_jpg.rf.471fd18f355fc477a4b568473d1da01b.jpg"
     try:
         result = evaluator.evaluate(image_path)
         print_evaluation_results(result, image_name="Single Image")
