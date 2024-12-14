@@ -144,7 +144,7 @@ class CurationQWidget(QDialog):
                                         "border-radius: 5px;\n"
                                         "}")
         self.progress_bar.setMaximum(100)
-        self.progress_bar.setValue(100)
+        self.progress_bar.setValue(0)
         self.progress_bar_layout.addSpacing(20)
         self.progress_bar_layout.addWidget(self.progress_bar)
 
