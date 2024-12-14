@@ -1,21 +1,25 @@
 # coding: utf-8
+import os
 import sys
 from enum import Enum, auto
+
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (
     QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit, QProgressBar
 )
-from PySide6.QtCore import Qt, QSize
 from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
 )
 
+from utils.curation.DatasetChangeClassId import DatasetChangeClassId
 from utils.curation.DatasetCleaner import DatasetCleaner
-
+from utils.curation.DatasetDistributionbalance import DatasetDistributionbalance
+from utils.curation.DatasetSorting import DatasetSorting
 
 class Features(Enum):
     remove_mismatched_label_image_data = auto()
+    remove_duplicate_label_image_data = auto()
     classify_zero_textsize_images = auto()
-    change_label_image_filenames = auto()
     remove_low_quality_images = auto()
     remove_segmentation = auto()
     remove_bounding_box = auto()
@@ -28,15 +32,15 @@ class Features(Enum):
     def description(self):
         descriptions = {
             Features.remove_mismatched_label_image_data: "Remove data with mismatched label and image names",
+            Features.remove_duplicate_label_image_data: "Remove duplicate image data",
             Features.classify_zero_textsize_images: "Classify or remove matching images if the label text size is 0",
-            Features.change_label_image_filenames: "Change label and image file names by matching them (add padding to file name)",
             Features.remove_low_quality_images: "Remove low quality after image quality evaluation",
             Features.remove_segmentation: "Remove segmentation",
             Features.remove_bounding_box: "Remove bounding box",
             Features.remove_images_by_class_id: "Remove images and labels through class id to be removed",
             Features.change_class_id: "Change class ID",
             Features.adjust_data_split_ratio: "Adjust data split ratio",
-            Features.sort_images_labels: "Sort images and labels"
+            Features.sort_images_labels: "Change label and image file names by matching them (add padding to file name)"
         }
         return descriptions[self]
 
@@ -47,7 +51,7 @@ class CurationQWidget(QDialog):
         # Style adjustments
         self.setWindowTitle("Curation")
         self.setStyleSheet("CurationQWidget{background: rgb(255, 255, 255)}")
-        self.setFixedSize(600, 680)  # 창 크기 고정
+        self.setFixedSize(600, 700)  # 창 크기 고정
 
         # Main layout
         self.mainLayout = QVBoxLayout(self)
@@ -82,7 +86,7 @@ class CurationQWidget(QDialog):
                     "If you prefer classification over deletion, please specify the directory to classify.","classify")
         self.classify_directory_path_edit.setEnabled(False)
         self.classify_select_directory.setEnabled(False)
-        self.classify_directory_layout.setContentsMargins(0, 5, 0, 20)
+        self.classify_directory_layout.setContentsMargins(0, 7, 0, 20)
 
         # 체크박스 생성
         for feature in Features:
@@ -96,14 +100,14 @@ class CurationQWidget(QDialog):
 
             elif feature == Features.remove_images_by_class_id:
                 self.deleteid_layout = QHBoxLayout()
-                self.deleteid_layout.setContentsMargins(0, 5, 0, 20)
+                self.deleteid_layout.setContentsMargins(0, 7, 0, 20)
                 self.deleteid_layout.setSpacing(15)
                 self.deleteid_layout.addWidget(self.delete_classid_edit)
                 self.feature_layout.addLayout(self.deleteid_layout)
 
             elif feature == Features.adjust_data_split_ratio:
                 self.ratio_layout = QHBoxLayout()
-                self.ratio_layout.setContentsMargins(0, 5, 0, 20)
+                self.ratio_layout.setContentsMargins(0, 7, 0, 20)
                 self.ratio_layout.setSpacing(15)
                 self.ratio_layout.addWidget(self.train_ratio_edit)
                 self.ratio_layout.addWidget(self.valid_ratio_edit)
@@ -112,7 +116,7 @@ class CurationQWidget(QDialog):
 
             elif feature == Features.change_class_id:
                 self.changeid_layout = QHBoxLayout()
-                self.changeid_layout.setContentsMargins(0, 5, 0, 20)
+                self.changeid_layout.setContentsMargins(0, 7, 0, 20)
                 self.changeid_layout.setSpacing(15)
                 self.changeid_layout.addWidget(self.target_classid_edit)
                 self.changeid_layout.addWidget(self.new_classid_edit)
@@ -260,26 +264,72 @@ class CurationQWidget(QDialog):
 
 
     def proceed_action(self):
-        """Handle the proceed button click."""
-        print("진행 버튼 클릭됨!")
+
+        train_ratio = float(self.train_ratio_edit.text() if self.train_ratio_edit.isEnabled() else 0.7)
+        valid_ratio = float(self.valid_ratio_edit.text() if self.valid_ratio_edit.isEnabled() else 0.15)
+        test_ratio = float(self.test_ratio_edit.text() if self.test_ratio_edit.isEnabled() else 0.15)
+
         current_path = self.curation_directory_path_edit.text()
-        print(f"현재 경로: {current_path}")
+        classify_path = self.classify_directory_path_edit.text()
+        remove_class_id = list(
+            map(int, self.delete_classid_edit.text().split(','))) if self.delete_classid_edit.text() else []
 
-        # Enum을 통한 체크박스 상태 확인
-        for feature, checkbox in self.checkboxes.items():
-            state = checkbox.isChecked()
-            print(f"{feature.name} ( {feature.description} ) 선택됨: {state}")
+        change_target_classid = list(
+            map(int, self.target_classid_edit.text().split(','))) if self.target_classid_edit.text() else []
 
-        # Adjust data split ratio 체크 시
-        if self.checkboxes[Features.adjust_data_split_ratio].isChecked():
-            train_ratio = self.train_ratio_edit.text()
-            valid_ratio = self.valid_ratio_edit.text()
-            test_ratio = self.test_ratio_edit.text()
-            print(f"Train ratio: {train_ratio}, Valid ratio: {valid_ratio}, Test ratio: {test_ratio}")
+        change_new_classid = int(self.new_classid_edit.text()) if self.new_classid_edit.text() else None
+
+        if not current_path or not os.path.exists(current_path):
+            return  # Exit the method if the directory path is empty or does not exist
+
+        # 선택된 체크박스 개수 계산
+        selected_features = [feature for feature, checkbox in self.checkboxes.items() if checkbox.isChecked()]
+        total_checked = len(selected_features)
+        print(f"체크된 기능 수: {total_checked}")
+
+        # 프로그레스바 초기화
+        self.progress_bar.setValue(0)
+
+        # 각 기능 수행 시마다 프로그레스 바 업데이트
+        processed = 0
 
         subfolders = ['train', 'valid', 'test']
-        cleaner = DatasetCleaner(current_path,subfolders,True,None)
-        cleaner.remove_zero_and_duplicate()
+
+        is_delete = True
+        if not current_path or not os.path.exists(classify_path):
+            is_delete = False
+
+        dataset_sorting = DatasetSorting(current_path, subfolders)
+        dataset_balance = DatasetDistributionbalance(current_path,train_ratio,test_ratio,valid_ratio)
+        cleaner = DatasetCleaner(current_path, subfolders, is_delete, classify_path)
+        change_class_id = DatasetChangeClassId(current_path, subfolders, change_target_classid, change_new_classid)
+
+        for feature in selected_features:
+            # 여기서 실제 기능 처리 로직을 수행:
+            if feature.name == Features.remove_mismatched_label_image_data.name:
+                cleaner.remove_mismatch_images_and_labels()
+            if feature.name == Features.remove_duplicate_label_image_data.name:
+                cleaner.remove_duplicate_images()
+            if feature.name == Features.classify_zero_textsize_images.name:
+                cleaner.remove_zero_label()
+            if feature.name == Features.remove_segmentation.name:
+                cleaner.remove_segments()
+            if feature.name == Features.remove_bounding_box.name:
+                cleaner.remove_bounding_boxes()
+            if feature.name == Features.remove_images_by_class_id.name:
+                cleaner.remove_labels_and_images_by_class_ids(remove_class_id)
+            if feature.name == Features.change_class_id.name:
+                change_class_id.update_class_id_processing()
+            if feature.name == Features.adjust_data_split_ratio.name:
+                dataset_balance.adjust_dataset_splits()
+            if feature.name == Features.sort_images_labels:
+                dataset_sorting.sort_files_to_match_processing()
+
+            # 기능 완료 후 프로그레스바 업데이트
+            processed += 1
+            progress_value = int((processed / total_checked) * 100)
+            self.progress_bar.setValue(progress_value)
+            QApplication.processEvents()  # UI 갱신
 
     def cancel_action(self):
         """Handle the cancel button click."""

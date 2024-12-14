@@ -61,16 +61,29 @@ class DatasetCleaner:
             os.remove(duplicate)
             print(f"Deleted duplicate label: {duplicate}")
 
-    def remove_unmatched_images_and_labels_proc(self, images_folder, labels_folder):
+    def remove_mismatch_images_and_labels_proc(self, images_folder, labels_folder):
         for label_file in os.listdir(labels_folder):
             label_path = os.path.join(labels_folder, label_file)
             base_name = os.path.splitext(label_file)[0]
             image_path = os.path.join(images_folder, f"{base_name}.jpg")
             if not os.path.exists(image_path):
                 os.remove(label_path)
-                print(f"Deleted unmatched label: {label_path}")
+                print(f"Deleted mismatch label: {label_path}")
 
-    def remove_zero_and_duplicate(self):
+    def remove_duplicate_images(self):
+        for subfolder in self.subfolders:
+            subfolder_path = os.path.join(self.root_folder, subfolder)
+            if os.path.exists(subfolder_path):
+                images_folder = os.path.join(subfolder_path, "images")
+                labels_folder = os.path.join(subfolder_path, "labels")
+                if os.path.exists(images_folder) and os.path.exists(labels_folder):
+                    self.remove_duplicate_images_and_labels(images_folder, labels_folder)
+                else:
+                    print(f"Missing images or labels folder in: {subfolder_path}")
+            else:
+                print(f"Folder does not exist: {subfolder_path}")
+
+    def remove_zero_label(self):
         for subfolder in self.subfolders:
             subfolder_path = os.path.join(self.root_folder, subfolder)
             if os.path.exists(subfolder_path):
@@ -78,7 +91,6 @@ class DatasetCleaner:
                 labels_folder = os.path.join(subfolder_path, "labels")
                 if os.path.exists(images_folder) and os.path.exists(labels_folder):
                     self.process_zero_size_data(images_folder, labels_folder)
-                    self.remove_duplicate_images_and_labels(images_folder, labels_folder)
                 else:
                     print(f"Missing images or labels folder in: {subfolder_path}")
             else:
@@ -135,8 +147,8 @@ class DatasetCleaner:
                             os.remove(image_path)
                             print(f"Deleted image file: {image_path}")
 
-    def remove_unmatched_images_and_labels(self):
-        print("Removing unmatched labels and images...")
+    def remove_mismatch_images_and_labels(self):
+        print("Removing mismatch labels and images...")
         for subfolder in self.subfolders:
             subfolder_path = os.path.join(self.root_folder, subfolder)
 
@@ -145,5 +157,5 @@ class DatasetCleaner:
                 labels_folder = os.path.join(subfolder_path, "labels")
 
                 if os.path.exists(images_folder) and os.path.exists(labels_folder):
-                    self.remove_unmatched_images_and_labels_proc(images_folder, labels_folder)
+                    self.remove_mismatch_images_and_labels_proc(images_folder, labels_folder)
 
