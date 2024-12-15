@@ -61,6 +61,7 @@ class ImageQualityEvaluator:
         is_artifacted = artifact_score < self.jpeg_artifact_threshold
         return is_artifacted, artifact_score
 
+
     def calculate_psnr(self, image: np.ndarray) -> float:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         mse = np.mean((gray - gray.mean()) ** 2)

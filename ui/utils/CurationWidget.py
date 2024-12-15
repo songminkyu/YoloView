@@ -5,7 +5,8 @@ from enum import Enum, auto
 
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (
-    QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit, QProgressBar
+    QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit, QProgressBar,
+    QScrollArea, QWidget
 )
 from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
@@ -66,8 +67,48 @@ class CurationQWidget(QDialog):
         self.mainLayout.addLayout(self.curation_directory_layout)
 
         # feature layout
-        self.feature_layout = QVBoxLayout()
+        # feature layout 스크롤 영역 추가
+        self.scroll_area = QScrollArea(self)
+        self.scroll_area.setWidgetResizable(True)  # 스크롤 영역 크기를 조정할 수 있도록 설정
+        self.scroll_area.setStyleSheet("""
+            QScrollArea {
+                border: none;  /* 테두리 제거 */
+            }
+            QScrollBar:vertical {
+                border: none;
+                background: #f0f0f0;
+                width: 10px;
+                margin: 0px 0 0px 0;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:vertical {
+                background: #b0b0b0;
+                min-height: 20px;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background: #a0a0a0;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                background: none;
+                height: 0px;
+                width: 0px;
+            }
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
+            }
+        """)
+        # feature_layout을 담을 위젯 생성
+        self.scroll_widget = QWidget()
+        self.scroll_widget.setStyleSheet("""
+            QWidget {
+                color: black;                
+                background-color: white;                     
+                border-radius: 8px; /* 내부 위젯의 모서리를 둥글게 설정 */
+            }            
+        """)
 
+        self.feature_layout = QVBoxLayout(self.scroll_widget)
         self.checkboxes = {}
 
         # changed class id
@@ -122,7 +163,11 @@ class CurationQWidget(QDialog):
                 self.changeid_layout.addWidget(self.new_classid_edit)
                 self.feature_layout.addLayout(self.changeid_layout)
 
-        self.mainLayout.addLayout(self.feature_layout)
+        # scroll_widget을 scroll_area에 추가
+        self.scroll_area.setWidget(self.scroll_widget)
+
+        # 기존 mainLayout에 scroll_area 추가
+        self.mainLayout.addWidget(self.scroll_area)
 
         self.progress_bar_layout = QVBoxLayout(self)
         self.progress_bar = QProgressBar()
