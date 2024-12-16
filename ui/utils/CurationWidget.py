@@ -6,7 +6,7 @@ from enum import Enum, auto
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtWidgets import (
     QApplication, QVBoxLayout, QHBoxLayout, QDialog, QFileDialog, QLineEdit, QProgressBar,
-    QScrollArea, QWidget
+    QScrollArea, QWidget,QLabel,QRadioButton, QButtonGroup
 )
 from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
@@ -16,11 +16,13 @@ from utils.curation.DatasetChangeClassId import DatasetChangeClassId
 from utils.curation.DatasetCleaner import DatasetCleaner
 from utils.curation.DatasetDistributionbalance import DatasetDistributionbalance
 from utils.curation.DatasetSorting import DatasetSorting
+from utils.curation.DatasetImageQualityEvaluator import ImageQualityEvaluator
 
 class Features(Enum):
     remove_mismatched_label_image_data = auto()
     remove_duplicate_label_image_data = auto()
     classify_zero_textsize_images = auto()
+    image_evaluation_classification = auto()
     remove_low_quality_images = auto()
     remove_segmentation = auto()
     remove_bounding_box = auto()
@@ -35,6 +37,7 @@ class Features(Enum):
             Features.remove_mismatched_label_image_data: "Remove data with mismatched label and image names",
             Features.remove_duplicate_label_image_data: "Remove duplicate image data",
             Features.classify_zero_textsize_images: "Classify or remove matching images if the label text size is 0",
+            Features.image_evaluation_classification: "Image quality evaluation and classification",
             Features.remove_low_quality_images: "Remove low quality after image quality evaluation",
             Features.remove_segmentation: "Remove segmentation",
             Features.remove_bounding_box: "Remove bounding box",
@@ -52,8 +55,7 @@ class CurationQWidget(QDialog):
         # Style adjustments
         self.setWindowTitle("Curation")
         self.setStyleSheet("CurationQWidget{background: rgb(255, 255, 255)}")
-        self.setFixedSize(600, 700)  # 창 크기 고정
-
+        self.setFixedSize(640, 700)  # 창 크기 고정
         # Main layout
         self.mainLayout = QVBoxLayout(self)
         self.mainLayout.setAlignment(Qt.AlignTop)  # 모든 컨트롤을 위쪽으로 정렬
@@ -105,7 +107,8 @@ class CurationQWidget(QDialog):
                 color: black;                
                 background-color: white;                     
                 border-radius: 8px; /* 내부 위젯의 모서리를 둥글게 설정 */
-            }            
+            }    
+           
         """)
 
         self.feature_layout = QVBoxLayout(self.scroll_widget)
@@ -115,6 +118,11 @@ class CurationQWidget(QDialog):
         self.target_classid_edit = self.create_line_edit("Class Id to Change (ex : 0,1,2,3)")
         self.new_classid_edit = self.create_line_edit("New class id (ex : 1)")
 
+        # image evaluation
+        self.psnr_edit = self.create_line_edit("PSNR value (e.g., 30.5)")
+        self.ssim_edit = self.create_line_edit("SSIM value (range: 0.0 - 1.0)")
+        self.brisque_edit = self.create_line_edit("BRISQUE score (lower is better)")
+
         # Delete class id
         self.delete_classid_edit = self.create_line_edit("Remove class id (ex : 0,1,2,3)")
 
@@ -123,11 +131,17 @@ class CurationQWidget(QDialog):
         self.valid_ratio_edit = self.create_line_edit("Valid ratio (ex : 0.15)")
         self.test_ratio_edit = self.create_line_edit("Test ratio (ex : 0.15)")
 
-        self.classify_directory_layout, self.classify_directory_path_edit, self.classify_select_directory = self.create_directory(
-                    "If you prefer classification over deletion, please specify the directory to classify.","classify")
-        self.classify_directory_path_edit.setEnabled(False)
-        self.classify_select_directory.setEnabled(False)
-        self.classify_directory_layout.setContentsMargins(0, 7, 0, 20)
+        self.zero_size_classify_directory_layout, self.zero_size_classify_directory_path_edit, self.zero_size_classify_select_directory = self.create_directory(
+                    "If you choose classification instead of deletion, please specify the directory to classify.","zero_size_classify")
+        self.zero_size_classify_directory_layout.setEnabled(False)
+        self.zero_size_classify_directory_path_edit.setEnabled(False)
+        self.zero_size_classify_select_directory.setContentsMargins(0, 10, 0, 10)
+
+        self.image_evaluation_classify_directory_layout, self.image_evaluation_classify_directory_path_edit, self.image_evaluation_classify_select_directory = self.create_directory(
+            "Please specify the directory to save the images classified by the image quality assessment results.", "image_evaluation_classify")
+        self.image_evaluation_classify_directory_layout.setEnabled(False)
+        self.image_evaluation_classify_directory_path_edit.setEnabled(False)
+        self.image_evaluation_classify_select_directory.setContentsMargins(0, 15, 0, 0)
 
         # 체크박스 생성
         for feature in Features:
@@ -137,27 +151,78 @@ class CurationQWidget(QDialog):
             self.checkboxes[feature] = checkbox
 
             if feature == Features.classify_zero_textsize_images:
-                self.feature_layout.addLayout(self.classify_directory_layout)
+                self.feature_layout.addLayout(self.zero_size_classify_directory_layout)
 
             elif feature == Features.remove_images_by_class_id:
                 self.deleteid_layout = QHBoxLayout()
-                self.deleteid_layout.setContentsMargins(0, 7, 0, 20)
+                self.deleteid_layout.setContentsMargins(0, 10, 0, 10)
                 self.deleteid_layout.setSpacing(15)
                 self.deleteid_layout.addWidget(self.delete_classid_edit)
                 self.feature_layout.addLayout(self.deleteid_layout)
 
             elif feature == Features.adjust_data_split_ratio:
                 self.ratio_layout = QHBoxLayout()
-                self.ratio_layout.setContentsMargins(0, 7, 0, 20)
+                self.ratio_layout.setContentsMargins(0, 10, 0, 10)
                 self.ratio_layout.setSpacing(15)
                 self.ratio_layout.addWidget(self.train_ratio_edit)
                 self.ratio_layout.addWidget(self.valid_ratio_edit)
                 self.ratio_layout.addWidget(self.test_ratio_edit)
                 self.feature_layout.addLayout(self.ratio_layout)
 
+            elif feature == Features.image_evaluation_classification:
+                self.image_evaluation_group = QButtonGroup(self)
+                self.feature_layout.addLayout(self.image_evaluation_classify_directory_layout)
+
+                self.image_evaluation_layout = QVBoxLayout()
+                self.image_evaluation_layout.setContentsMargins(0, 10, 0, 10)
+                self.image_evaluation_layout.setSpacing(15)
+
+                # PSNR
+                self.psnr_radiobutton = QRadioButton("PSNR", self)
+                self.psnr_label = QLabel("PSNR (Peak Signal-to-Noise Ratio) : Used to measure image quality by "
+                                         "calculating the difference between the original and compressed images in"
+                                         " decibels (dB). Higher values indicate better quality.", self)
+                self.psnr_label.setWordWrap(True)
+
+                self.psnr_line_layout = QVBoxLayout()
+                self.psnr_line_layout.addWidget(self.psnr_radiobutton)
+                self.psnr_line_layout.addWidget(self.psnr_label)
+                self.psnr_line_layout.addWidget(self.psnr_edit)
+                self.image_evaluation_layout.addLayout(self.psnr_line_layout)
+
+                # SSIM
+                self.ssim_radiobutton = QRadioButton("SSIM", self)
+                self.ssim_label = QLabel("SSIM (Structural Similarity Index Measure) : Evaluates the structural "
+                                         "similarity between images on a scale of 0.0 to 1.0, where values closer to 1"
+                                         " indicate higher quality.", self)
+                self.ssim_label.setWordWrap(True)
+
+                self.ssim_line_layout = QVBoxLayout()
+                self.ssim_line_layout.addWidget(self.ssim_radiobutton)
+                self.ssim_line_layout.addWidget(self.ssim_label)
+                self.ssim_line_layout.addWidget(self.ssim_edit)
+                self.image_evaluation_layout.addLayout(self.ssim_line_layout)
+
+                # BRISQUE
+                self.brisque_radiobutton = QRadioButton("BRISQUE", self)
+                self.brisque_label = QLabel("BRISQUE (Blind/Referenceless Image Spatial Quality Evaluator) : Assesses image "
+                                            "quality without a reference image. Lower values indicate better quality.", self)
+                self.brisque_label.setWordWrap(True)
+                self.brisque_line_layout = QVBoxLayout()
+                self.brisque_line_layout.addWidget(self.brisque_radiobutton)
+                self.brisque_line_layout.addWidget(self.brisque_label)
+                self.brisque_line_layout.addWidget(self.brisque_edit)
+                self.image_evaluation_layout.addLayout(self.brisque_line_layout)
+
+                self.image_evaluation_group.addButton(self.psnr_radiobutton)
+                self.image_evaluation_group.addButton(self.ssim_radiobutton)
+                self.image_evaluation_group.addButton(self.brisque_radiobutton)
+
+                self.feature_layout.addLayout(self.image_evaluation_layout)
+
             elif feature == Features.change_class_id:
                 self.changeid_layout = QHBoxLayout()
-                self.changeid_layout.setContentsMargins(0, 7, 0, 20)
+                self.changeid_layout.setContentsMargins(0, 10, 0, 10)
                 self.changeid_layout.setSpacing(15)
                 self.changeid_layout.addWidget(self.target_classid_edit)
                 self.changeid_layout.addWidget(self.new_classid_edit)
@@ -214,11 +279,11 @@ class CurationQWidget(QDialog):
 
     def checkbox_state_changed(self, state, feature):
         if self.checkboxes[Features.classify_zero_textsize_images].isChecked():
-            self.classify_directory_path_edit.setEnabled(True)
-            self.classify_select_directory.setEnabled(True)
+            self.zero_size_classify_directory_path_edit.setEnabled(True)
+            self.zero_size_classify_select_directory.setEnabled(True)
         else:
-            self.classify_directory_path_edit.setEnabled(False)
-            self.classify_select_directory.setEnabled(False)
+            self.zero_size_classify_directory_path_edit.setEnabled(False)
+            self.zero_size_classify_select_directory.setEnabled(False)
 
         if self.checkboxes[Features.remove_images_by_class_id].isChecked():
             self.delete_classid_edit.setEnabled(True)
@@ -265,7 +330,7 @@ class CurationQWidget(QDialog):
 
     def create_directory(self, placeholder, type, validator=None):
         directory_layout = QHBoxLayout()
-        directory_layout.setContentsMargins(0, 0, 0, 15)
+        directory_layout.setContentsMargins(0, 10, 0, 10)
 
         directory_path_edit = QLineEdit(self)
         directory_path_edit.setReadOnly(True)
@@ -304,8 +369,10 @@ class CurationQWidget(QDialog):
             # separator를 활용한 처리
             self.curation_directory_path_edit.setText(selected_directory)
 
-        if type == "classify" and self.checkboxes[Features.classify_zero_textsize_images].isChecked():
-            self.classify_directory_path_edit.setText(selected_directory)
+        if type == "zero_size_classify" and self.checkboxes[Features.classify_zero_textsize_images].isChecked():
+            self.zero_size_classify_directory_path_edit.setText(selected_directory)
+        if type == "image_evaluation_classify" and self.checkboxes[Features.image_evaluation_classification].isChecked():
+            self.image_evaluation_classify_directory_path_edit.setText(selected_directory)
 
 
     def proceed_action(self):
@@ -315,7 +382,7 @@ class CurationQWidget(QDialog):
         test_ratio = float(self.test_ratio_edit.text() if self.test_ratio_edit.isEnabled() else 0.15)
 
         current_path = self.curation_directory_path_edit.text()
-        classify_path = self.classify_directory_path_edit.text()
+        classify_path = self.zero_size_classify_directory_path_edit.text()
         remove_class_id = list(
             map(int, self.delete_classid_edit.text().split(','))) if self.delete_classid_edit.text() else []
 
