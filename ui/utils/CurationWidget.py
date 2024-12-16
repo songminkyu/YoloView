@@ -119,9 +119,8 @@ class CurationQWidget(QDialog):
         self.new_classid_edit = self.create_line_edit("New class id (ex : 1)")
 
         # image evaluation
-        self.psnr_edit = self.create_line_edit("PSNR value (e.g., 30.5)")
-        self.ssim_edit = self.create_line_edit("SSIM value (range: 0.0 - 1.0)")
         self.brisque_edit = self.create_line_edit("BRISQUE score (lower is better)")
+        self.niqe_edit = self.create_line_edit("NIQE score (lower is better)")
 
         # Delete class id
         self.delete_classid_edit = self.create_line_edit("Remove class id (ex : 0,1,2,3)")
@@ -177,45 +176,13 @@ class CurationQWidget(QDialog):
                 self.image_evaluation_layout.setContentsMargins(0, 10, 0, 10)
                 self.image_evaluation_layout.setSpacing(15)
 
-                # PSNR
-                self.psnr_radiobutton = QRadioButton("PSNR", self)
-                self.psnr_radiobutton.setEnabled(False)
-                self.psnr_label = QLabel("PSNR (Peak Signal-to-Noise Ratio) : Used to measure image quality by "
-                                         "calculating the difference between the original and compressed images in"
-                                         " decibels (dB). Higher values indicate better quality.", self)
-                self.psnr_label.setWordWrap(True)
-
-                self.psnr_line_layout = QVBoxLayout()
-                self.psnr_line_layout.addWidget(self.psnr_radiobutton)
-                self.psnr_line_layout.addWidget(self.psnr_label)
-                self.psnr_line_layout.addWidget(self.psnr_edit)
-                self.image_evaluation_layout.addLayout(self.psnr_line_layout)
-
-                # PSNR 잘못된 알고리즘으로 인하여, 숨김처리
-                self.hide_layout_widgets(self.psnr_line_layout,True)
-
-                # SSIM
-                self.ssim_radiobutton = QRadioButton("SSIM", self)
-                self.ssim_radiobutton.setEnabled(False)
-                self.ssim_label = QLabel("SSIM (Structural Similarity Index Measure) : Evaluates the structural "
-                                         "similarity between images on a scale of 0.0 to 1.0, where values closer to 1"
-                                         " indicate higher quality.", self)
-                self.ssim_label.setWordWrap(True)
-
-                self.ssim_line_layout = QVBoxLayout()
-                self.ssim_line_layout.addWidget(self.ssim_radiobutton)
-                self.ssim_line_layout.addWidget(self.ssim_label)
-                self.ssim_line_layout.addWidget(self.ssim_edit)
-                self.image_evaluation_layout.addLayout(self.ssim_line_layout)
-
-                # SSIM 잘못된 알고리즘으로 인하여, 숨김처리
-                self.hide_layout_widgets(self.ssim_line_layout, True)
-
                 # BRISQUE
                 self.brisque_radiobutton = QRadioButton("BRISQUE", self)
                 self.brisque_radiobutton.setEnabled(False)
-                self.brisque_label = QLabel("BRISQUE (Blind/Referenceless Image Spatial Quality Evaluator) : Assesses image "
-                                            "quality without a reference image. Lower values indicate better quality.", self)
+                self.brisque_label = QLabel(
+                    "BRISQUE (Blind/Referenceless Image Spatial Quality Evaluator) : Assesses image "
+                    "quality without a reference image. Lower values indicate better quality.",
+                    self)
                 self.brisque_label.setWordWrap(True)
                 self.brisque_line_layout = QVBoxLayout()
                 self.brisque_line_layout.addWidget(self.brisque_radiobutton)
@@ -223,9 +190,23 @@ class CurationQWidget(QDialog):
                 self.brisque_line_layout.addWidget(self.brisque_edit)
                 self.image_evaluation_layout.addLayout(self.brisque_line_layout)
 
-                self.image_evaluation_group.addButton(self.psnr_radiobutton)
-                self.image_evaluation_group.addButton(self.ssim_radiobutton)
+                # NIQE
+                self.niqe_radiobutton = QRadioButton("NIQE", self)
+                self.niqe_radiobutton.setEnabled(False)
+                self.niqe_label = QLabel(
+                    "NIQE (Natural Image Quality Evaluator) : A no-reference image quality measurement metric based "
+                    "on statistical features from natural scene statistics (NSS). Lower values indicate better image quality.",
+                    self
+                )
+                self.niqe_label.setWordWrap(True)
+                self.niqe_line_layout = QVBoxLayout()
+                self.niqe_line_layout.addWidget(self.niqe_radiobutton)
+                self.niqe_line_layout.addWidget(self.niqe_label)
+                self.niqe_line_layout.addWidget(self.niqe_edit)
+                self.image_evaluation_layout.addLayout(self.niqe_line_layout)
+
                 self.image_evaluation_group.addButton(self.brisque_radiobutton)
+                self.image_evaluation_group.addButton(self.niqe_radiobutton)
 
                 self.feature_layout.addLayout(self.image_evaluation_layout)
 
@@ -326,20 +307,17 @@ class CurationQWidget(QDialog):
         if self.checkboxes[Features.image_evaluation_classification].isChecked():
             self.image_evaluation_classify_directory_path_edit.setEnabled(True)
             self.image_evaluation_classify_select_directory.setEnabled(True)
-            self.psnr_radiobutton.setEnabled(True)
-            self.psnr_edit.setEnabled(True)
-            self.ssim_radiobutton.setEnabled(True)
-            self.ssim_edit.setEnabled(True)
+            self.niqe_radiobutton.setEnabled(True)
+            self.niqe_edit.setEnabled(True)
+
             self.brisque_radiobutton.setEnabled(True)
             self.brisque_radiobutton.setChecked(True)
             self.brisque_edit.setEnabled(True)
         else:
             self.image_evaluation_classify_directory_path_edit.setEnabled(False)
             self.image_evaluation_classify_select_directory.setEnabled(False)
-            self.psnr_radiobutton.setEnabled(False)
-            self.psnr_edit.setEnabled(False)
-            self.ssim_radiobutton.setEnabled(False)
-            self.ssim_edit.setEnabled(False)
+            self.niqe_radiobutton.setEnabled(False)
+            self.niqe_edit.setEnabled(False)
             self.brisque_radiobutton.setEnabled(False)
             self.brisque_radiobutton.setChecked(False)
             self.brisque_edit.setEnabled(False)

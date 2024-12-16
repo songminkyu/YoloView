@@ -2,37 +2,34 @@ import cv2
 import numpy as np
 import torch
 import torch.nn as nn
+import pyiqa
 from torchvision import transforms, models
 from typing import Tuple, Dict, List
-from skimage.metrics import structural_similarity as ssim
 from utils.brisque.brisque import BRISQUE
 
 class ImageQualityEvaluator:
     def __init__(self,
                  blur_threshold=100.0,
                  noise_threshold=20.0,
-                 jpeg_artifact_threshold=0.5,
-                 psnr_threshold=30.0,
                  entropy_threshold=4.0,
                  brisque_threshold=50.0,
+                 niqe_threshold=0.5,
                  model_path=None):
         """
         이미지 품질 평가를 위한 초기화.
         Args:
             blur_threshold (float): 블러 감지 임계값
             noise_threshold (float): 노이즈 감지 임계값
-            jpeg_artifact_threshold (float): JPEG 압축 아티팩트 감지 임계값
-            psnr_threshold (float): PSNR 임계값
             entropy_threshold (float): 엔트로피 임계값
             brisque_threshold (float): BRISQUE 임계값
+            niqe_threshold (float) : niqe 임계값
             model_path (str): 딥러닝 모델 경로 (품질 예측)
         """
         self.blur_threshold = blur_threshold
         self.noise_threshold = noise_threshold
-        self.jpeg_artifact_threshold = jpeg_artifact_threshold
-        self.psnr_threshold = psnr_threshold
         self.entropy_threshold = entropy_threshold
         self.brisque_threshold = brisque_threshold
+        self.niqe_threshold = niqe_threshold
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         if model_path:
@@ -62,28 +59,6 @@ class ImageQualityEvaluator:
         is_noisy = snr < self.noise_threshold
         return is_noisy, snr
 
-    def detect_jpeg_artifacts(self, image: np.ndarray) -> Tuple[bool, float]:
-        encode_param = [cv2.IMWRITE_JPEG_QUALITY, 50]
-        _, compressed = cv2.imencode('.jpg', image, encode_param)
-        decompressed = cv2.imdecode(compressed, cv2.IMREAD_COLOR)
-
-        gray_original = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        gray_compressed = cv2.cvtColor(decompressed, cv2.COLOR_BGR2GRAY)
-        artifact_score = ssim(gray_original, gray_compressed)
-        is_artifacted = artifact_score < self.jpeg_artifact_threshold
-        return is_artifacted, artifact_score
-
-    def calculate_psnr(self, image: np.ndarray) -> Tuple[bool, float]:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        mse = np.mean((gray - gray.mean()) ** 2)
-        if mse == 0:
-            psnr = float('inf')  # 최대 PSNR
-        else:
-            psnr = 20 * np.log10(255.0 / np.sqrt(mse))
-        # PSNR이 클수록 품질이 좋음 -> 임계값보다 크면 True
-        is_good = psnr > self.psnr_threshold
-        return is_good, psnr
-
     def calculate_entropy(self, image: np.ndarray) -> Tuple[bool, float]:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         hist, _ = np.histogram(gray, bins=256, range=(0, 256))
@@ -103,8 +78,24 @@ class ImageQualityEvaluator:
         is_good = score < self.brisque_threshold
         return is_good, score
 
+    def calculate_niqe(self, image: np.ndarray) -> Tuple[bool, float]:
+        # 이미지를 [N, C, H, W] 형식으로 변환하고 [0, 1] 범위로 정규화
+        # image: (H, W, C)
+        im_t = torch.FloatTensor(image.transpose(2, 0, 1)[None]).to('cuda') / 255.0
+
+        # NIQE metric 객체 생성 (GPU 사용)
+        niqe_metric = pyiqa.create_metric("niqe", device='cuda')
+
+        # NIQE 점수 계산
+        score_tensor = niqe_metric(im_t)
+        score = score_tensor.item()
+
+        # threshold를 기준으로 품질 판단 (NIQE 점수가 낮을수록 품질이 좋다고 판단)
+        is_good = score < self.niqe_threshold
+
+        return is_good, score
+
     def predict_quality_with_model(self, image: np.ndarray) -> float:
-        from torchvision import transforms
         transform = transforms.Compose([
             transforms.ToPILImage(),
             transforms.Resize((224, 224)),
@@ -116,6 +107,8 @@ class ImageQualityEvaluator:
             quality_score = self.quality_model(image_tensor).item()
         return quality_score
 
+
+
     def evaluate(self, image_path: str) -> Dict[str, Tuple[bool, float]]:
         image = cv2.imread(image_path)
         if image is None:
@@ -124,8 +117,7 @@ class ImageQualityEvaluator:
         results = {}
         results["blur"] = self.detect_blur(image)
         results["noise"] = self.detect_noise(image)
-        results["jpeg_artifacts"] = self.detect_jpeg_artifacts(image)
-        results["psnr"] = self.calculate_psnr(image)
+        results["niqe"] = self.calculate_niqe(image)
         results["entropy"] = self.calculate_entropy(image)
         results["brisque"] = self.calculate_brisque(image)
 
@@ -150,13 +142,12 @@ if __name__ == "__main__":
     evaluator = ImageQualityEvaluator(
         blur_threshold=100.0,
         noise_threshold=20.0,
-        jpeg_artifact_threshold=0.6,
-        psnr_threshold=30.0,
         entropy_threshold=4.0,
-        brisque_threshold=50.0
+        brisque_threshold=50.0,
+        niqe_threshold=5.0
     )
 
-    image_path = "your_image_path.jpg"
+    image_path = "c:\\Users\\USER\\Desktop\\M1JUHjD2_4x.jpg"
     try:
         result = evaluator.evaluate(image_path)
         print_evaluation_results(result, image_name="Single Image")
