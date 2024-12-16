@@ -26,6 +26,7 @@
 - [x] Added subfolder navigation feature (only when browsing folders)
 - [x] Improved and enhanced statistics
 - [x] Save Labal
+- [x] Image Navigation Controls (<<,< ,>, >>)
 
 ## Functions
 

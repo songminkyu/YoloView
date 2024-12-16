@@ -179,6 +179,7 @@ class CurationQWidget(QDialog):
 
                 # PSNR
                 self.psnr_radiobutton = QRadioButton("PSNR", self)
+                self.psnr_radiobutton.setEnabled(False)
                 self.psnr_label = QLabel("PSNR (Peak Signal-to-Noise Ratio) : Used to measure image quality by "
                                          "calculating the difference between the original and compressed images in"
                                          " decibels (dB). Higher values indicate better quality.", self)
@@ -190,8 +191,12 @@ class CurationQWidget(QDialog):
                 self.psnr_line_layout.addWidget(self.psnr_edit)
                 self.image_evaluation_layout.addLayout(self.psnr_line_layout)
 
+                # PSNR 잘못된 알고리즘으로 인하여, 숨김처리
+                self.hide_layout_widgets(self.psnr_line_layout,True)
+
                 # SSIM
                 self.ssim_radiobutton = QRadioButton("SSIM", self)
+                self.ssim_radiobutton.setEnabled(False)
                 self.ssim_label = QLabel("SSIM (Structural Similarity Index Measure) : Evaluates the structural "
                                          "similarity between images on a scale of 0.0 to 1.0, where values closer to 1"
                                          " indicate higher quality.", self)
@@ -203,8 +208,12 @@ class CurationQWidget(QDialog):
                 self.ssim_line_layout.addWidget(self.ssim_edit)
                 self.image_evaluation_layout.addLayout(self.ssim_line_layout)
 
+                # SSIM 잘못된 알고리즘으로 인하여, 숨김처리
+                self.hide_layout_widgets(self.ssim_line_layout, True)
+
                 # BRISQUE
                 self.brisque_radiobutton = QRadioButton("BRISQUE", self)
+                self.brisque_radiobutton.setEnabled(False)
                 self.brisque_label = QLabel("BRISQUE (Blind/Referenceless Image Spatial Quality Evaluator) : Assesses image "
                                             "quality without a reference image. Lower values indicate better quality.", self)
                 self.brisque_label.setWordWrap(True)
@@ -277,6 +286,13 @@ class CurationQWidget(QDialog):
 
         self.mainLayout.addLayout(self.button_layout)
 
+    # Layout에 포함된 모든 위젯을 숨기는 함수
+    def hide_layout_widgets(self, layout: QVBoxLayout, hide: bool):
+        for i in range(layout.count()):
+            widget = layout.itemAt(i).widget()
+            if widget:
+                widget.setVisible(not hide)
+
     def checkbox_state_changed(self, state, feature):
         if self.checkboxes[Features.classify_zero_textsize_images].isChecked():
             self.zero_size_classify_directory_path_edit.setEnabled(True)
@@ -307,6 +323,26 @@ class CurationQWidget(QDialog):
             self.target_classid_edit.setEnabled(False)
             self.new_classid_edit.setEnabled(False)
 
+        if self.checkboxes[Features.image_evaluation_classification].isChecked():
+            self.image_evaluation_classify_directory_path_edit.setEnabled(True)
+            self.image_evaluation_classify_select_directory.setEnabled(True)
+            self.psnr_radiobutton.setEnabled(True)
+            self.psnr_edit.setEnabled(True)
+            self.ssim_radiobutton.setEnabled(True)
+            self.ssim_edit.setEnabled(True)
+            self.brisque_radiobutton.setEnabled(True)
+            self.brisque_radiobutton.setChecked(True)
+            self.brisque_edit.setEnabled(True)
+        else:
+            self.image_evaluation_classify_directory_path_edit.setEnabled(False)
+            self.image_evaluation_classify_select_directory.setEnabled(False)
+            self.psnr_radiobutton.setEnabled(False)
+            self.psnr_edit.setEnabled(False)
+            self.ssim_radiobutton.setEnabled(False)
+            self.ssim_edit.setEnabled(False)
+            self.brisque_radiobutton.setEnabled(False)
+            self.brisque_radiobutton.setChecked(False)
+            self.brisque_edit.setEnabled(False)
 
     def create_line_edit(self, placeholder, validator=None):
         line_edit = QLineEdit(self)
@@ -352,6 +388,7 @@ class CurationQWidget(QDialog):
             directory_path_edit.setValidator(validator)
 
         select_directory_button = PrimaryPushButton("...", self)
+        select_directory_button.setEnabled(False)
         select_directory_button.setFixedHeight(30)
 
         # 방법1: functools.partial 활용
