@@ -671,19 +671,58 @@ class YOLOSHOWBASE:
             self.ui.track_label.hide()
 
             return False
+
     def loadCategories(self, yolo_thread, mode):
         # 클래스 이름 가져오기
         model = None
         class_names = None
         file_name = os.path.basename(yolo_thread.new_model_name)
 
-        if 'yolo' in file_name:
-            model = YOLO(yolo_thread.new_model_name)
-        elif 'rtdetr' in file_name:
-            model = RTDETR(yolo_thread.new_model_name)
-        elif 'fastsam' in file_name.lower():
-            model = FastSAM(yolo_thread.new_model_name)
-        else:
+        try:
+            # YOLO 모델 로드
+            if 'yolo' in file_name:
+                model = YOLO(yolo_thread.new_model_name)
+            elif 'rtdetr' in file_name:
+                model = RTDETR(yolo_thread.new_model_name)
+            elif 'fastsam' in file_name.lower():
+                model = FastSAM(yolo_thread.new_model_name)
+            else:
+                # 지원하지 않는 모델 처리 (UI 초기화)
+                if mode == 'single':
+                    self.ui.category_box.clearCategories()
+                    self.ui.category_box.reset_display_text()
+                elif mode == 'left':
+                    self.ui.category_box1.clearCategories()
+                    self.ui.category_box1.reset_display_text()
+                elif mode == 'right':
+                    self.ui.category_box2.clearCategories()
+                    self.ui.category_box2.reset_display_text()
+                return
+
+            # 로드된 모델에 'names' 속성이 있는지 확인
+            if not hasattr(model, "names"):
+                raise AttributeError(f"The model does not have a 'names' attribute.")
+
+            # 클래스 이름 가져오기
+            class_names = model.names
+
+            # UI 업데이트
+            if mode == 'single':
+                self.ui.category_box.clearCategories()
+                self.ui.category_box.reset_display_text()
+                self.ui.category_box.addCategories(class_names)
+            elif mode == 'left':
+                self.ui.category_box1.clearCategories()
+                self.ui.category_box1.reset_display_text()
+                self.ui.category_box1.addCategories(class_names)
+            elif mode == 'right':
+                self.ui.category_box2.clearCategories()
+                self.ui.category_box2.reset_display_text()
+                self.ui.category_box2.addCategories(class_names)
+
+        except Exception as e:
+            # 오류 발생 시 UI 초기화 및 로그 출력
+            print(f"Error loading categories: {e}")
             if mode == 'single':
                 self.ui.category_box.clearCategories()
                 self.ui.category_box.reset_display_text()
@@ -693,22 +732,6 @@ class YOLOSHOWBASE:
             elif mode == 'right':
                 self.ui.category_box2.clearCategories()
                 self.ui.category_box2.reset_display_text()
-            return
-
-        class_names = model.names
-
-        if mode == 'single':
-            self.ui.category_box.clearCategories()
-            self.ui.category_box.reset_display_text()
-            self.ui.category_box.addCategories(class_names)
-        elif mode == 'left':
-            self.ui.category_box1.clearCategories()
-            self.ui.category_box1.reset_display_text()
-            self.ui.category_box1.addCategories(class_names)
-        elif mode == 'right':
-            self.ui.category_box2.clearCategories()
-            self.ui.category_box2.reset_display_text()
-            self.ui.category_box2.addCategories(class_names)
 
     def updateCategories(self,yolo_thread, mode):
         # 클래스 이름 가져오기
