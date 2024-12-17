@@ -12,11 +12,12 @@ from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
 )
 
+from pyiqa.archs.brisque_arch import brisque
 from utils.curation.DatasetChangeClassId import DatasetChangeClassId
 from utils.curation.DatasetCleaner import DatasetCleaner
 from utils.curation.DatasetDistributionbalance import DatasetDistributionbalance
 from utils.curation.DatasetSorting import DatasetSorting
-from utils.curation.DatasetImageQualityEvaluator import BRISQUECalculator, NIQECalculator
+from utils.curation.DatasetImageQualityEvaluator import ImageQualityAssessmentReorganizer
 
 class Features(Enum):
     remove_mismatched_label_image_data = auto()
@@ -393,7 +394,11 @@ class CurationQWidget(QDialog):
             directory_path_edit.setValidator(validator)
 
         select_directory_button = PrimaryPushButton("...", self)
-        select_directory_button.setEnabled(False)
+        if type == "curation":
+            select_directory_button.setEnabled(True)
+        else:
+            select_directory_button.setEnabled(False)
+
         select_directory_button.setFixedHeight(30)
 
         # 방법1: functools.partial 활용
@@ -419,12 +424,27 @@ class CurationQWidget(QDialog):
 
     def proceed_action(self):
 
+        threshold = 0.0
+        metric_name = ""
+
+        if self.brisque_radiobutton.isChecked():
+            metric_name = "BRISQUE"
+            threshold = float(self.brisque_edit.text()) if self.brisque_edit.text() != "0" else 50.0
+        elif self.niqe_radiobutton.isChecked():
+            metric_name = "NIQE"
+            threshold = float(self.niqe_edit.text()) if self.niqe_edit.text() != "0" else 5.0
+        else:
+            metric_name = "PIQE"
+            threshold = float(self.piqe_edit.text()) if self.piqe_edit.text() != "0" else 50.0
+
         train_ratio = float(self.train_ratio_edit.text() if self.train_ratio_edit.isEnabled() else 0.7)
         valid_ratio = float(self.valid_ratio_edit.text() if self.valid_ratio_edit.isEnabled() else 0.15)
         test_ratio = float(self.test_ratio_edit.text() if self.test_ratio_edit.isEnabled() else 0.15)
 
         current_path = self.curation_directory_path_edit.text()
         classify_path = self.zero_size_classify_directory_path_edit.text()
+        img_eval_path = self.image_evaluation_classify_directory_path_edit.text()
+
         remove_class_id = list(
             map(int, self.delete_classid_edit.text().split(','))) if self.delete_classid_edit.text() else []
 
@@ -453,6 +473,7 @@ class CurationQWidget(QDialog):
         if not current_path or not os.path.exists(classify_path):
             is_delete = False
 
+        image_quality = None
         dataset_sorting = DatasetSorting(current_path, subfolders)
         dataset_balance = DatasetDistributionbalance(current_path,train_ratio,test_ratio,valid_ratio)
         cleaner = DatasetCleaner(current_path, subfolders, is_delete, classify_path)
@@ -478,6 +499,9 @@ class CurationQWidget(QDialog):
                 dataset_balance.adjust_dataset_splits()
             if feature.name == Features.sort_images_labels:
                 dataset_sorting.sort_files_to_match_processing()
+            if feature.name == Features.image_evaluation_classification.name:
+                image_quality = ImageQualityAssessmentReorganizer(current_path, img_eval_path, metric_name, threshold)
+                image_quality.move_files_by_metric()
 
             # 기능 완료 후 프로그레스바 업데이트
             processed += 1
