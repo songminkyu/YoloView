@@ -16,7 +16,7 @@ from utils.curation.DatasetChangeClassId import DatasetChangeClassId
 from utils.curation.DatasetCleaner import DatasetCleaner
 from utils.curation.DatasetDistributionbalance import DatasetDistributionbalance
 from utils.curation.DatasetSorting import DatasetSorting
-from utils.curation.DatasetImageQualityEvaluator import ImageQualityEvaluator
+from utils.curation.DatasetImageQualityEvaluator import BRISQUECalculator, NIQECalculator
 
 class Features(Enum):
     remove_mismatched_label_image_data = auto()
