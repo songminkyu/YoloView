@@ -121,6 +121,7 @@ class CurationQWidget(QDialog):
         # image evaluation
         self.brisque_edit = self.create_line_edit("BRISQUE score (lower is better)")
         self.niqe_edit = self.create_line_edit("NIQE score (lower is better)")
+        self.piqe_edit = self.create_line_edit("PIQE score (lower is better)")
 
         # Delete class id
         self.delete_classid_edit = self.create_line_edit("Remove class id (ex : 0,1,2,3)")
@@ -205,8 +206,24 @@ class CurationQWidget(QDialog):
                 self.niqe_line_layout.addWidget(self.niqe_edit)
                 self.image_evaluation_layout.addLayout(self.niqe_line_layout)
 
+                # PIQE
+                self.piqe_radiobutton = QRadioButton("PIQE", self)
+                self.piqe_radiobutton.setEnabled(False)
+                self.piqe_label = QLabel(
+                    "PIQE (Perception-based Image Quality Evaluator) : A no-reference image quality assessment metric that evaluates "
+                    "the quality of an image based on perceptual criteria. Lower values indicate better image quality.",
+                    self
+                )
+                self.piqe_label.setWordWrap(True)
+                self.piqe_line_layout = QVBoxLayout()
+                self.piqe_line_layout.addWidget(self.piqe_radiobutton)
+                self.piqe_line_layout.addWidget(self.piqe_label)
+                self.piqe_line_layout.addWidget(self.piqe_edit)
+                self.image_evaluation_layout.addLayout(self.piqe_line_layout)
+
                 self.image_evaluation_group.addButton(self.brisque_radiobutton)
                 self.image_evaluation_group.addButton(self.niqe_radiobutton)
+                self.image_evaluation_group.addButton(self.piqe_radiobutton)
 
                 self.feature_layout.addLayout(self.image_evaluation_layout)
 
@@ -307,20 +324,30 @@ class CurationQWidget(QDialog):
         if self.checkboxes[Features.image_evaluation_classification].isChecked():
             self.image_evaluation_classify_directory_path_edit.setEnabled(True)
             self.image_evaluation_classify_select_directory.setEnabled(True)
-            self.niqe_radiobutton.setEnabled(True)
-            self.niqe_edit.setEnabled(True)
 
             self.brisque_radiobutton.setEnabled(True)
             self.brisque_radiobutton.setChecked(True)
             self.brisque_edit.setEnabled(True)
+
+            self.niqe_radiobutton.setEnabled(True)
+            self.niqe_edit.setEnabled(True)
+
+            self.piqe_radiobutton.setEnabled(True)
+            self.piqe_edit.setEnabled(True)
+
         else:
             self.image_evaluation_classify_directory_path_edit.setEnabled(False)
             self.image_evaluation_classify_select_directory.setEnabled(False)
-            self.niqe_radiobutton.setEnabled(False)
-            self.niqe_edit.setEnabled(False)
+
             self.brisque_radiobutton.setEnabled(False)
             self.brisque_radiobutton.setChecked(False)
             self.brisque_edit.setEnabled(False)
+
+            self.niqe_radiobutton.setEnabled(False)
+            self.niqe_edit.setEnabled(False)
+
+            self.piqe_radiobutton.setEnabled(False)
+            self.piqe_edit.setEnabled(False)
 
     def create_line_edit(self, placeholder, validator=None):
         line_edit = QLineEdit(self)

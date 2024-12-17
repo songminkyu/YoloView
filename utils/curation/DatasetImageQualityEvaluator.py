@@ -3,11 +3,11 @@ import numpy as np
 import torch
 import torch.nn as nn
 import pyiqa
+import shutil
+import os
 from torchvision import transforms, models
 from typing import Tuple, Dict
 from utils.brisque.brisque import BRISQUE
-import os
-
 
 class ImageLoader:
     """이미지를 로드하고 유효성을 검사하는 클래스."""
@@ -19,55 +19,6 @@ class ImageLoader:
         if image is None:
             raise ValueError(f"Failed to load image from {image_path}.")
         return image
-
-
-class BlurDetector:
-    """이미지 블러 여부 감지 클래스."""
-
-    def __init__(self, image_path : str ,threshold: float = 100.0):
-        """
-        Args:
-            threshold (float): 블러 감지 임계값. 이 값보다 작으면 블러로 판단.
-        """
-        self.threshold = threshold
-        self.image_path = image_path
-
-    def detect_blur(self, image: np.ndarray) -> Tuple[bool, float]:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
-        is_blurry = laplacian_var < self.threshold
-        return is_blurry, laplacian_var
-
-    def evaluate(self) -> Tuple[bool, float]:
-        loader = ImageLoader()
-        image = loader.load_image(self.image_path)
-        return self.detect_blur(image)
-
-
-class NoiseDetector:
-    """이미지 노이즈 감지 클래스."""
-
-    def __init__(self, image_path : str ,threshold: float = 20.0):
-        """
-        Args:
-            threshold (float): SNR 임계값. 이 값보다 SNR이 낮으면 노이즈가 많다고 판단.
-        """
-        self.threshold = threshold
-        self.image_path = image_path
-
-    def detect_noise(self, image: np.ndarray) -> Tuple[bool, float]:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        mean_signal = np.mean(gray)
-        noise = np.std(gray)
-        snr = mean_signal / (noise + 1e-10)
-        is_noisy = snr < self.threshold
-        return is_noisy, snr
-
-    def evaluate(self) -> Tuple[bool, float]:
-        loader = ImageLoader()
-        image = loader.load_image(self.image_path)
-        return self.detect_noise(image)
-
 
 class EntropyCalculator:
     """이미지 엔트로피 계산 클래스."""
@@ -116,10 +67,59 @@ class BRISQUECalculator:
         is_good = score < self.threshold
         return is_good, score
 
+    def calculate_iqa_brisque(self, image: np.ndarray) -> Tuple[bool, float]:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        # GPU가 없는 경우 CPU로 fallback
+        im_t = torch.FloatTensor(image.transpose(2, 0, 1)[None]) / 255.0
+        im_t = im_t.to(device)
+
+        try:
+            brisque_metric = pyiqa.create_metric("brisque", device=device)
+            score_tensor = brisque_metric(im_t)
+            score = score_tensor.item()
+        except Exception as e:
+            raise RuntimeError(f"Brisque calculation failed: {e}")
+
+        is_good = score < self.threshold
+        return is_good, score
+
+
     def evaluate(self) -> Tuple[bool, float]:
         loader = ImageLoader()
         image = loader.load_image(self.image_path)
         return self.calculate_brisque(image)
+
+class PIQECalculator:
+    """PIQE 점수 계산 클래스."""
+
+    def __init__(self, image_path: str, threshold: float = 5.0):
+        """
+        Args:
+            threshold (float): NIQE 임계값. 점수가 이 값보다 작을수록 품질이 좋다고 판단.
+        """
+        self.threshold = threshold
+        self.image_path = image_path
+
+    def calculate_piqe(self, image: np.ndarray) -> Tuple[bool, float]:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        # GPU가 없는 경우 CPU로 fallback
+        im_t = torch.FloatTensor(image.transpose(2, 0, 1)[None]) / 255.0
+        im_t = im_t.to(device)
+
+        try:
+            piqe_metric = pyiqa.create_metric("piqe", device=device)
+            score_tensor = piqe_metric(im_t)
+            score = score_tensor.item()
+        except Exception as e:
+            raise RuntimeError(f"PIQE calculation failed: {e}")
+
+        is_good = score < self.threshold
+        return is_good, score
+
+    def evaluate(self) -> Tuple[bool, float]:
+        loader = ImageLoader()
+        image = loader.load_image(self.image_path)
+        return self.calculate_piqe(image)
 
 
 class NIQECalculator:
@@ -199,13 +199,109 @@ class DLQualityPredictor:
         return is_good, quality_score
 
 
+class ImageQualityAssessmentReorganizer:
+    """
+    품질 평가 결과에 따라 이미지/라벨을 재배치하는 클래스.
+    dataset_splits 없이 src_root_dir 아래 train/test/valid 구조를 직접 순회한다.
+
+    예)
+    src_root_dir/
+      train/
+        images/
+        labels/
+      test/
+        images/
+        labels/
+      valid/
+        images/
+        labels/
+
+    를
+
+    dest_root_dir/
+      BRISQUE_{src_root_basename}/
+        train/
+          images/
+          labels/
+        test/
+          images/
+          labels/
+        valid/
+          images/
+          labels/
+
+    형태로 재배치.
+    """
+
+    def __init__(self, src_root_dir: str, dest_root_dir: str, metric_name: str, threshold: float = 50.0):
+        self.src_root_dir = os.path.abspath(src_root_dir)
+        self.dest_root_dir = dest_root_dir
+        self.metric_name = metric_name
+        self.threshold = threshold
+
+        # 예: dest_root_dir/BRISQUE_srcdir
+        self.metric_folder = os.path.join(dest_root_dir, f"{metric_name}_{os.path.basename(self.src_root_dir)}")
+        os.makedirs(self.metric_folder, exist_ok=True)
+
+    def move_files_by_metric(self):
+        splits = ["train", "test", "valid"]
+        for split in splits:
+            src_images_dir = os.path.join(self.src_root_dir, split, "images")
+            src_labels_dir = os.path.join(self.src_root_dir, split, "labels")
+
+            # 대상 경로 생성
+            dest_images_dir = os.path.join(self.metric_folder, split, "images")
+            dest_labels_dir = os.path.join(self.metric_folder, split, "labels")
+            os.makedirs(dest_images_dir, exist_ok=True)
+            os.makedirs(dest_labels_dir, exist_ok=True)
+
+            if not os.path.exists(src_images_dir):
+                print(f"Source images directory does not exist: {src_images_dir}")
+                continue
+
+            # 이미지 파일 반복
+            for file_name in os.listdir(src_images_dir):
+                if file_name.lower().endswith((".jpg", ".png", ".jpeg")):
+                    img_path = os.path.join(src_images_dir, file_name)
+                    label_name = os.path.splitext(file_name)[0] + ".txt"
+                    label_path = os.path.join(src_labels_dir, label_name)
+
+                    # BRISQUE 평가
+                    is_good = False
+                    score = 0.0
+
+                    if self.metric_name == "BRISQUE":
+                        brisque_calculator = BRISQUECalculator(img_path, threshold=self.threshold)
+                        is_good, score = brisque_calculator.evaluate()
+                    elif self.metric_name == "NIQE":
+                        niqe_calculator = NIQECalculator(img_path, threshold=self.threshold)
+                        is_good, score = niqe_calculator.evaluate()
+                    elif self.metric_name == "PIQE":
+                        piqe_calculator = PIQECalculator(img_path, threshold=self.threshold)
+                        is_good, score = piqe_calculator.evaluate()
+                    else:
+                        ent_calculator = EntropyCalculator(img_path, threshold=self.threshold)
+                        is_good, score = ent_calculator.evaluate()
+
+                    if is_good == False:
+                        # 결과에 따라 동일한 구조로 이동(여기서는 is_good 여부 상관없이 이동)
+                        dest_img_path = os.path.join(dest_images_dir, file_name)
+                        shutil.move(img_path, dest_img_path)
+
+                        if os.path.exists(label_path):
+                            dest_label_path = os.path.join(dest_labels_dir, label_name)
+                            shutil.move(label_path, dest_label_path)
+                        else:
+                            print(f"Label file not found for {img_path}")
+                    else:
+                        print(f"Bad image: {img_path} (Score: {score})")
+
+
 class ImageQualityEvaluator:
     """이미지 품질 평가를 종합하는 클래스."""
 
     def __init__(self,
                  image_path : str,
-                 blur_threshold=100.0,
-                 noise_threshold=20.0,
                  entropy_threshold=4.0,
                  brisque_threshold=50.0,
                  niqe_threshold=5.0,
@@ -220,8 +316,6 @@ class ImageQualityEvaluator:
             model_path (str): 딥러닝 모델 경로 (품질 예측용)
         """
         self.image_path = image_path
-        self.blur_detector = BlurDetector(image_path="", threshold=blur_threshold)
-        self.noise_detector = NoiseDetector(image_path="", threshold=noise_threshold)
         self.entropy_calc = EntropyCalculator(image_path="", threshold=entropy_threshold)
         self.brisque_calc = BRISQUECalculator(image_path="", threshold=brisque_threshold)
         self.niqe_calc = NIQECalculator(image_path="", threshold=niqe_threshold)
@@ -235,12 +329,6 @@ class ImageQualityEvaluator:
         loader = ImageLoader()
         image = loader.load_image(self.image_path)
         results = {}
-
-        # Blur 평가
-        results["blur"] = self.blur_detector.detect_blur(image)
-
-        # Noise 평가
-        results["noise"] = self.noise_detector.detect_noise(image)
 
         # NIQE 평가
         results["niqe"] = self.niqe_calc.calculate_niqe(image)
@@ -267,11 +355,22 @@ class ImageQualityEvaluator:
 
 # 실행 예시
 if __name__ == "__main__":
-    image_path = "c:\\Users\\USER\\Desktop\\M1JUHjD2_4x.jpg"
+    src_root_dir = "c:\\Users\\USER\\Downloads\\rock-paper-scissors.v14i.yolov11"
+    dest_root_dir = "c:\\Users\\USER\\Downloads\\rock-paper-scissors.v14i.yolov11"
+    metric_name = "PIQE"
+
+    reorganizer = ImageQualityAssessmentReorganizer(
+        src_root_dir=src_root_dir,
+        dest_root_dir=dest_root_dir,
+        metric_name=metric_name,
+        threshold=5.0
+    )
+
+    reorganizer.move_files_by_metric()
+    '''
+     image_path = "c:\\Users\\USER\\Desktop\\M1JUHjD2_4x.jpg"
     evaluator = ImageQualityEvaluator(
         image_path=image_path,
-        blur_threshold=100.0,
-        noise_threshold=20.0,
         entropy_threshold=4.0,
         brisque_threshold=50.0,
         niqe_threshold=5.0,
@@ -287,3 +386,5 @@ if __name__ == "__main__":
         print(e)
     except ValueError as e:
         print(e)
+    '''
+
