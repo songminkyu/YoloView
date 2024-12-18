@@ -233,25 +233,26 @@ class ImageQualityAssessmentReorganizer:
     형태로 재배치.
     """
 
-    def __init__(self, src_root_dir: str, dest_root_dir: str, metric_name: str, threshold: float = 50.0):
+    def __init__(self, src_root_dir: str, dest_root_dir: str, subfolders : [], metric_name: str, threshold: float = 50.0):
         self.src_root_dir = os.path.abspath(src_root_dir)
         self.dest_root_dir = dest_root_dir
         self.metric_name = metric_name
         self.threshold = threshold
+        self.subfolders = subfolders # ['train', 'valid', 'test']
 
         # 예: dest_root_dir/BRISQUE_srcdir
         self.metric_folder = os.path.join(dest_root_dir, f"{metric_name}_{os.path.basename(self.src_root_dir)}")
         os.makedirs(self.metric_folder, exist_ok=True)
 
     def move_files_by_metric(self):
-        splits = ["train", "test", "valid"]
-        for split in splits:
-            src_images_dir = os.path.join(self.src_root_dir, split, "images")
-            src_labels_dir = os.path.join(self.src_root_dir, split, "labels")
+
+        for subfolder in self.subfolders:
+            src_images_dir = os.path.join(self.src_root_dir, subfolder, "images")
+            src_labels_dir = os.path.join(self.src_root_dir, subfolder, "labels")
 
             # 대상 경로 생성
-            dest_images_dir = os.path.join(self.metric_folder, split, "images")
-            dest_labels_dir = os.path.join(self.metric_folder, split, "labels")
+            dest_images_dir = os.path.join(self.metric_folder, subfolder, "images")
+            dest_labels_dir = os.path.join(self.metric_folder, subfolder, "labels")
             os.makedirs(dest_images_dir, exist_ok=True)
             os.makedirs(dest_labels_dir, exist_ok=True)
 

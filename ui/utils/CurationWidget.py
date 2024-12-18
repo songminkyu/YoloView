@@ -13,11 +13,13 @@ from qfluentwidgets import (
 )
 
 from pyiqa.archs.brisque_arch import brisque
+from ultralytics.utils.ops import segments2boxes
 from utils.curation.DatasetChangeClassId import DatasetChangeClassId
 from utils.curation.DatasetCleaner import DatasetCleaner
 from utils.curation.DatasetDistributionbalance import DatasetDistributionbalance
 from utils.curation.DatasetSorting import DatasetSorting
 from utils.curation.DatasetImageQualityEvaluator import ImageQualityAssessmentReorganizer
+from utils.curation.DatasetConverter import DatasetConverter
 
 class Features(Enum):
     remove_mismatched_label_image_data = auto()
@@ -31,6 +33,7 @@ class Features(Enum):
     change_class_id = auto()
     adjust_data_split_ratio = auto()
     sort_images_labels = auto()
+    segments_to_bboxs = auto()
 
     @property
     def description(self):
@@ -45,7 +48,8 @@ class Features(Enum):
             Features.remove_images_by_class_id: "Remove images and labels through class id to be removed",
             Features.change_class_id: "Change class ID",
             Features.adjust_data_split_ratio: "Adjust data split ratio",
-            Features.sort_images_labels: "Change label and image file names by matching them (add padding to file name)"
+            Features.sort_images_labels: "Change label and image file names by matching them (add padding to file name)",
+            Features.segments_to_bboxs: "Convert segmentations to bounding boxes"
         }
         return descriptions[self]
 
@@ -473,11 +477,12 @@ class CurationQWidget(QDialog):
         if not current_path or not os.path.exists(classify_path):
             is_delete = False
 
-        image_quality = None
         dataset_sorting = DatasetSorting(current_path, subfolders)
         dataset_balance = DatasetDistributionbalance(current_path,train_ratio,test_ratio,valid_ratio)
         cleaner = DatasetCleaner(current_path, subfolders, is_delete, classify_path)
         change_class_id = DatasetChangeClassId(current_path, subfolders, change_target_classid, change_new_classid)
+        dataset_convert = DatasetConverter(current_path, subfolders)
+        image_quality = ImageQualityAssessmentReorganizer(current_path, img_eval_path, subfolders, metric_name, threshold)
 
         for feature in selected_features:
             # 여기서 실제 기능 처리 로직을 수행:
@@ -500,8 +505,9 @@ class CurationQWidget(QDialog):
             if feature.name == Features.sort_images_labels:
                 dataset_sorting.sort_files_to_match_processing()
             if feature.name == Features.image_evaluation_classification.name:
-                image_quality = ImageQualityAssessmentReorganizer(current_path, img_eval_path, metric_name, threshold)
                 image_quality.move_files_by_metric()
+            if feature.name == Features.segments_to_bboxs.name:
+                dataset_convert.segments_to_boxes()
 
             # 기능 완료 후 프로그레스바 업데이트
             processed += 1

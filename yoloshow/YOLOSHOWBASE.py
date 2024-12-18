@@ -2,8 +2,9 @@ import random
 from utils import glo
 
 glo._init()
-glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 yolo11 "
-                            "yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb "
+glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 "
+                            "yolo11 yolo11-seg yolo11-pose yolo11-cls yolo11-obb "
+                            "yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolov8-cls "
                             "fastsam sam samv2 bbox-valid seg-valid ")
 from utils.logger import LoggerUtils
 import re
@@ -40,6 +41,7 @@ from yolocode.SAMThread import SAMThread
 from yolocode.SAMv2Thread import SAMv2Thread
 from yolocode.BBoxValidThread import BBoxValidThread
 from yolocode.SegValidThread import SegValidThread
+from yolocode.YOLOv8ClsThread import YOLOv8ClsThread
 from ultralytics import YOLO
 from ultralytics import FastSAM
 from ultralytics import RTDETR
@@ -63,10 +65,12 @@ MODEL_THREAD_CLASSES = {
     "yolov8-seg": YOLOv8SegThread,
     "yolov8-pose": YOLOv8PoseThread,
     "yolov8-obb": YOLOv8ObbThread,
+    "yolov8-cls": YOLOv8ClsThread,
     "yolov11": YOLOv8Thread,
     "yolov11-seg": YOLOv8SegThread,
     "yolov11-obb": YOLOv8ObbThread,
     "yolov11-pose": YOLOv8PoseThread,
+    "yolov11-cls": YOLOv8ClsThread,
     "fastsam": FastSAMThread,
     "sam": SAMThread,
     "samv2": SAMv2Thread,
@@ -79,8 +83,22 @@ for key, value in MODEL_NAME_DICT:
     MODEL_THREAD_CLASSES[f"{key}_left"] = value
     MODEL_THREAD_CLASSES[f"{key}_right"] = value
 
-ALL_MODEL_NAMES = ["yolov5", "yolov8", "yolov9", "yolov10", "yolov11", "yolov5-seg", "yolov8-seg", "rtdetr",
-                   "yolov8-pose", "yolov8-obb","fastsam", "sam", "samv2", "bbox-valid", "seg-valid"]
+ALL_MODEL_NAMES = [
+    # YOLOv5 모델
+    "yolov5", "yolov5-seg",
+
+    # YOLOv8 모델
+    "yolov8", "yolov8-seg", "yolov8-pose", "yolov8-obb", "yolov8-cls",
+
+    # YOLOv9 ~ YOLOv11 모델
+    "yolov9",
+    "yolov10",
+    "yolov11", "yolov11-seg", "yolov11-pose", "yolov11-obb", "yolov11-cls",
+
+    # 기타 모델
+    "rtdetr", "fastsam", "sam", "samv2",
+    "bbox-valid", "seg-valid"
+]
 loggertool = LoggerUtils()
 
 
@@ -555,11 +573,11 @@ class YOLOSHOWBASE:
         model_conditions = {
             "yolov5": lambda name: "yolov5" in name and not self.checkSegName(name),
             "yolov8": lambda name: "yolov8" in name and not any(
-                func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName]),
+                func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName, self.checkClsName]),
             "yolov9": lambda name: "yolov9" in name,
             "yolov10": lambda name: "yolov10" in name,
             "yolov11": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and not any(
-                func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName]),
+                func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName, self.checkClsName]),
             "rtdetr": lambda name: "rtdetr" in name,
             "yolov5-seg": lambda name: "yolov5" in name and self.checkSegName(name),
             "yolov8-seg": lambda name: "yolov8" in name and self.checkSegName(name),
@@ -568,6 +586,8 @@ class YOLOSHOWBASE:
             "yolov11-pose": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkPoseName(name),
             "yolov8-obb": lambda name: "yolov8" in name and self.checkObbName(name),
             "yolov11-obb": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkObbName(name),
+            "yolov8-cls": lambda name: "yolov8" in name and self.checkClsName(name),
+            "yolov11-cls": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkClsName(name),
             "fastsam": lambda name: "fastsam" in name,
             "samv2": lambda name: any(sub in name for sub in ["sam2", "samv2"]),
             "sam": lambda name: "sam" in name,
@@ -621,6 +641,10 @@ class YOLOSHOWBASE:
     def checkObbName(self, modelname):
         return self.checkTaskName(modelname, "obb")
 
+    # Modelname의 분류 명명 문제 해결
+    def checkClsName(self, modelname):
+        return self.checkTaskName(modelname, "cls")
+
     # 실행 중인 모델 중지
     def quitRunningModel(self, stop_status=False):
         for yolo_name in self.yolo_threads.threads_pool.keys():
@@ -670,7 +694,8 @@ class YOLOSHOWBASE:
             "yolo11" in model_name) and \
                 not self.checkSegName(model_name) and \
                 not self.checkPoseName(model_name) and \
-                not self.checkObbName(model_name):
+                not self.checkObbName(model_name) and \
+                not self.checkClsName(model_name):
             self.ui.track_box.show()
             self.ui.track_label.show()
 
