@@ -38,7 +38,7 @@ class DatasetConverter:
                 f.write(label + '\n')
 
     def segments_to_boxes(self):
-        self.subfolders = ["train", "test", "valid"]
+
         for subfolder in self.subfolders:
             label_dir = os.path.join(self.root_folder, subfolder, "labels")
             label_files = [f for f in os.listdir(label_dir) if f.endswith('.txt')]
