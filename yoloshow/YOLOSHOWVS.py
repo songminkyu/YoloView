@@ -26,7 +26,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.result_statistic = None
         self.detect_result = None
         self.detect_errors = None
-
+        self.view_mode = "multi"
         # --- UI 로드 --- #
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)

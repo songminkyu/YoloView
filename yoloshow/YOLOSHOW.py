@@ -28,6 +28,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.result_statistic = None
         self.detect_result = None
         self.detect_errors = None
+        self.view_mode = "single"
 
         # --- UI 로드 --- #
         self.ui = Ui_MainWindow()
@@ -145,6 +146,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.run_button.clicked.connect(self.runorContinue)
         self.ui.stop_button.clicked.connect(self.stopDetect)
         # --- 시작/중지 --- #
+
+        self.visibleNavigation(False, False, self.view_mode)
 
         # --- 설정 표시줄 초기화 --- #
         self.loadConfig()
