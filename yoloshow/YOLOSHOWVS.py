@@ -20,7 +20,6 @@ UI_FILE_PATH = "ui/YOLOSHOWUIVS.ui"
 class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
     def __init__(self):
         super().__init__()
-        self.model_initialized_trackmodel = False
         self.current_workpath = os.getcwd()
         self.inputPath = None
         self.result_statistic = None
@@ -284,11 +283,11 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         if not self.model_initialized_trackmodel:
             model_names = [self.model_name1, self.model_name2]
             if any(self.check_model_conditions(name) for name in model_names):
-                self.ui.track_box.show()
-                self.ui.track_label.show()
+                self.ui.track_box.setVisible(True)
+                self.ui.track_label.setVisible(True)
             else:
-                self.ui.track_box.hide()
-                self.ui.track_label.hide()
+                self.ui.track_box.setVisible(False)
+                self.ui.track_label.setVisible(False)
 
             self.model_initialized_trackmodel = True  # Track 모드 지원 여부 1번만 체크
 

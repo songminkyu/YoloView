@@ -118,6 +118,7 @@ class YOLOSHOWBASE:
         self.current_index = 0
         self.allModelNames = ALL_MODEL_NAMES
         self.view_mode = None
+        self.model_initialized_trackmodel = False  # 초기화되지 않은 상태로 시작
 
     # 왼쪽 메뉴바 초기화
     def initSiderWidget(self):
@@ -696,13 +697,13 @@ class YOLOSHOWBASE:
                 not self.checkPoseName(model_name) and \
                 not self.checkObbName(model_name) and \
                 not self.checkClsName(model_name):
-            self.ui.track_box.show()
-            self.ui.track_label.show()
+            self.ui.track_box.setVisible(True)
+            self.ui.track_label.setVisible(True)
 
             return True
         else:
-            self.ui.track_box.hide()
-            self.ui.track_label.hide()
+            self.ui.track_box.setVisible(False)
+            self.ui.track_label.setVisible(False)
 
             return False
 

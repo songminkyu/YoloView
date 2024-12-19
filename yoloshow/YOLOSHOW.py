@@ -22,7 +22,6 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
     def __init__(self):
         super().__init__()
         self.current_model = None
-        self.model_initialized_trackmodel = False  # 초기화되지 않은 상태로 시작
         self.current_workpath = os.getcwd()
         self.inputPath = None
         self.result_statistic = None
@@ -244,7 +243,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.runModel(True)
 
     # 모델 변경
-    def changeModel(self, categories_reset = True):
+    def changeModel(self, categories_reset = True, track_mode = True):
         self.model_name = self.ui.model_box.currentText()
         self.modelnamethreshold(self.ui.Model_label,self.model_name)  # 상태 표시줄 표시 수정
         current_model_name = self.checkCurrentModel()
@@ -263,7 +262,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.loadConfig()
             self.showStatus(f"Change Model to {current_model_name} Successfully")
 
-        self.showTrackStatus(self.model_name)
+        if track_mode == True:
+            self.showTrackStatus(self.model_name)
 
     def runModelProcess(self, yolo_name):
         yolo_thread = self.yolo_threads.get(yolo_name)
@@ -302,7 +302,14 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
     def runorContinue(self):
         self.closeTableResult()
         if self.inputPath is not None and len(self.inputPath) > 0:
-            self.changeModel(categories_reset=False)
+
+            track_mode = False
+            if isinstance(self.inputPath, list):
+                track_mode = False
+            else:
+                track_mode = True
+
+            self.changeModel(categories_reset=False, track_mode=track_mode)
             self.runModel()
         else:
             self.showStatus("Please select the Image/Video before starting detection...")
