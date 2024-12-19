@@ -365,7 +365,7 @@ class YOLOSHOWBASE:
     # 폴더 선택
     def selectFolder(self):
 
-        self.visibleNavigation(True, True, self.view_mode)
+        self.visibleNavigation(True, False, self.view_mode)
 
         self.current_index = 0
         config_file = f'{self.current_workpath}/config/folder.json'
