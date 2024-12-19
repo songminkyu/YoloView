@@ -297,12 +297,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
         # 모델 실행 후 버튼 상태 업데이트
         self.updateNavigationButtons()
-
-        # **여기 추가: 네비게이션 버튼 체크 상태 초기화**
-        self.ui.left_skip_button.setChecked(False)
-        self.ui.right_skip_button.setChecked(False)
-        self.ui.left_move_button.setChecked(False)
-        self.ui.right_move_button.setChecked(False)
+        self.initNavigationButtons()
 
     def runorContinue(self):
         self.closeTableResult()
@@ -401,6 +396,13 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.ui.left_move_button.setEnabled(False)
             self.ui.right_move_button.setEnabled(False)
             self.ui.right_skip_button.setEnabled(False)
+
+    def initNavigationButtons(self):
+        # **여기 추가: 네비게이션 버튼 체크 상태 초기화**
+        self.ui.left_skip_button.setChecked(False)
+        self.ui.right_skip_button.setChecked(False)
+        self.ui.left_move_button.setChecked(False)
+        self.ui.right_move_button.setChecked(False)
 
     def checkedNavigationButton(self):
         is_check = (self.ui.left_skip_button.isChecked() or self.ui.right_skip_button.isChecked() or
