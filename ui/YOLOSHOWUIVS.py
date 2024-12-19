@@ -30,7 +30,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1550, 844)
+        MainWindow.resize(1550, 900)
         MainWindow.setStyleSheet(u"QMainWindow#MainWindow{\n"
                                  "	border:none;\n"
                                  "}")
