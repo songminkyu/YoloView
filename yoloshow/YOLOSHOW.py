@@ -146,7 +146,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.stop_button.clicked.connect(self.stopDetect)
         # --- 시작/중지 --- #
 
-        self.visibleNavigation(False, False, self.view_mode)
+        self.visibleNavigation(False,  self.view_mode)
 
         # --- 설정 표시줄 초기화 --- #
         self.loadConfig()
@@ -262,8 +262,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.loadConfig()
             self.showStatus(f"Change Model to {current_model_name} Successfully")
 
-        if isinstance(self.inputPath, str):
-            self.showTrackStatus(self.model_name)
+        self.showTrackStatus(self.model_name)
 
 
     def runModelProcess(self, yolo_name):

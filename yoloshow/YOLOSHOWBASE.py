@@ -294,7 +294,7 @@ class YOLOSHOWBASE:
     # 사진/비디오 선택 및 표시
     def selectFile(self):
 
-        self.visibleNavigation(False,True, self.view_mode)
+        self.visibleNavigation(False,self.view_mode)
         # 마지막으로 선택한 파일의 경로를 가져옴.
         config_file = f'{self.current_workpath}/config/file.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
@@ -330,7 +330,7 @@ class YOLOSHOWBASE:
     # 카메라 선택
     def selectWebcam(self):
         try:
-            self.visibleNavigation(False, False, self.view_mode)
+            self.visibleNavigation(False, self.view_mode)
             # get the number of local cameras
             cam_num, cams = Camera().get_cam_num()
             if cam_num > 0:
@@ -365,7 +365,7 @@ class YOLOSHOWBASE:
     # 폴더 선택
     def selectFolder(self):
 
-        self.visibleNavigation(True, False, self.view_mode)
+        self.visibleNavigation(True,  self.view_mode)
 
         self.current_index = 0
         config_file = f'{self.current_workpath}/config/folder.json'
@@ -430,7 +430,7 @@ class YOLOSHOWBASE:
 
     # 웹캠 Rtsp 선택
     def selectRtsp(self):
-        self.visibleNavigation(False, False, self.view_mode)
+        self.visibleNavigation(False, self.view_mode)
         # rtsp://rtsp-test-server.viomic.com:554/stream
         rtspDialog = RtspInputMessageBox(self, mode="single")
         self.rtspUrl = None
@@ -502,7 +502,7 @@ class YOLOSHOWBASE:
 
     # 데이터셋 curation
     def datasetCuration(self):
-        self.visibleNavigation(False, False, self.view_mode)
+        self.visibleNavigation(False,  self.view_mode)
         self.curation_widget = CurationQWidget()
         self.curation_widget.exec()
 
@@ -632,19 +632,23 @@ class YOLOSHOWBASE:
 
     # Modelname의 세그먼트 이름 지정 문제 해결
     def checkSegName(self, modelname):
-        return self.checkTaskName(modelname, "seg")
+        is_ok = self.checkTaskName(modelname, "seg")
+        return is_ok
 
     # Modelname의 포즈 명명 문제 해결
     def checkPoseName(self, modelname):
-        return self.checkTaskName(modelname, "pose")
+        is_ok = self.checkTaskName(modelname, "pose")
+        return is_ok
 
     # Modelname의 포즈 명명 문제 해결
     def checkObbName(self, modelname):
-        return self.checkTaskName(modelname, "obb")
+        is_ok = self.checkTaskName(modelname, "obb")
+        return is_ok
 
     # Modelname의 분류 명명 문제 해결
     def checkClsName(self, modelname):
-        return self.checkTaskName(modelname, "cls")
+        is_ok = self.checkTaskName(modelname, "cls")
+        return is_ok
 
     # 실행 중인 모델 중지
     def quitRunningModel(self, stop_status=False):
@@ -932,7 +936,7 @@ class YOLOSHOWBASE:
 
     # 막대 차트 결과 표시
     def showResultStatics(self):
-        self.visibleNavigation(False, False, self.view_mode)
+        self.visibleNavigation(False,  self.view_mode)
         self.resutl_statistic = dict()
         # JSON 파일 읽기
         with open(self.current_workpath + r'/config/result.json', 'r', encoding='utf-8') as file:
@@ -953,7 +957,7 @@ class YOLOSHOWBASE:
 
     # 테이블 결과 표시
     def showTableResult(self):
-        self.visibleNavigation(False, False, self.view_mode)
+        self.visibleNavigation(False,  self.view_mode)
         self.table_result = TableViewQWidget(infoList=self.detect_result, errorList=self.detect_errors)
         self.table_result.show()
 
@@ -987,14 +991,12 @@ class YOLOSHOWBASE:
         else:
             model_label.setToolTip("No model name provided")
 
-    def visibleNavigation(self, navi_visible=False, track_visible=False, mode="single"):
+    def visibleNavigation(self, navi_visible=False, mode="single"):
         if mode == "single":
             self.ui.left_skip_button.setVisible(navi_visible)
             self.ui.left_move_button.setVisible(navi_visible)
             self.ui.right_move_button.setVisible(navi_visible)
             self.ui.right_skip_button.setVisible(navi_visible)
-            self.ui.track_label.setVisible(track_visible)
-            self.ui.track_box.setVisible(track_visible)
         else:
             pass
 
