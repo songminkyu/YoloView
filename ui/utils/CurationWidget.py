@@ -1,6 +1,9 @@
 # coding: utf-8
 import os
 import sys
+import threading
+import queue
+
 from enum import Enum, auto
 
 from PySide6.QtCore import Qt, QSize
@@ -151,11 +154,37 @@ class CurationQWidget(QDialog):
         # 체크박스 생성
         for feature in Features:
             checkbox = CheckBox(feature.description, self)
-            checkbox.stateChanged.connect(lambda state, f=feature: self.checkbox_state_changed(state, f))
+            checkbox.stateChanged.connect(lambda state, f=feature: self.option_state_changed(state, f))
             self.feature_layout.addWidget(checkbox)
             self.checkboxes[feature] = checkbox
 
             if feature == Features.classify_zero_textsize_images:
+
+                # 라디오 버튼 그룹 및 레이아웃 생성
+                self.zero_size_option_group = QButtonGroup(self)
+                self.zero_size_option_layout = QHBoxLayout()
+                self.zero_size_option_layout.setContentsMargins(0,15,0,0)
+
+                self.zero_size_delete_radiobutton = QRadioButton("Delete", self)
+                self.zero_size_classify_radiobutton = QRadioButton("Classify", self)
+                self.zero_size_delete_radiobutton.toggled.connect(self.sub_option_state_changed)
+                self.zero_size_classify_radiobutton.toggled.connect(self.sub_option_state_changed)
+                self.zero_size_delete_radiobutton.setEnabled(False)
+                self.zero_size_classify_radiobutton.setEnabled(False)
+
+                # 라디오 버튼 그룹에 추가
+                self.zero_size_option_group.addButton(self.zero_size_delete_radiobutton)
+                self.zero_size_option_group.addButton(self.zero_size_classify_radiobutton)
+
+                # 기본값 설정 (Delete를 기본값으로)
+                self.zero_size_delete_radiobutton.setChecked(True)
+
+                # 라디오 버튼 레이아웃에 추가
+                self.zero_size_option_layout.addWidget(self.zero_size_delete_radiobutton)
+                self.zero_size_option_layout.addWidget(self.zero_size_classify_radiobutton)
+
+                # feature_layout에 라디오 버튼 레이아웃 추가
+                self.feature_layout.addLayout(self.zero_size_option_layout)
                 self.feature_layout.addLayout(self.zero_size_classify_directory_layout)
 
             elif feature == Features.remove_images_by_class_id:
@@ -184,6 +213,7 @@ class CurationQWidget(QDialog):
 
                 # BRISQUE
                 self.brisque_radiobutton = QRadioButton("BRISQUE", self)
+                self.brisque_radiobutton.setChecked(True)
                 self.brisque_radiobutton.setEnabled(False)
                 self.brisque_label = QLabel(
                     "BRISQUE (Blind/Referenceless Image Spatial Quality Evaluator) : Assesses image "
@@ -296,13 +326,24 @@ class CurationQWidget(QDialog):
             if widget:
                 widget.setVisible(not hide)
 
-    def checkbox_state_changed(self, state, feature):
+    def option_state_changed(self, state, feature):
+
         if self.checkboxes[Features.classify_zero_textsize_images].isChecked():
-            self.zero_size_classify_directory_path_edit.setEnabled(True)
-            self.zero_size_classify_select_directory.setEnabled(True)
+            self.zero_size_delete_radiobutton.setEnabled(True)
+            self.zero_size_classify_radiobutton.setEnabled(True)
+
+            if self.zero_size_classify_radiobutton.isChecked():
+                self.zero_size_classify_directory_path_edit.setEnabled(True)
+                self.zero_size_classify_select_directory.setEnabled(True)
+            else:
+                self.zero_size_classify_directory_path_edit.setEnabled(False)
+                self.zero_size_classify_select_directory.setEnabled(False)
+
         else:
             self.zero_size_classify_directory_path_edit.setEnabled(False)
             self.zero_size_classify_select_directory.setEnabled(False)
+            self.zero_size_delete_radiobutton.setEnabled(False)
+            self.zero_size_classify_radiobutton.setEnabled(False)
 
         if self.checkboxes[Features.remove_images_by_class_id].isChecked():
             self.delete_classid_edit.setEnabled(True)
@@ -353,6 +394,14 @@ class CurationQWidget(QDialog):
 
             self.piqe_radiobutton.setEnabled(False)
             self.piqe_edit.setEnabled(False)
+
+    def sub_option_state_changed(self):
+        if self.zero_size_classify_radiobutton.isChecked():
+            self.zero_size_classify_directory_path_edit.setEnabled(True)
+            self.zero_size_classify_select_directory.setEnabled(True)
+        else:
+            self.zero_size_classify_directory_path_edit.setEnabled(False)
+            self.zero_size_classify_select_directory.setEnabled(False)
 
     def create_line_edit(self, placeholder, validator=None):
         line_edit = QLineEdit(self)
@@ -425,95 +474,134 @@ class CurationQWidget(QDialog):
         if type == "image_evaluation_classify" and self.checkboxes[Features.image_evaluation_classification].isChecked():
             self.image_evaluation_classify_directory_path_edit.setText(selected_directory)
 
-
     def proceed_action(self):
-
         threshold = 0.0
         metric_name = ""
 
+        # 안정적인 숫자 변환
+        brisque_val = self.safe_float_conversion(self.brisque_edit.text(), 50.0)
+        niqe_val = self.safe_float_conversion(self.niqe_edit.text(), 5.0)
+        piqe_val = self.safe_float_conversion(self.piqe_edit.text(), 50.0)
+
         if self.brisque_radiobutton.isChecked():
             metric_name = "BRISQUE"
-            threshold = float(self.brisque_edit.text()) if self.brisque_edit.text() != "0" else 50.0
+            threshold = brisque_val if brisque_val != 0 else 50.0
         elif self.niqe_radiobutton.isChecked():
             metric_name = "NIQE"
-            threshold = float(self.niqe_edit.text()) if self.niqe_edit.text() != "0" else 5.0
+            threshold = niqe_val if niqe_val != 0 else 5.0
         else:
             metric_name = "PIQE"
-            threshold = float(self.piqe_edit.text()) if self.piqe_edit.text() != "0" else 50.0
+            threshold = piqe_val if piqe_val != 0 else 50.0
 
-        train_ratio = float(self.train_ratio_edit.text() if self.train_ratio_edit.isEnabled() else 0.7)
-        valid_ratio = float(self.valid_ratio_edit.text() if self.valid_ratio_edit.isEnabled() else 0.15)
-        test_ratio = float(self.test_ratio_edit.text() if self.test_ratio_edit.isEnabled() else 0.15)
+        train_ratio = self.safe_float_conversion(self.train_ratio_edit.text(),
+                                            0.7) if self.train_ratio_edit.isEnabled() else 0.7
+        valid_ratio = self.safe_float_conversion(self.valid_ratio_edit.text(),
+                                            0.15) if self.valid_ratio_edit.isEnabled() else 0.15
+        test_ratio = self.safe_float_conversion(self.test_ratio_edit.text(),
+                                           0.15) if self.test_ratio_edit.isEnabled() else 0.15
 
         current_path = self.curation_directory_path_edit.text()
         classify_path = self.zero_size_classify_directory_path_edit.text()
         img_eval_path = self.image_evaluation_classify_directory_path_edit.text()
 
-        remove_class_id = list(
-            map(int, self.delete_classid_edit.text().split(','))) if self.delete_classid_edit.text() else []
+        remove_class_id = self.safe_int_list_conversion(self.delete_classid_edit.text())
+        change_target_classid = self.safe_int_list_conversion(self.target_classid_edit.text())
 
-        change_target_classid = list(
-            map(int, self.target_classid_edit.text().split(','))) if self.target_classid_edit.text() else []
+        try:
+            change_new_classid = int(self.new_classid_edit.text()) if self.new_classid_edit.text() else None
+        except ValueError:
+            change_new_classid = None
 
-        change_new_classid = int(self.new_classid_edit.text()) if self.new_classid_edit.text() else None
-
+        # 경로 유효성 검사
         if not current_path or not os.path.exists(current_path):
-            return  # Exit the method if the directory path is empty or does not exist
+            print("유효한 디렉토리 경로가 없습니다.")
+            return  # Exit if no valid current_path
 
-        # 선택된 체크박스 개수 계산
         selected_features = [feature for feature, checkbox in self.checkboxes.items() if checkbox.isChecked()]
         total_checked = len(selected_features)
         print(f"체크된 기능 수: {total_checked}")
 
-        # 프로그레스바 초기화
         self.progress_bar.setValue(0)
-
-        # 각 기능 수행 시마다 프로그레스 바 업데이트
-        processed = 0
 
         subfolders = ['train', 'valid', 'test']
 
-        is_delete = True
-        if not current_path or not os.path.exists(classify_path):
-            is_delete = False
+        is_delete = False
+        if self.zero_size_delete_radiobutton.isChecked():
+            is_delete = True
+        else:
+            if os.path.isdir(classify_path):
+                is_delete = False
 
+        # 여기서 필요한 클래스 인스턴스를 초기화 (정의되지 않은 클래스 가정)
         dataset_sorting = DatasetSorting(current_path, subfolders)
-        dataset_balance = DatasetDistributionbalance(current_path,train_ratio,test_ratio,valid_ratio)
+        dataset_balance = DatasetDistributionbalance(current_path, train_ratio, test_ratio, valid_ratio)
         cleaner = DatasetCleaner(current_path, subfolders, is_delete, classify_path)
         change_class_id = DatasetChangeClassId(current_path, subfolders, change_target_classid, change_new_classid)
         dataset_convert = DatasetConverter(current_path, subfolders)
-        image_quality = ImageQualityAssessmentReorganizer(current_path, img_eval_path, subfolders, metric_name, threshold)
+        image_quality = ImageQualityAssessmentReorganizer(current_path, img_eval_path, subfolders, metric_name,
+                                                          threshold)
+
+        task_queue = queue.Queue()
 
         for feature in selected_features:
-            # 여기서 실제 기능 처리 로직을 수행:
             if feature.name == Features.remove_mismatched_label_image_data.name:
-                cleaner.remove_mismatch_images_and_labels()
-            if feature.name == Features.remove_duplicate_label_image_data.name:
-                cleaner.remove_duplicate_images()
-            if feature.name == Features.classify_zero_textsize_images.name:
-                cleaner.remove_zero_label()
-            if feature.name == Features.remove_segmentation.name:
-                cleaner.remove_segments()
-            if feature.name == Features.remove_bounding_box.name:
-                cleaner.remove_bounding_boxes()
-            if feature.name == Features.remove_images_by_class_id.name:
-                cleaner.remove_labels_and_images_by_class_ids(remove_class_id)
-            if feature.name == Features.change_class_id.name:
-                change_class_id.update_class_id_processing()
-            if feature.name == Features.adjust_data_split_ratio.name:
-                dataset_balance.adjust_dataset_splits()
-            if feature.name == Features.sort_images_labels:
-                dataset_sorting.sort_files_to_match_processing()
-            if feature.name == Features.image_evaluation_classification.name:
-                image_quality.move_files_by_metric()
-            if feature.name == Features.segments_to_bboxs.name:
-                dataset_convert.segments_to_boxes()
+                task_queue.put(lambda: cleaner.remove_mismatch_images_and_labels())
+            elif feature.name == Features.remove_duplicate_label_image_data.name:
+                task_queue.put(lambda: cleaner.remove_duplicate_images())
+            elif feature.name == Features.classify_zero_textsize_images.name:
+                task_queue.put(lambda: cleaner.remove_zero_label())
+            elif feature.name == Features.remove_segmentation.name:
+                task_queue.put(lambda: cleaner.remove_segments())
+            elif feature.name == Features.remove_bounding_box.name:
+                task_queue.put(lambda: cleaner.remove_bounding_boxes())
+            elif feature.name == Features.remove_images_by_class_id.name:
+                task_queue.put(lambda: cleaner.remove_labels_and_images_by_class_ids(remove_class_id))
+            elif feature.name == Features.change_class_id.name:
+                task_queue.put(lambda: change_class_id.update_class_id_processing())
+            elif feature.name == Features.adjust_data_split_ratio.name:
+                task_queue.put(lambda: dataset_balance.adjust_dataset_splits())
+            elif feature.name == Features.sort_images_labels.name:
+                task_queue.put(lambda: dataset_sorting.sort_files_to_match_processing())
+            elif feature.name == Features.image_evaluation_classification.name:
+                task_queue.put(lambda: image_quality.move_files_by_metric())
+            elif feature.name == Features.segments_to_bboxs.name:
+                task_queue.put(lambda: dataset_convert.segments_to_boxes())
 
-            # 기능 완료 후 프로그레스바 업데이트
-            processed += 1
-            progress_value = int((processed / total_checked) * 100)
-            self.progress_bar.setValue(progress_value)
-            QApplication.processEvents()  # UI 갱신
+        def process_tasks():
+            processed = 0
+            while not task_queue.empty():
+                task = task_queue.get()
+                try:
+                    task()  # Execute the task
+                except Exception as e:
+                    print(f"Error executing task: {e}")
+                processed += 1
+                progress_value = int((processed / total_checked) * 100) if total_checked > 0 else 100
+                self.update_progress_bar(progress_value)
+                try:
+                    QApplication.processEvents()  # Allow the UI to update
+                except Exception as ui_e:
+                    print(f"UI update error: {ui_e}")
+
+        worker_thread = threading.Thread(target=process_tasks)
+        worker_thread.start()
+
+    def update_progress_bar(self, value):
+        self.progress_bar.setValue(value)
+
+    def safe_float_conversion(self,text, default):
+        try:
+            return float(text)
+        except (ValueError, TypeError):
+            return default
+
+    def safe_int_list_conversion(self, text):
+        if not text:
+            return []
+        try:
+            return list(map(int, text.split(',')))
+        except ValueError:
+            return []
 
     def cancel_action(self):
         """Handle the cancel button click."""
