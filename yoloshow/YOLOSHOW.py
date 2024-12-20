@@ -1,3 +1,5 @@
+import time
+
 from utils import glo
 import json
 import os
@@ -224,6 +226,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         yolo_thread = self.yolo_threads.get(model_name)
         yolo_thread.finished.connect(lambda: self.resignModel(current_yoloname))
         yolo_thread.stop_dtc = True
+        yolo_thread.force_stop_dtc = True
         self.yolo_threads.stop_thread(model_name)
 
     # 다른 모델 중지
@@ -276,6 +279,8 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
         yolo_thread.source = current_source
         yolo_thread.stop_dtc = False
+        yolo_thread.force_stop_dtc = False
+
         if self.ui.run_button.isChecked() or self.checkedNavigationButton():
             yolo_thread.is_continue = True
             self.yolo_threads.start_thread(yolo_name)

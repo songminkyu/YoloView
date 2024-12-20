@@ -50,6 +50,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.new_model_name = None  # Models that change in real time
         self.source = None  # input source
         self.stop_dtc = True  # 감지 중지
+        self.force_stop_dtc = False #강제 강제중지
         self.is_continue = True  # continue/pause
         self.save_res = False  # Save test results
         self.save_json = False # Save result json
@@ -145,6 +146,10 @@ class YOLOv8Thread(QThread,BasePredictor):
         count = 0
         start_time = time.time()  # used to calculate the frame rate
         while True:
+
+            if self.force_stop_dtc:
+                break
+
             if self.stop_dtc:
                 if self.is_folder and not is_folder_last:
                     break

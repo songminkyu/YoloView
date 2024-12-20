@@ -656,6 +656,7 @@ class YOLOSHOWBASE:
             try:
                 if stop_status:
                     self.yolo_threads.get(yolo_name).stop_dtc = True
+                    self.yolo_threads.get(yolo_name).force_stop_dtc = True
                 self.yolo_threads.stop_thread(yolo_name)
             except Exception as err:
                 loggertool.info(f"Error: {err}")
