@@ -274,8 +274,11 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         if hasattr(self, 'current_index') and self.checkedNavigationButton():
             current_source = [self.inputPath[self.current_index]]
         else:
-            # current_index 미정이면 그냥 전체 리스트 사용 (초기 상태)
-            current_source = self.inputPath[self.current_index:]
+            if isinstance(self.inputPath, list):
+                # current_index 미정이면 그냥 전체 리스트 사용 (초기 상태)
+                current_source = self.inputPath[self.current_index:]
+            else:
+                current_source = self.inputPath
 
         yolo_thread.source = current_source
         yolo_thread.stop_dtc = False

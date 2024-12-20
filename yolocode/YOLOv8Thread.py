@@ -146,11 +146,9 @@ class YOLOv8Thread(QThread,BasePredictor):
         count = 0
         start_time = time.time()  # used to calculate the frame rate
         while True:
-
-            if self.force_stop_dtc:
-                break
-
             if self.stop_dtc:
+                if self.force_stop_dtc:
+                    break
                 if self.is_folder and not is_folder_last:
                     break
 
