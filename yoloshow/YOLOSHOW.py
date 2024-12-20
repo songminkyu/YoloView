@@ -264,7 +264,6 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
 
         self.showTrackStatus(self.model_name)
 
-
     def runModelProcess(self, yolo_name):
         yolo_thread = self.yolo_threads.get(yolo_name)
         self.updateCategories(yolo_thread, 'single')
@@ -313,12 +312,12 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.updateNavigationButtons()
 
     def runLeftSkip(self):
-        self.closeTableResult()
+        self.stopDetect()
         if self.inputPath is not None and isinstance(self.inputPath, list) and len(self.inputPath) > 0:
             self.ui.left_skip_button.setChecked(True)
             # 첫 번째 이미지로 이동
             self.current_index = 0
-            self.runModel()
+            self.runorContinue()
         else:
             self.showStatus("Please select the Image/Video before starting detection...")
             self.ui.left_skip_button.setChecked(False)
@@ -327,13 +326,13 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.updateNavigationButtons()
 
     def runLeftMove(self):
-        self.closeTableResult()
+        self.stopDetect()
         if self.inputPath is not None and isinstance(self.inputPath, list) and len(self.inputPath) > 0:
             self.ui.left_move_button.setChecked(True)
             # 현재 인덱스가 0보다 클 때만 왼쪽으로 이동
             if self.current_index > 0:
                 self.current_index -= 1
-                self.runModel()
+                self.runorContinue()
             else:
                 self.showStatus("Already at the first image.")
                 self.ui.left_move_button.setChecked(False)
@@ -345,13 +344,13 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.updateNavigationButtons()
 
     def runRightMove(self):
-        self.closeTableResult()
+        self.stopDetect()
         if self.inputPath is not None and isinstance(self.inputPath, list) and len(self.inputPath) > 0:
             self.ui.right_move_button.setChecked(True)
             # 현재 인덱스가 마지막 인덱스보다 작을 때 오른쪽으로 이동
             if self.current_index < len(self.inputPath) - 1:
                 self.current_index += 1
-                self.runModel()
+                self.runorContinue()
             else:
                 self.showStatus("Already at the last image.")
                 self.ui.right_move_button.setChecked(False)
@@ -363,12 +362,12 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.updateNavigationButtons()
 
     def runRightSkip(self):
-        self.closeTableResult()
+        self.stopDetect()
         if self.inputPath is not None and isinstance(self.inputPath, list) and len(self.inputPath) > 0:
             self.ui.right_skip_button.setChecked(True)
             # 마지막 이미지로 이동
             self.current_index = len(self.inputPath) - 1
-            self.runModel()
+            self.runorContinue()
         else:
             self.showStatus("Please select the Image/Video before starting detection...")
             self.ui.right_skip_button.setChecked(False)
