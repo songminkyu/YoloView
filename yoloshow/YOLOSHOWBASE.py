@@ -365,8 +365,6 @@ class YOLOSHOWBASE:
     # 폴더 선택
     def selectFolder(self):
 
-        self.visibleNavigation(True,  self.view_mode)
-
         self.current_index = 0
         config_file = f'{self.current_workpath}/config/folder.json'
         config = json.load(open(config_file, 'r', encoding='utf-8'))
@@ -378,11 +376,11 @@ class YOLOSHOWBASE:
             "Select your Folder",
             folder_path  # 시작 디렉토리
         )
-        current_model = self.checkCurrentModel()
-        if current_model in ['bbox-valid', 'seg-valid']:
-            self.inputPath = [FolderPath]
-        else:
-            if FolderPath:
+        if FolderPath:
+            current_model = self.checkCurrentModel()
+            if current_model in ['bbox-valid', 'seg-valid']:
+                self.inputPath = [FolderPath]
+            else:
                 # 하위 디렉토리 존재 여부 확인
                 has_subdirectories = any(
                     os.path.isdir(os.path.join(FolderPath, subdir))
@@ -421,6 +419,8 @@ class YOLOSHOWBASE:
 
                 self.inputPath = Foldername
                 self.showStatus('Loaded Folder: {}'.format(os.path.basename(FolderPath)))
+
+            self.visibleNavigation(True, self.view_mode)
 
         if os.path.exists(FolderPath):
             config['folder_path'] = FolderPath
