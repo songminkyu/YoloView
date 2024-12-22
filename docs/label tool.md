@@ -14,6 +14,8 @@ https://github.com/wkentaro/labelme
 
 https://github.com/vietanhdev/anylabeling
 
+https://github.com/CVHub520/X-AnyLabeling
+
 사용방법
 
 https://labelstud.io/guide/install.html
