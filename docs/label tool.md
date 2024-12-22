@@ -10,7 +10,7 @@ https://github.com/tabularis-ai/augini
 
 https://github.com/laugh12321/AutoLabelMe
 
-https://github.com/wkentaro/labelme
+https://github.com/wkentaro/labelme (https://github.com/rooneysh/Labelme2YOLO)
 
 https://github.com/vietanhdev/anylabeling
 
