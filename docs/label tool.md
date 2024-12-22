@@ -15,8 +15,13 @@ https://github.com/wkentaro/labelme
 https://github.com/vietanhdev/anylabeling
 
 사용방법
+
 https://labelstud.io/guide/install.html
+
 https://zerohertz.github.io/label-studio-ml-backend/
+
 https://starlane.tistory.com/9
+
 https://koo209.tistory.com/11
+
 https://labelstud.io/blog/3-ways-to-automate-your-labeling-with-label-studio/
