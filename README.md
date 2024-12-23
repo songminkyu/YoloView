@@ -12,7 +12,7 @@
 
 ## Todo List
 
-- [x] Add `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `RT-DETR`  `YOLOv11`  `SAM`  `MobileSAM`  `FastSAM` Model
+- [x] Add `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `RT-DETR` `SAM`  `MobileSAM`  `FastSAM` Model
 - [x] Support Instance Segmentation （ `YOLOv5`  `YOLOv8`  `YOLOv11` `SAM`  `MobileSAM`  `FastSAM`）
 - [x] Support Pose Estimation （ `YOLOv8`  `YOLOv11`）
 - [x] Support Oriented Bounding Boxes ( `YOLOv8`  `YOLOv11` )
