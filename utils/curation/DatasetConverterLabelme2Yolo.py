@@ -397,9 +397,6 @@ def main():
     parser = argparse.ArgumentParser("labelme2yolov8")
 
     parser.add_argument(
-        "-v", "--version", action="version", version="%(prog)s " + __version__
-    )
-    parser.add_argument(
         "--json_dir", type=str, help="Please input the path of the labelme json files."
     )
     parser.add_argument(
@@ -456,7 +453,6 @@ def main():
         convertor.convert_one(args.json_name)
 
     return 0
-
 
 if __name__ == "__main__":
     main()
