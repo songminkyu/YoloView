@@ -239,12 +239,12 @@ class ImageQualityAssessmentReorganizer:
         self.metric_name = metric_name
         self.threshold = threshold
         self.subfolders = subfolders # ['train', 'valid', 'test']
-
         # 예: dest_root_dir/BRISQUE_srcdir
         self.metric_folder = os.path.join(dest_root_dir, f"{metric_name}_{os.path.basename(self.src_root_dir)}")
-        os.makedirs(self.metric_folder, exist_ok=True)
 
     def move_files_by_metric(self):
+
+        os.makedirs(self.metric_folder, exist_ok=True)
 
         for subfolder in self.subfolders:
             src_images_dir = os.path.join(self.src_root_dir, subfolder, "images")
