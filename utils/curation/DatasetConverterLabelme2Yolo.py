@@ -175,7 +175,7 @@ class Labelme2YOLOv8:
         self._dataset_dir_path = os.path.join(self._json_dir, "YOLOv8Dataset/")
 
         # Define base paths for test, train, and val inside the YOLOv8Dataset directory
-        parts = ["train", "val", "test"] if create_test_dir else ["train", "val"]
+        parts = ["train", "valid", "test"] if create_test_dir else ["train", "valid"]
         dirs = [os.path.join(self._dataset_dir_path, part) for part in parts]
 
         # Cleanup: Remove existing directories to ensure a clean state
@@ -232,7 +232,7 @@ class Labelme2YOLOv8:
 
         # convert labelme object to yolo format object, and save them to files
         # also get image from labelme json file and save them under images folder
-        dirs = ("train", "val", "test")
+        dirs = ("train", "valid", "test")
         names = (train_json_names, val_json_names, test_json_names)
         for target_dir, json_names in zip(dirs, names):
             logger.info("Converting %s set ...", target_dir)
@@ -275,7 +275,7 @@ class Labelme2YOLOv8:
 
         # Determine where to save the converted files (train, val, or test)
         # This example assumes a default directory, adjust as needed
-        target_dir = "train"  # or "val" or "test", depending on your logic
+        target_dir = "train"  # or "valid" or "test", depending on your logic
 
         image_name = json_name.replace(".json", ".png")
         label_name = json_name.replace(".json", ".txt")
@@ -363,14 +363,11 @@ class Labelme2YOLOv8:
         yaml_path = os.path.join(self._json_dir, "YOLOv8Dataset/", "data.yaml")
 
         with open(yaml_path, "w+", encoding="utf-8") as yaml_file:
-            train_dir = os.path.join(self._dataset_dir_path, "train/")
-            val_dir = os.path.join(self._dataset_dir_path, "val/")
-            test_dir = os.path.join(self._dataset_dir_path, "test/")
 
             # Make sure to reference images subdirectories
-            train_images_dir = os.path.join(train_dir, "images")
-            val_images_dir = os.path.join(val_dir, "images")
-            test_images_dir = os.path.join(test_dir, "images")
+            train_images_dir = '../train/images'
+            val_images_dir = '../valid/images'
+            test_images_dir = '../test/images'
 
             names_str = ""
             for label, _ in self._label_id_map.items():
