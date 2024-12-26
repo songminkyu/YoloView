@@ -20,7 +20,7 @@ class SegValidThread(YOLOv8Thread):
     def load_classes(self):
         """data.yaml에서 클래스 이름 로드"""
         source = self.source[0]
-        data_yaml_path = Path(source).parent / self.data_yaml
+        data_yaml_path = Path(source) / self.data_yaml
         if not data_yaml_path.exists():
             self.send_msg.emit(f"data.yaml not found at {data_yaml_path}")
             return
@@ -98,67 +98,71 @@ class SegValidThread(YOLOv8Thread):
     def postprocess(self, preds, img, orig_imgs):
         """메인 스레드 실행"""
         self.load_classes()  # 클래스 이름 로드
+        for subfolder in ['train', 'valid', 'test']:
+            # images 및 labels 경로 설정
+            source = os.path.join(self.source[0], subfolder)
 
-        # images 및 labels 경로 설정
-        source = self.source[0]
-        images_path = Path(source) / 'images'
-        labels_path = Path(source) / 'labels'
+            images_path = Path(source) / 'images'
+            labels_path = Path(source) / 'labels'
 
-        # images 폴더에서 이미지 파일 로드
-        image_files = []
-        for ext in ['*.jpg', '*.JPG', '*.jpeg', '*.JPEG', '*.png', '*.PNG']:
-            image_files.extend(list(images_path.glob(ext)))
-
-        if not image_files:
-            self.send_msg.emit(f"No images found in {images_path}")
-            return
-
-        percent = 0
-        index = 0
-        total_count = len(image_files)
-        for image_file in image_files:
-            index += 1
-
-            # labels 폴더에서 라벨 파일 경로 생성
-            label_file = labels_path / f"{image_file.stem}.txt"
-            if not label_file.exists():
-                self.send_msg.emit(f"No label file found for {image_file}")
+            if not images_path.exists() and not labels_path.exists():
                 continue
 
-            # 이미지 및 라벨 읽기
-            image = cv2.imread(str(image_file))
-            if image is None:
-                self.send_msg.emit(f"Failed to read image: {image_file}")
-                continue
+            # images 폴더에서 이미지 파일 로드
+            image_files = []
+            for ext in ['*.jpg', '*.JPG', '*.jpeg', '*.JPEG', '*.png', '*.PNG']:
+                image_files.extend(list(images_path.glob(ext)))
 
-            # YOLO segment 형식의 라벨만 로드
-            labels = self.load_segmentation_labels(label_file)
+            if not image_files:
+                self.send_msg.emit(f"No images found in {images_path}")
+                return
 
-            # segment 라벨이 없으면 건너뛰기
-            if not labels:
-                self.send_msg.emit(f"No valid seg labels found in {label_file}")
+            percent = 0
+            index = 0
+            total_count = len(image_files)
+            for image_file in image_files:
+                index += 1
+
+                # labels 폴더에서 라벨 파일 경로 생성
+                label_file = labels_path / f"{image_file.stem}.txt"
+                if not label_file.exists():
+                    self.send_msg.emit(f"No label file found for {image_file}")
+                    continue
+
+                # 이미지 및 라벨 읽기
+                image = cv2.imread(str(image_file))
+                if image is None:
+                    self.send_msg.emit(f"Failed to read image: {image_file}")
+                    continue
+
+                # YOLO segment 형식의 라벨만 로드
+                labels = self.load_segmentation_labels(label_file)
+
+                # segment 라벨이 없으면 건너뛰기
+                if not labels:
+                    self.send_msg.emit(f"No valid seg labels found in {label_file}")
+                    percent = (index / total_count) * 100 if total_count > 0 else 0
+                    self.send_progress.emit(percent)
+                    continue
+
+                # 원본 이미지 전송
+                self.send_input.emit(image)
+
+                # segment 그리기
+                result_image = self.draw_segmentation_masks(image.copy(), labels)
+
+                # 결과 이미지 전송
+                self.send_output.emit(result_image)
+
+                # 상태 메시지 전송
+                self.send_msg.emit(f"seg validation: ({index} / {total_count}) {image_file}")
+
                 percent = (index / total_count) * 100 if total_count > 0 else 0
                 self.send_progress.emit(percent)
-                continue
 
-            # 원본 이미지 전송
-            self.send_input.emit(image)
-
-            # segment 그리기
-            result_image = self.draw_segmentation_masks(image.copy(), labels)
-
-            # 결과 이미지 전송
-            self.send_output.emit(result_image)
-
-            # 상태 메시지 전송
-            self.send_msg.emit(f"seg validation: ({index} / {total_count}) {image_file}")
-
-            percent = (index / total_count) * 100 if total_count > 0 else 0
-            self.send_progress.emit(percent)
-
-            # 이미지 저장
-            if self.save_res and self.save_path:
-                self.save_seg_preds(self.save_path, image_file, result_image)
+                # 이미지 저장
+                if self.save_res and self.save_path:
+                    self.save_seg_preds(self.save_path, image_file, result_image)
 
     def save_seg_preds(self, save_path, image_file, result_image):
         image_name = os.path.basename(image_file)
