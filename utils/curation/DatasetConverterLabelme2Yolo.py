@@ -360,7 +360,7 @@ class Labelme2YOLOv8:
         return None
 
     def _save_dataset_yaml(self):
-        yaml_path = os.path.join(self._json_dir, "YOLOv8Dataset/", "dataset.yaml")
+        yaml_path = os.path.join(self._json_dir, "YOLOv8Dataset/", "data.yaml")
 
         with open(yaml_path, "w+", encoding="utf-8") as yaml_file:
             train_dir = os.path.join(self._dataset_dir_path, "train/")
@@ -438,8 +438,8 @@ def main():
 
     args = parser.parse_args()
 
-    args.json_dir = "c:\\Users\\USER\\Downloads\\rock-paper-scissors.v14i.yolov11\\train\\images"
-    args.output_format = "polygon"  # bbox or polygon
+    args.json_dir = "d:\\00_OpenCV_Project\\Study_at_Australia\\python\\yoloshow\\re"
+    args.output_format = "bbox"  # bbox or polygon
 
     if not args.json_dir:
         parser.print_help()

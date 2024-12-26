@@ -110,7 +110,7 @@ class SegValidThread(YOLOv8Thread):
 
             # images 폴더에서 이미지 파일 로드
             image_files = []
-            for ext in ['*.jpg', '*.JPG', '*.jpeg', '*.JPEG', '*.png', '*.PNG']:
+            for ext in ['*.jpg', '*.png']:
                 image_files.extend(list(images_path.glob(ext)))
 
             if not image_files:

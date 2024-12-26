@@ -19,7 +19,7 @@ class BBoxValidThread(YOLOv8Thread):
     def load_classes(self):
         """data.yaml에서 클래스 이름 로드"""
         source = self.source[0]
-        data_yaml_path = Path(source).parent / self.data_yaml
+        data_yaml_path = Path(source) / self.data_yaml
         if not data_yaml_path.exists():
             self.send_msg.emit(f"data.yaml not found at {data_yaml_path}")
             return
@@ -74,7 +74,7 @@ class BBoxValidThread(YOLOv8Thread):
 
             # images 폴더에서 이미지 파일 로드
             image_files = []
-            for ext in ['*.jpg', '*.JPG', '*.jpeg', '*.JPEG', '*.png', '*.PNG']:
+            for ext in ['*.jpg', '*.png']:
                 image_files.extend(list(images_path.glob(ext)))
 
             if not image_files:
