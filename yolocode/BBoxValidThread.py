@@ -68,8 +68,11 @@ class BBoxValidThread(YOLOv8Thread):
         images_path = Path(source) / 'images'
         labels_path = Path(source) / 'labels'
 
-        # images 폴더에서 JPG 파일 로드
-        image_files = list(images_path.glob('*.jpg'))
+        # images 폴더에서 이미지 파일 로드
+        image_files = []
+        for ext in ['*.jpg', '*.JPG', '*.jpeg', '*.JPEG', '*.png', '*.PNG']:
+            image_files.extend(list(images_path.glob(ext)))
+
         if not image_files:
             self.send_msg.emit(f"No images found in {images_path}")
             return
