@@ -279,8 +279,8 @@ class CurationQWidget(QDialog):
                 self.labelme_To_yolo_option_layout = QHBoxLayout()
                 self.labelme_To_yolo_option_layout.setContentsMargins(15, 10, 0, 10)
 
-                self.labelme_to_yolo_bbox_radiobutton = QRadioButton("Labelme to Bounding Box (In Yolo format)", self)
-                self.labelme_to_yolo_seg_radiobutton = QRadioButton("Labelme to Segmentation (In Yolo format)", self)
+                self.labelme_to_yolo_bbox_radiobutton = QRadioButton("Labelme to Bounding Box (To yolo format)", self)
+                self.labelme_to_yolo_seg_radiobutton = QRadioButton("Labelme to Segmentation (To yolo format)", self)
                 self.labelme_to_yolo_bbox_radiobutton.toggled.connect(self.sub_option_state_changed)
                 self.labelme_to_yolo_seg_radiobutton.toggled.connect(self.sub_option_state_changed)
                 self.labelme_to_yolo_bbox_radiobutton.setEnabled(False)
