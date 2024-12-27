@@ -53,7 +53,7 @@ class Features(Enum):
             Features.adjust_data_split_ratio: "Adjust data split ratio",
             Features.sort_images_labels: "Change label and image file names by matching them (add padding to file name)",
             Features.segments_to_bboxs: "Convert segmentations to bounding boxes",
-            Features.labeleme_to_yolo: "Convert labeleme to yolo"
+            Features.labeleme_to_yolo: "Convert labeleme to yolo format (convert to label data in text format)",
         }
         return descriptions[self]
 
@@ -655,7 +655,6 @@ class CurationQWidget(QDialog):
         """Handle the cancel button click."""
         print("취소 버튼 클릭됨!")
         self.close()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
