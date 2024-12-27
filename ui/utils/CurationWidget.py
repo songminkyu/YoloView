@@ -15,14 +15,13 @@ from qfluentwidgets import (
     PrimaryPushButton, PushButton, CheckBox, Theme, setTheme
 )
 
-from pyiqa.archs.brisque_arch import brisque
-from ultralytics.utils.ops import segments2boxes
 from utils.curation.DatasetChangeClassId import DatasetChangeClassId
 from utils.curation.DatasetCleaner import DatasetCleaner
 from utils.curation.DatasetDistributionbalance import DatasetDistributionbalance
 from utils.curation.DatasetSorting import DatasetSorting
 from utils.curation.DatasetImageQualityEvaluator import ImageQualityAssessmentReorganizer
 from utils.curation.DatasetConverter import DatasetConverter
+from utils.curation.DatasetConverterLabelme2Yolo import Labelme2YOLOv8
 
 class Features(Enum):
     remove_mismatched_label_image_data = auto()
@@ -37,6 +36,7 @@ class Features(Enum):
     adjust_data_split_ratio = auto()
     sort_images_labels = auto()
     segments_to_bboxs = auto()
+    labeleme_to_yolo = auto()
 
     @property
     def description(self):
@@ -52,7 +52,8 @@ class Features(Enum):
             Features.change_class_id: "Change class ID",
             Features.adjust_data_split_ratio: "Adjust data split ratio",
             Features.sort_images_labels: "Change label and image file names by matching them (add padding to file name)",
-            Features.segments_to_bboxs: "Convert segmentations to bounding boxes"
+            Features.segments_to_bboxs: "Convert segmentations to bounding boxes",
+            Features.labeleme_to_yolo: "Convert labeleme to yolo"
         }
         return descriptions[self]
 
@@ -144,12 +145,14 @@ class CurationQWidget(QDialog):
         self.zero_size_classify_directory_layout.setEnabled(False)
         self.zero_size_classify_directory_path_edit.setEnabled(False)
         self.zero_size_classify_select_directory.setContentsMargins(0, 10, 0, 10)
+        self.zero_size_classify_directory_layout.setContentsMargins(15, 0, 0, 10)
 
         self.image_evaluation_classify_directory_layout, self.image_evaluation_classify_directory_path_edit, self.image_evaluation_classify_select_directory = self.create_directory(
-            "Please specify the directory to save the images classified by the image quality assessment results.", "image_evaluation_classify")
+            "Specify the directory to store images classified by image quality assessment results.", "image_evaluation_classify")
         self.image_evaluation_classify_directory_layout.setEnabled(False)
         self.image_evaluation_classify_directory_path_edit.setEnabled(False)
-        self.image_evaluation_classify_select_directory.setContentsMargins(0, 15, 0, 0)
+        self.image_evaluation_classify_select_directory.setContentsMargins(0, 10, 0, 10)
+        self.image_evaluation_classify_directory_layout.setContentsMargins(15, 10, 0, 0)
 
         # 체크박스 생성
         for feature in Features:
@@ -159,11 +162,10 @@ class CurationQWidget(QDialog):
             self.checkboxes[feature] = checkbox
 
             if feature == Features.classify_zero_textsize_images:
-
                 # 라디오 버튼 그룹 및 레이아웃 생성
                 self.zero_size_option_group = QButtonGroup(self)
                 self.zero_size_option_layout = QHBoxLayout()
-                self.zero_size_option_layout.setContentsMargins(0,15,0,0)
+                self.zero_size_option_layout.setContentsMargins(15,10,0,10)
 
                 self.zero_size_delete_radiobutton = QRadioButton("Delete", self)
                 self.zero_size_classify_radiobutton = QRadioButton("Classify", self)
@@ -189,14 +191,14 @@ class CurationQWidget(QDialog):
 
             elif feature == Features.remove_images_by_class_id:
                 self.deleteid_layout = QHBoxLayout()
-                self.deleteid_layout.setContentsMargins(0, 10, 0, 10)
+                self.deleteid_layout.setContentsMargins(15, 10, 0, 10)
                 self.deleteid_layout.setSpacing(15)
                 self.deleteid_layout.addWidget(self.delete_classid_edit)
                 self.feature_layout.addLayout(self.deleteid_layout)
 
             elif feature == Features.adjust_data_split_ratio:
                 self.ratio_layout = QHBoxLayout()
-                self.ratio_layout.setContentsMargins(0, 10, 0, 10)
+                self.ratio_layout.setContentsMargins(15, 10, 0, 10)
                 self.ratio_layout.setSpacing(15)
                 self.ratio_layout.addWidget(self.train_ratio_edit)
                 self.ratio_layout.addWidget(self.valid_ratio_edit)
@@ -208,7 +210,7 @@ class CurationQWidget(QDialog):
                 self.feature_layout.addLayout(self.image_evaluation_classify_directory_layout)
 
                 self.image_evaluation_layout = QVBoxLayout()
-                self.image_evaluation_layout.setContentsMargins(0, 10, 0, 10)
+                self.image_evaluation_layout.setContentsMargins(15, 10, 0, 10)
                 self.image_evaluation_layout.setSpacing(15)
 
                 # BRISQUE
@@ -264,11 +266,40 @@ class CurationQWidget(QDialog):
 
             elif feature == Features.change_class_id:
                 self.changeid_layout = QHBoxLayout()
-                self.changeid_layout.setContentsMargins(0, 10, 0, 10)
+                self.changeid_layout.setContentsMargins(15, 10, 0, 10)
                 self.changeid_layout.setSpacing(15)
                 self.changeid_layout.addWidget(self.target_classid_edit)
                 self.changeid_layout.addWidget(self.new_classid_edit)
                 self.feature_layout.addLayout(self.changeid_layout)
+
+            elif feature == Features.labeleme_to_yolo:
+
+                # 라디오 버튼 그룹 및 레이아웃 생성
+                self.labelme_To_yolo_option_group = QButtonGroup(self)
+                self.labelme_To_yolo_option_layout = QHBoxLayout()
+                self.labelme_To_yolo_option_layout.setContentsMargins(15, 10, 0, 10)
+
+                self.labelme_to_yolo_bbox_radiobutton = QRadioButton("Labelme to Bounding Box (In Yolo format)", self)
+                self.labelme_to_yolo_seg_radiobutton = QRadioButton("Labelme to Segmentation (In Yolo format)", self)
+                self.labelme_to_yolo_bbox_radiobutton.toggled.connect(self.sub_option_state_changed)
+                self.labelme_to_yolo_seg_radiobutton.toggled.connect(self.sub_option_state_changed)
+                self.labelme_to_yolo_bbox_radiobutton.setEnabled(False)
+                self.labelme_to_yolo_seg_radiobutton.setEnabled(False)
+
+                # 라디오 버튼 그룹에 추가
+                self.labelme_To_yolo_option_group.addButton(self.labelme_to_yolo_bbox_radiobutton)
+                self.labelme_To_yolo_option_group.addButton(self.labelme_to_yolo_seg_radiobutton)
+
+                # 기본값 설정 (bbox 기본값으로)
+                self.labelme_to_yolo_bbox_radiobutton.setChecked(True)
+
+                # 라디오 버튼 레이아웃에 추가
+                self.labelme_To_yolo_option_layout.addWidget(self.labelme_to_yolo_bbox_radiobutton)
+                self.labelme_To_yolo_option_layout.addWidget(self.labelme_to_yolo_seg_radiobutton)
+
+                # feature_layout에 라디오 버튼 레이아웃 추가
+                self.feature_layout.addLayout(self.labelme_To_yolo_option_layout)
+
 
         # scroll_widget을 scroll_area에 추가
         self.scroll_area.setWidget(self.scroll_widget)
@@ -395,6 +426,14 @@ class CurationQWidget(QDialog):
             self.piqe_radiobutton.setEnabled(False)
             self.piqe_edit.setEnabled(False)
 
+        if self.checkboxes[Features.labeleme_to_yolo].isChecked():
+            self.labelme_to_yolo_bbox_radiobutton.setEnabled(True)
+            self.labelme_to_yolo_seg_radiobutton.setEnabled(True)
+        else:
+            self.labelme_to_yolo_bbox_radiobutton.setEnabled(False)
+            self.labelme_to_yolo_seg_radiobutton.setEnabled(False)
+
+
     def sub_option_state_changed(self):
         if self.zero_size_classify_radiobutton.isChecked():
             self.zero_size_classify_directory_path_edit.setEnabled(True)
@@ -493,6 +532,12 @@ class CurationQWidget(QDialog):
             metric_name = "PIQE"
             threshold = piqe_val if piqe_val != 0 else 50.0
 
+        output_format = ''
+        if self.labelme_to_yolo_bbox_radiobutton.isChecked():
+            output_format="bbox"
+        elif self.labelme_to_yolo_seg_radiobutton.isChecked():
+            output_format="polygon"
+
         train_ratio = self.safe_float_conversion(self.train_ratio_edit.text(),
                                             0.7) if self.train_ratio_edit.isEnabled() else 0.7
         valid_ratio = self.safe_float_conversion(self.valid_ratio_edit.text(),
@@ -533,6 +578,7 @@ class CurationQWidget(QDialog):
                 is_delete = False
 
         # 여기서 필요한 클래스 인스턴스를 초기화 (정의되지 않은 클래스 가정)
+        labelme_to_yolo = Labelme2YOLOv8(current_path, output_format, '')
         dataset_sorting = DatasetSorting(current_path, subfolders)
         dataset_balance = DatasetDistributionbalance(current_path, train_ratio, test_ratio, valid_ratio)
         cleaner = DatasetCleaner(current_path, subfolders, is_delete, classify_path)
@@ -566,6 +612,8 @@ class CurationQWidget(QDialog):
                 task_queue.put(lambda: image_quality.move_files_by_metric())
             elif feature.name == Features.segments_to_bboxs.name:
                 task_queue.put(lambda: dataset_convert.segments_to_boxes())
+            elif feature.name == Features.labeleme_to_yolo.name:
+                task_queue.put(lambda: labelme_to_yolo.convert(0,0))
 
         def process_tasks():
             processed = 0

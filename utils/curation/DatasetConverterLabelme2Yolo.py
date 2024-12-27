@@ -246,7 +246,10 @@ class Labelme2YOLOv8:
         with open(json_name, encoding="utf-8") as file:
             json_data = json.load(file)
 
-        filename: str = uuid.UUID(int=random.Random().getrandbits(128)).hex
+        # filename: str = uuid.UUID(int=random.Random().getrandbits(128)).hex
+
+        # Extract only file names excluding path and extension
+        filename = os.path.splitext(os.path.basename(json_name))[0]
         image_name = f"{filename}.png"
         label_name = f"{filename}.txt"
 
@@ -359,6 +362,7 @@ class Labelme2YOLOv8:
 
         return None
 
+    # data.yaml 생성 및 학습데이터 메타 정보 기록
     def _save_dataset_yaml(self):
         yaml_path = os.path.join(self._json_dir, "YOLOv8Dataset/", "data.yaml")
 
