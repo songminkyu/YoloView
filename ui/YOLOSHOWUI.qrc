@@ -1,6 +1,6 @@
 <RCC>
   <qresource prefix="leftbox">
-    <file>../images/yolo.png</file>
+    <file>../images/jellybomb.png</file>
     <file>../images/newsize/statistics.png</file>
     <file>../images/newsize/table.png</file>
     <file>../images/newsize/single.png</file>

@@ -241,7 +241,7 @@ Spacer{
                 <string notr="true"/>
                </property>
                <property name="text">
-                <string>YOLO SHOW -YOLO Graphical User Interface based on Pyside6</string>
+                <string>JellyBomb.co</string>
                </property>
               </widget>
              </item>
@@ -387,7 +387,7 @@ Spacer{
                    </sizepolicy>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">image: url(:/leftbox/images/yolo_icon.png);
+                   <string notr="true">image: url(:/leftbox/images/jellybomb.png);
 border:2px solid rgba(0,0,0,15%);
 border-radius: 15%;
 </string>

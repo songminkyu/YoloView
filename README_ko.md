@@ -162,7 +162,7 @@ https://github.com/ultralytics/ultralytics/issues/1158
 https://github.com/ultralytics/ultralytics/issues/8772
 
 ```shell
-pyinstaller --onefile --windowed --icon="images/yolo.ico" ^
+pyinstaller --onefile --windowed --icon="images/jellybomb.ico" ^
 --collect-data=ultralytics ^
 --add-data="ultralytics/cfg/default.yaml;ultralytics/cfg" ^
 --add-data="ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^

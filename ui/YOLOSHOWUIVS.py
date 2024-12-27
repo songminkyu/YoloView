@@ -243,11 +243,15 @@ class Ui_MainWindow(object):
         self.logo.setObjectName(u"logo")
         sizePolicy.setHeightForWidth(self.logo.sizePolicy().hasHeightForWidth())
         self.logo.setSizePolicy(sizePolicy)
-        self.logo.setStyleSheet(u"image: url(:/leftbox/images/yolo.png);\n"
-                                "border:2px solid rgba(0,0,0,15%);\n"
-                                "border-radius: 15%;\n"
-                                "\n"
-                                "")
+        self.logo.setStyleSheet(u"""
+                          background-image: url(:/leftbox/images/jellybomb.png);
+                          background-position: center;
+                          background-repeat: no-repeat;
+                          background-size: 100% 100%;  /* 프레임 크기에 맞춤 */
+                          background-clip: content-box;
+                          border: 2px solid rgba(0,0,0,15%);
+                          border-radius: 15%;
+                      """)
         self.logo.setFrameShape(QFrame.StyledPanel)
         self.logo.setFrameShadow(QFrame.Raised)
 
@@ -2544,8 +2548,8 @@ class Ui_MainWindow(object):
         self.closeButton.setText("")
         self.minimizeButton.setText("")
         self.maximizeButton.setText("")
-        self.title.setText(QCoreApplication.translate("MainWindow", u"YOLO Graphical User Interface", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"YOLO SHOW", None))
+        self.title.setText(QCoreApplication.translate("MainWindow", u"JellyBomb.co", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"JellyBomb", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Mksong", None))
         self.src_menu.setText(QCoreApplication.translate("MainWindow", u" Menu     ", None))
         self.src_img.setText(QCoreApplication.translate("MainWindow", u"Media    ", None))
