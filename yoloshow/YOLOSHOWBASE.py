@@ -431,9 +431,10 @@ class YOLOSHOWBASE:
     # 웹캠 Rtsp 선택
     def selectRtsp(self):
         self.visibleNavigation(False, self.view_mode)
-
-        # rtsp://rtsp-test-server.viomic.com:554/stream
-
+        # RTSP 샘플 주소
+        # https://www.data.go.kr/data/15063717/fileData.do?recommendDataYn=Y
+        # rtsp://210.99.70.120:1935/live/cctv001.stream
+        # rtsp://210.99.70.120:1935/live/cctv008.stream
         rtspDialog = RtspInputMessageBox(self, mode="single")
         self.rtspUrl = None
         if rtspDialog.exec():
