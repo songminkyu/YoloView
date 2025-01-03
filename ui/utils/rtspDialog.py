@@ -1,6 +1,7 @@
+from PySide6.QtCore import Qt
 from PySide6.QtCore import QUrl
 from PySide6.QtGui import QFont
-from qfluentwidgets import MessageBoxBase, SubtitleLabel, LineEdit, PushButton, setTheme, Theme
+from qfluentwidgets import MessageBoxBase, SubtitleLabel, LineEdit, CheckBox
 
 class RtspInputMessageBox(MessageBoxBase):
     """ Custom message box """
