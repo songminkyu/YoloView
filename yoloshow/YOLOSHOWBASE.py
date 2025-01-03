@@ -9,7 +9,7 @@ glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 "
 from utils.logger import LoggerUtils
 import re
 import socket
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 import torch
 import json
 import os
@@ -431,11 +431,22 @@ class YOLOSHOWBASE:
     # 웹캠 Rtsp 선택
     def selectRtsp(self):
         self.visibleNavigation(False, self.view_mode)
-        # rtsp://rtsp-test-server.viomic.com:554/stream
+
         rtspDialog = RtspInputMessageBox(self, mode="single")
         self.rtspUrl = None
         if rtspDialog.exec():
             self.rtspUrl = rtspDialog.urlLineEdit.text()
+            if rtspDialog.authCheckBox.isChecked() and self.rtspUrl:
+                parsed_url = urlparse(self.rtspUrl)
+                # 사용자 이름과 비밀번호를 포함하는 새로운 netloc을 구성합니다.
+                username = rtspDialog.usernameLineEdit.text()
+                password = rtspDialog.passwordLineEdit.text()
+                netloc = f"{username}:{password}@{parsed_url.hostname}:{parsed_url.port}"
+                # URL 재구성
+                self.rtspUrl = urlunparse(
+                    (parsed_url.scheme, netloc, parsed_url.path, parsed_url.params, parsed_url.query,
+                     parsed_url.fragment))
+
         if self.rtspUrl:
             parsed_url = urlparse(self.rtspUrl)
             if parsed_url.scheme == 'rtsp':
