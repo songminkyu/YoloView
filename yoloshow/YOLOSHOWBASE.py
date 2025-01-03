@@ -432,6 +432,8 @@ class YOLOSHOWBASE:
     def selectRtsp(self):
         self.visibleNavigation(False, self.view_mode)
 
+        # rtsp://rtsp-test-server.viomic.com:554/stream
+
         rtspDialog = RtspInputMessageBox(self, mode="single")
         self.rtspUrl = None
         if rtspDialog.exec():
