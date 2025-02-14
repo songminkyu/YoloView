@@ -5,7 +5,7 @@ glo._init()
 glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 "
                             "yolo11 yolo11-seg yolo11-pose yolo11-cls yolo11-obb "
                             "yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolov8-cls "
-                            "fastsam sam samv2 bbox-valid seg-valid ")
+                            "fastsam sam samv2 bbox-valid seg-valid ocr")
 from utils.logger import LoggerUtils
 import re
 import socket
@@ -42,6 +42,7 @@ from yolocode.SAMv2Thread import SAMv2Thread
 from yolocode.BBoxValidThread import BBoxValidThread
 from yolocode.SegValidThread import SegValidThread
 from yolocode.YOLOv8ClsThread import YOLOv8ClsThread
+from yolocode.OCRThread import OCRThread
 from ultralytics import YOLO
 from ultralytics import FastSAM
 from ultralytics import RTDETR
@@ -76,6 +77,7 @@ MODEL_THREAD_CLASSES = {
     "samv2": SAMv2Thread,
     "bbox-valid": BBoxValidThread,
     "seg-valid": SegValidThread,
+    "ocr": OCRThread
 }
 # 扩展MODEL_THREAD_CLASSES字典
 MODEL_NAME_DICT = list(MODEL_THREAD_CLASSES.items())
@@ -97,7 +99,7 @@ ALL_MODEL_NAMES = [
 
     # 기타 모델
     "rtdetr", "fastsam", "sam", "samv2",
-    "bbox-valid", "seg-valid"
+    "bbox-valid", "seg-valid", "ocr"
 ]
 loggertool = LoggerUtils()
 
@@ -607,7 +609,8 @@ class YOLOSHOWBASE:
             "samv2": lambda name: any(sub in name for sub in ["sam2", "samv2"]),
             "sam": lambda name: "sam" in name,
             "bbox-valid": lambda name: "bbox-valid" in name,
-            "seg-valid": lambda name: "seg-valid" in name
+            "seg-valid": lambda name: "seg-valid" in name,
+            "ocr": lambda name: "ocr" in name
         }
 
         if mode:
