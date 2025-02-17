@@ -114,14 +114,24 @@ class OCRThread(YOLOv8Thread):
 
     def postprocess(self, lang, img, orig_imgs):
         ocr = PdOCR(lang=lang)
-        source= self.source if isinstance(self.source, list) else [self.source]
+        source = self.source if isinstance(self.source, list) else [self.source]
 
+        percent = 0
+        index = 0
+        total_count = len(source)
         for image_file in source:
+            index += 1
             ocr_text, image, roi_image = ocr.run_ocr(image_file)
             # 원본 이미지 전송
             self.send_input.emit(image)
             # 결과 이미지 전송
             self.send_output.emit(roi_image)
+
+            # 상태 메시지 전송
+            self.send_msg.emit(f"bbox validation: ({index} / {total_count}) {image_file}")
+
+            percent = (index / total_count) * 100 if total_count > 0 else 0
+            self.send_progress.emit(percent)
 
             # 이미지 저장
             if self.save_res and self.save_path:

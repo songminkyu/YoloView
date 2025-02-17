@@ -232,8 +232,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.showTrackStatus(self.model_name)
             self.model_initialized_trackmodel = True # Track 모드 지원 여부 1번만 체크
 
-        self.showOCRStatus(self.model_name)
-        if not self.model_initialized_ocr and self.model_name == 'ocr':
+        if not self.model_initialized_ocr and self.showOCRStatus(self.model_name):
             self.setOCRLanguage()
             self.model_initialized_ocr = True
 
