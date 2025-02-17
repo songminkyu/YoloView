@@ -128,7 +128,7 @@ class OCRThread(YOLOv8Thread):
             self.send_output.emit(roi_image)
 
             # 상태 메시지 전송
-            self.send_msg.emit(f"bbox validation: ({index} / {total_count}) {image_file}")
+            self.send_msg.emit(f"OCR Detecting : ({index} / {total_count}) {image_file}")
 
             percent = (index / total_count) * 100 if total_count > 0 else 0
             self.send_progress.emit(percent)
