@@ -121,6 +121,7 @@ class YOLOSHOWBASE:
         self.allModelNames = ALL_MODEL_NAMES
         self.view_mode = None
         self.model_initialized_trackmodel = False  # 초기화되지 않은 상태로 시작
+        self.model_initialized_ocr = False
 
     # 왼쪽 메뉴바 초기화
     def initSiderWidget(self):
@@ -161,6 +162,9 @@ class YOLOSHOWBASE:
 
     def updateTrackMode(self, thread):
         thread.track_mode = True if self.ui.track_box.currentText() == "On" else False
+
+    def updateOcrLanguage(self,thread):
+        thread.ocr_lang=self.ui.ocr_lang_box.currentData()
 
     # 그림자 효과
     def shadowStyle(self, widget, Color, top_bottom=None):
@@ -727,6 +731,15 @@ class YOLOSHOWBASE:
             self.ui.track_box.setVisible(False)
             self.ui.track_label.setVisible(False)
 
+            return False
+    def showOCRStatus(self, model_name):
+        if "ocr" in model_name:
+            self.ui.ocr_lang_box.setVisible(True)
+            self.ui.ocr_lang_label.setVisible(True)
+            return True
+        else:
+            self.ui.ocr_lang_box.setVisible(False)
+            self.ui.ocr_lang_label.setVisible(False)
             return False
 
     def loadCategories(self, yolo_thread, mode):

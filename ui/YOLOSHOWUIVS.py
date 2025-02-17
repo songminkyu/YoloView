@@ -1463,14 +1463,28 @@ class Ui_MainWindow(object):
         self.track_label.setStyleSheet(u"font: 700 11pt \"Segoe UI\";\n"
                                        "color: rgba(0, 0, 0, 140);")
 
-        self.track_box.setFixedSize(70, 26)  # 100px width, 40px height
+        self.track_box.setFixedSize(70, 30)  # 100px width, 40px height
         # Add the combo box and the label to the layout of the red bordered area (likely horizontalLayout_9)
         self.horizontalLayout_20.addWidget(self.track_label)  # Add label
         self.horizontalLayout_20.addWidget(self.track_box)  # Add combo box
 
-        # 기능 임시 숨김 처리
-        #self.track_box.hide()  # Hide the combo box
-        #self.track_label.hide()  # Hide the label
+        # Create the combo box
+        self.ocr_lang_box = ComboBox(self.rightBox)
+        self.ocr_lang_box.setObjectName(u"ocr_lang_box")
+        self.ocr_lang_box.addItem("Korean", None, "korean")
+        self.ocr_lang_box.addItem("English", None, "en")
+        self.ocr_lang_box.addItem("Japanese", None, "japan")
+        self.ocr_lang_box.addItem("Chinese", None, "ch")
+        self.ocr_lang_box.addItem("Chinese traditional", None, "ch_tra")
+        # Optionally, add a label next to the combo box to explain its purpose
+        self.ocr_lang_label = QLabel("OCR Language ", self.rightBox)
+        self.ocr_lang_label.setStyleSheet(u"font: 700 11pt \"Segoe UI\";\n"
+                                          "color: rgba(0, 0, 0, 140);")
+
+        self.ocr_lang_box.setFixedSize(130, 30)  # 100px width, 40px height
+        # Add the combo box and the label to the layout of the red bordered area (likely horizontalLayout_9)
+        self.horizontalLayout_20.addWidget(self.ocr_lang_label)  # Add label
+        self.horizontalLayout_20.addWidget(self.ocr_lang_box)  # Add combo box
 
         self.run_button = QPushButton(self.rightbox_play)
         self.run_button.setObjectName(u"run_button")

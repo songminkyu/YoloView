@@ -47,6 +47,10 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.ui.track_box.currentIndexChanged.connect(self.selectedTrackMode)
         # --- track mode --- #
 
+        # --- ocr language --- #
+        self.ui.ocr_lang_box.currentIndexChanged.connect(self.selectedOCRLanguage)
+        # --- ocr language --- #
+
         # --- 재생 일시 정지 --- #
         self.playIcon = QtGui.QIcon()
         self.playIcon.addPixmap(QtGui.QPixmap(f"{self.current_workpath}/images/newsize/play.png"), QtGui.QIcon.Normal,
@@ -204,6 +208,12 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
             self.loadCategories(yolo_thread, 'right')
 
     def selectedTrackMode(self):
+        self.setTrackMode()
+
+    def selectedOCRLanguage(self):
+        self.setOCRLanguage()
+
+    def setTrackMode(self):
         # 현재 모델 가져오기
         model_name_left = self.checkCurrentModel(mode="left")
         model_name_right = self.checkCurrentModel(mode="right")
@@ -213,6 +223,16 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         if model_name_right:
             yolo_thread = self.yolo_threads.get(model_name_right)
             self.updateTrackMode(yolo_thread)
+
+    def setOCRLanguage(self):
+        model_name_left = self.checkCurrentModel(mode="left")
+        model_name_right = self.checkCurrentModel(mode="right")
+        if model_name_left:
+            yolo_thread = self.yolo_threads.get(model_name_left)
+            self.updateOcrLanguage(yolo_thread)
+        if model_name_right:
+            yolo_thread = self.yolo_threads.get(model_name_right)
+            self.updateOcrLanguage(yolo_thread)
 
     # MessageBar에 메시지 표시
     def showStatus(self, msg):
@@ -282,7 +302,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         # yolov8/yolo11 이면 track 모드 UI 활성화
         if not self.model_initialized_trackmodel:
             model_names = [self.model_name1, self.model_name2]
-            if any(self.check_model_conditions(name) for name in model_names):
+            if any(self.showTrackStatus(name) for name in model_names):
                 self.ui.track_box.setVisible(True)
                 self.ui.track_label.setVisible(True)
             else:
@@ -291,15 +311,21 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
             self.model_initialized_trackmodel = True  # Track 모드 지원 여부 1번만 체크
 
+        model_names = [self.model_name1, self.model_name2]
+        if any(self.showOCRStatus(name) for name in model_names):
+            self.ui.ocr_lang_box.setVisible(True)
+            self.ui.ocr_lang_label.setVisible(True)
+            self.setOCRLanguage()
+        else:
+            self.ui.ocr_lang_box.setVisible(False)
+            self.ui.ocr_lang_label.setVisible(False)
+
         if pt_list != self.pt_list:
             self.pt_list = pt_list
             self.ui.model_box1.clear()
             self.ui.model_box1.addItems(self.pt_list)
             self.ui.model_box2.clear()
             self.ui.model_box2.addItems(self.pt_list)
-
-    def check_model_conditions(self, model_name):
-        return self.showTrackStatus(model_name)
 
     # 모델 다시 로드
     def resignModel(self, model_name, mode=None):
@@ -400,6 +426,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
 
             # yolov8,9,10,11 이면 track 모드 UI 활성화
             self.showTrackStatus(self.model_name1)
+            self.showOCRStatus(self.model_name1)
 
         else:
             # 오른쪽 모델
@@ -412,6 +439,7 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
                 self.stopOtherModel(mode="right")
             # yolov8,9,10,11 이면 track 모드 UI 활성화
             self.showTrackStatus(self.model_name2)
+            self.showOCRStatus(self.model_name2)
 
     def runRightModelProcess(self, model_name, mode="start"):
         yolo_thread = self.yolo_threads.get(model_name)

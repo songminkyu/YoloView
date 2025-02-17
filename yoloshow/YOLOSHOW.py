@@ -62,6 +62,10 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         self.ui.track_box.currentIndexChanged.connect(self.selectedTrackMode)
         # --- track mode --- #
 
+        # --- ocr language --- #
+        self.ui.ocr_lang_box.currentIndexChanged.connect(self.selectedOCRLanguage)
+        # --- ocr language --- #
+
         # --- 사이드바 확대/축소 --- #
         self.ui.src_menu.clicked.connect(self.scaleMenu)  # hide menu button
         self.ui.src_setting.clicked.connect(self.scalSetting)  # setting button
@@ -167,9 +171,20 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.initModel(yoloname=model_name)
 
     def selectedTrackMode(self):
+        self.setTrackMode()
+
+    def selectedOCRLanguage(self):
+        self.setOCRLanguage()
+
+    def setTrackMode(self):
         model_name = self.checkCurrentModel()
         yolo_thread = self.yolo_threads.get(model_name)
         self.updateTrackMode(yolo_thread)
+
+    def setOCRLanguage(self):
+        model_name = self.checkCurrentModel()
+        yolo_thread = self.yolo_threads.get(model_name)
+        self.updateOcrLanguage(yolo_thread)
 
     #결과 내보내기
     def saveResult(self):
@@ -216,6 +231,11 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
         if not self.model_initialized_trackmodel:
             self.showTrackStatus(self.model_name)
             self.model_initialized_trackmodel = True # Track 모드 지원 여부 1번만 체크
+
+        self.showOCRStatus(self.model_name)
+        if not self.model_initialized_ocr and self.model_name == 'ocr':
+            self.setOCRLanguage()
+            self.model_initialized_ocr = True
 
         if pt_list != self.pt_list:
             self.pt_list = pt_list
@@ -268,6 +288,7 @@ class YOLOSHOW(QMainWindow, YOLOSHOWBASE):
             self.showStatus(f"Change Model to {now_model_name} Successfully")
 
         self.showTrackStatus(self.model_name)
+        self.showOCRStatus(self.model_name)
 
     def runModelProcess(self, yolo_name):
         yolo_thread = self.yolo_threads.get(yolo_name)

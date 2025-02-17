@@ -112,9 +112,8 @@ class OCRThread(YOLOv8Thread):
         self.save_res = None
         self.save_path = None
 
-    def postprocess(self, preds, img, orig_imgs):
-        ocr = PdOCR(lang='korean')
-
+    def postprocess(self, lang, img, orig_imgs):
+        ocr = PdOCR(lang=lang)
         source= self.source if isinstance(self.source, list) else [self.source]
 
         for image_file in source:
@@ -132,6 +131,9 @@ class OCRThread(YOLOv8Thread):
         image_name = os.path.basename(image_file)
         image_saver = ImageSaver(result_image)
         image_saver.save_image(save_path / image_name)
+
+    def save_labels(self, save_path, image_file, result_image):
+        pass
 
 
 if __name__ == '__main__':

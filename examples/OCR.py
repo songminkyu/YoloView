@@ -52,7 +52,7 @@ def put_text(image, text, x, y, color=(0, 255, 0), font_size=22):
     if platform.system() == 'Darwin':
         font = 'AppleGothic.ttf'
     elif platform.system() == 'Windows':
-        font = 'malgun.ttf'
+        font = 'SourceHanSansSC-VF.ttf'
 
     image_font = ImageFont.truetype(font, font_size)
     font = ImageFont.load_default()
@@ -69,7 +69,7 @@ def put_text(image, text, x, y, color=(0, 255, 0), font_size=22):
 class MyPaddleOCR:
     def __init__(self, lang: str = "korean", **kwargs):
         self.lang = lang
-        self._ocr = PaddleOCR(lang="korean")
+        self._ocr = PaddleOCR(use_angle_cls=True,lang=self.lang)
         self.img_path = None
         self.ocr_result = {}
 
@@ -103,7 +103,7 @@ class MyPaddleOCR:
     def run_ocr(self, img_path: str, debug: bool = False):
         self.img_path = img_path
         ocr_text = []
-        result = self._ocr.ocr(img_path, cls=False)
+        result = self._ocr.ocr(img_path, cls=True)
         self.ocr_result = result[0]
 
         if self.ocr_result:
@@ -143,7 +143,7 @@ class MyPaddleOCR:
             cv2.line(roi_img, topRight, bottomRight, (0, 255, 0), 2)
             cv2.line(roi_img, bottomRight, bottomLeft, (0, 255, 0), 2)
             cv2.line(roi_img, bottomLeft, topLeft, (0, 255, 0), 2)
-            roi_img = put_text(roi_img, text, topLeft[0], topLeft[1] - 20, font_size=15)
+            roi_img = put_text(roi_img, text, topLeft[0], topLeft[1] - 20, font_size=17)
 
             # print(text)
 
@@ -151,6 +151,6 @@ class MyPaddleOCR:
 
 
 if __name__ == '__main__':
-    ocr = MyPaddleOCR()
-    img_path = '123.png'
+    ocr = MyPaddleOCR(lang='ch')
+    img_path = 'ch.png'
     v=ocr.run_ocr(img_path, debug=True)

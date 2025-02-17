@@ -46,6 +46,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.categories = dict()
         self.track_history = defaultdict(lambda: [])
         self.track_mode = False
+        self.ocr_lang=''
         self.current_model_name = None  # The detection model name to use
         self.new_model_name = None  # Models that change in real time
         self.source = None  # input source
@@ -122,7 +123,7 @@ class YOLOv8Thread(QThread,BasePredictor):
             self.postprocess(None, None, None)
             return
         elif self.task == 'ocr':
-            self.postprocess(None, None, None)
+            self.postprocess(self.ocr_lang, None, None)
             return
         elif self.is_folder:
             total_count = len(self.source)
