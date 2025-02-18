@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from paddleocr import PaddleOCR, draw_ocr
 from paddleocr.paddleocr import MODEL_URLS
 from utils.image_save import ImageSaver
+from pathlib import Path
 import os
 
 class PdOCR:
@@ -107,13 +108,15 @@ class OCRThread(YOLOv8Thread):
     def __init__(self):
         super(OCRThread, self).__init__()
         self.task = 'ocr'
-        self.project = 'runs/orc'
+        self.project = 'runs/ocr'
         self.labels_path = None  # 라벨 파일 경로
         self.save_res = None
         self.save_path = None
 
     def postprocess(self, lang, img, orig_imgs):
-        ocr = PdOCR(lang=lang)
+
+        set_lang = lang if lang != '' else 'korean'
+        ocr = PdOCR(lang=set_lang)
         source = self.source if isinstance(self.source, list) else [self.source]
 
         percent = 0
@@ -136,15 +139,21 @@ class OCRThread(YOLOv8Thread):
             # 이미지 저장
             if self.save_res and self.save_path:
                 self.save_bbox_preds(self.save_path, image_file, roi_image)
+                self.save_labels(self.save_path, image_file, ocr_text)
 
     def save_bbox_preds(self, save_path, image_file, result_image):
         image_name = os.path.basename(image_file)
         image_saver = ImageSaver(result_image)
         image_saver.save_image(save_path / image_name)
 
-    def save_labels(self, save_path, image_file, result_image):
-        pass
-
+    def save_labels(self, save_path, image_file, ocr_text):
+        image_name = os.path.basename(image_file)
+        text_label_filename = Path(os.path.basename(image_name)).stem + '.txt'
+        save_text_path = os.path.join(save_path,text_label_filename)
+        with open(save_text_path, 'w') as txtfile:
+            for text in ocr_text:
+                txtfile.write(text)
+                txtfile.write('\n')
 
 if __name__ == '__main__':
     r = OCRThread()
