@@ -1,14 +1,15 @@
-from yolocode.YOLOv8Thread import YOLOv8Thread
 import cv2
+import os
 import numpy as np
-import platform
+import time
+from yolocode.YOLOv8Thread import YOLOv8Thread
 from PIL import ImageFont, ImageDraw, Image
-from matplotlib import pyplot as plt
 from paddleocr import PaddleOCR, draw_ocr
 from paddleocr.paddleocr import MODEL_URLS
 from utils.image_save import ImageSaver
 from pathlib import Path
-import os
+from googletrans import Translator
+import asyncio
 
 class PdOCR:
     def __init__(self, lang: str = "korean", **kwargs):
@@ -118,6 +119,9 @@ class OCRThread(YOLOv8Thread):
         set_lang = lang if lang != '' else 'korean'
         ocr = PdOCR(lang=set_lang)
         source = self.source if isinstance(self.source, list) else [self.source]
+        translator = None
+        if self.save_res and self.save_path:
+            translator = Translator()
 
         percent = 0
         index = 0
@@ -139,21 +143,37 @@ class OCRThread(YOLOv8Thread):
             # 이미지 저장
             if self.save_res and self.save_path:
                 self.save_bbox_preds(self.save_path, image_file, roi_image)
-                self.save_labels(self.save_path, image_file, ocr_text)
+                self.save_labels(self.save_path, image_file, ocr_text, translator)
+
 
     def save_bbox_preds(self, save_path, image_file, result_image):
         image_name = os.path.basename(image_file)
         image_saver = ImageSaver(result_image)
         image_saver.save_image(save_path / image_name)
 
-    def save_labels(self, save_path, image_file, ocr_text):
+    def save_labels(self, save_path, image_file, ocr_text, translator):
         image_name = os.path.basename(image_file)
         text_label_filename = Path(os.path.basename(image_name)).stem + '.txt'
         save_text_path = os.path.join(save_path,text_label_filename)
-        with open(save_text_path, 'w') as txtfile:
+        translation_results = asyncio.run(self.lang_translate(translator, ocr_text))
+        with open(save_text_path, 'w', encoding='utf-8') as txtfile:
             for text in ocr_text:
                 txtfile.write(text)
                 txtfile.write('\n')
+
+            txtfile.write('==================내용 번역 결과==================\n')
+
+            for translate in translation_results:
+                txtfile.write(translate)
+                txtfile.write('\n')
+
+    async def lang_translate(self, translator, translation_target):
+        translation_result = []
+        for value in translation_target:
+            translation = await translator.translate(value, dest='ko')
+            translation_result.append(translation.text)
+
+        return translation_result
 
 if __name__ == '__main__':
     r = OCRThread()

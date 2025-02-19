@@ -1220,7 +1220,7 @@ class Ui_MainWindow(object):
         self.ocr_lang_box.addItem("English", None, "en")
         self.ocr_lang_box.addItem("Japanese", None, "japan")
         self.ocr_lang_box.addItem("Chinese", None, "ch")
-        self.ocr_lang_box.addItem("Chinese traditional", None, "ch_tra")
+        self.ocr_lang_box.addItem("Chinese traditional", None, "chinese_cht")
         # Optionally, add a label next to the combo box to explain its purpose
         self.ocr_lang_label = QLabel("OCR Language ", self.rightBox)
         self.ocr_lang_label.setStyleSheet(u"font: 700 11pt \"Segoe UI\";\n"
