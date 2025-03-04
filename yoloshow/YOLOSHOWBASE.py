@@ -4,8 +4,9 @@ from utils import glo
 glo._init()
 glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 "
                             "yolo11 yolo11-seg yolo11-pose yolo11-cls yolo11-obb "
+                            "yolo12 yolo12-seg yolo12-pose yolo12-cls yolo12-obb "
                             "yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolov8-cls "
-                            "fastsam sam samv2 bbox-valid seg-valid ocr")
+                            "fastsam sam samv2 bbox-valid seg-valid ocr ")
 from utils.logger import LoggerUtils
 import re
 import socket
@@ -72,6 +73,11 @@ MODEL_THREAD_CLASSES = {
     "yolov11-obb": YOLOv8ObbThread,
     "yolov11-pose": YOLOv8PoseThread,
     "yolov11-cls": YOLOv8ClsThread,
+    "yolov12": YOLOv8Thread,
+    "yolov12-seg": YOLOv8SegThread,
+    "yolov12-obb": YOLOv8ObbThread,
+    "yolov12-pose": YOLOv8PoseThread,
+    "yolov12-cls": YOLOv8ClsThread,
     "fastsam": FastSAMThread,
     "sam": SAMThread,
     "samv2": SAMv2Thread,
@@ -96,6 +102,7 @@ ALL_MODEL_NAMES = [
     "yolov9",
     "yolov10",
     "yolov11", "yolov11-seg", "yolov11-pose", "yolov11-obb", "yolov11-cls",
+    "yolov12", "yolov12-seg", "yolov12-pose", "yolov12-obb", "yolov12-cls",
 
     # 기타 모델
     "rtdetr", "fastsam", "sam", "samv2",
@@ -599,16 +606,22 @@ class YOLOSHOWBASE:
             "yolov10": lambda name: "yolov10" in name,
             "yolov11": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and not any(
                 func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName, self.checkClsName]),
+            "yolov12": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and not any(
+                func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName, self.checkClsName]),
             "rtdetr": lambda name: "rtdetr" in name,
             "yolov5-seg": lambda name: "yolov5" in name and self.checkSegName(name),
             "yolov8-seg": lambda name: "yolov8" in name and self.checkSegName(name),
             "yolov11-seg": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkSegName(name),
+            "yolov12-seg": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and self.checkSegName(name),
             "yolov8-pose": lambda name: "yolov8" in name and self.checkPoseName(name),
             "yolov11-pose": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkPoseName(name),
+            "yolov12-pose": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and self.checkPoseName(name),
             "yolov8-obb": lambda name: "yolov8" in name and self.checkObbName(name),
             "yolov11-obb": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkObbName(name),
+            "yolov12-obb": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and self.checkObbName(name),
             "yolov8-cls": lambda name: "yolov8" in name and self.checkClsName(name),
             "yolov11-cls": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkClsName(name),
+            "yolov12-cls": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and self.checkClsName(name),
             "fastsam": lambda name: "fastsam" in name,
             "samv2": lambda name: any(sub in name for sub in ["sam2", "samv2"]),
             "sam": lambda name: "sam" in name,
@@ -650,6 +663,8 @@ class YOLOSHOWBASE:
             return bool(re.match(r'yolo.?10.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolo11" in modelname:
             return bool(re.match(r'yolo.?11.?-' + taskname + r'.*\.pt$', modelname))
+        elif "yolo12" in modelname:
+            return bool(re.match(r'yolo.?12.?-' + taskname + r'.*\.pt$', modelname))
 
     # Modelname의 세그먼트 이름 지정 문제 해결
     def checkSegName(self, modelname):
@@ -718,7 +733,8 @@ class YOLOSHOWBASE:
             "yolov8" in model_name or
             "yolov9" in model_name or
             "yolov10" in model_name or
-            "yolo11" in model_name) and \
+            "yolo11" in model_name or
+            "yolo12" in model_name) and \
                 not self.checkSegName(model_name) and \
                 not self.checkPoseName(model_name) and \
                 not self.checkObbName(model_name) and \
@@ -954,7 +970,7 @@ class YOLOSHOWBASE:
 
     # YOLOv5 및 YOLOv9를 수정하여 yolo.py 충돌 해결
     def solveYoloConflict(self, ptnamelst):
-        glo.set_value("yoloname", "yolov5 yolov8 yolov9 yolov9-seg yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose")
+        glo.set_value("yoloname", "yolov5 yolov8 yolov9 yolov9-seg yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose yolo12 yolo12-seg yolo12-pose")
         self.reloadModel()
 
     # 통계 결과를 수락하고 json에 기록

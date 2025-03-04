@@ -8,7 +8,6 @@ from ui.utils.customGrips import CustomGrip
 from yoloshow.YOLOSHOW import YOLOSHOW
 from yoloshow.YOLOSHOWVS import YOLOSHOWVS
 
-
 class YOLOSHOWWindow(YOLOSHOW):
     # 종료 신호 정의
     closed = Signal()
