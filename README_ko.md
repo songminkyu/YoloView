@@ -1,8 +1,8 @@
-# YoloView - Pyside6 기반 -  YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / RTDETR / SAM / MobileSAM GUI
+# YoloView - Pyside6 기반 -  YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / YOLOv12 / RTDETR / SAM / MobileSAM GUI
 
 ## 소개
 
-***YoloView***는 Ultralytics 기반의 `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `RT-DETR` 모델을 지원하는 사용자 인터페이스 (GUI) 애플리케이션 입니다.
+***YoloView***는 Ultralytics 기반의 `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `YOLO12` `RT-DETR` 모델을 지원하는 사용자 인터페이스 (GUI) 애플리케이션 입니다.
 
 <p align="center"> 
   <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/main/README.md"> English</a> &nbsp; | &nbsp; 한국어</a>
@@ -12,15 +12,15 @@
 
 ## 할 일 목록
 
-- [x] `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `RT-DETR` `SAM` `MobileSAM` `FastSAM` 모델 추가
-- [x] 인스턴스 분할(Instance Segmentation) 지원 （ `YOLOv5`  `YOLOv8`  `YOLOv11` `SAM`  `MobileSAM`  `FastSAM`）
-- [x] 포즈 추정 지원 （ `YOLOv8` `YOLOv11`）
-- [x] 지향형 경계 상자 지원 ( `YOLOv8` `YOLOv11` )
+- [x] `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `YOLO12` `RT-DETR` `SAM` `MobileSAM` `FastSAM` `PP-OCR` 모델 추가
+- [x] 인스턴스 분할(Instance Segmentation) 지원 （ `YOLOv5`  `YOLOv8`  `YOLOv11` `YOLOv12` `SAM`  `MobileSAM`  `FastSAM`）
+- [x] 포즈 추정 지원 （ `YOLOv8 ~ 12` ）
+- [x] 지향형 경계 상자 지원 ( `YOLOv8 ~ 12` )
 - [x] `RTSP` 함수에서 HTTP 프로토콜 지원 ( `Single` 모드)
 - [x] 모델 비교 모드 추가 (VS 모드)
 - [x] 파일 입력 드래그 지원
-- [x] `YOLO11`에 추가 기능이 있습니다. (obb,pose,deteced,segment,track)
-- [x] 추적 및 계산(`YOLOv8` 및 `YOLO11`)
+- [x] `YOLO11 ~ 12`에 추가 기능이 있습니다. (obb,pose,deteced,segment,track)
+- [x] 추적 및 계산(`YOLOv8 ~ 12`)
 - [x] bbox 및 segment 카테고리 필터 기능 추가 (모델 선택 기능 하위 위치)
 - [x] 두 파일(`bbox-valid.pt`, `seg-valid.pt`)을 사용하여 Bounding Box와 Segment 라벨 검증 기능 추가.
 - [x] 하위 폴더 탐색기능 추가 (폴더 탐색일때만)
@@ -40,7 +40,7 @@
 
 프로그램이 대상을 감지하기 위해 실행 중일 때 모델/하이퍼 매개변수를 변경할 수 있습니다.
 
-1. `YOLOv5` / `YOLOv8` / `YOLOv9` / `RTDETR` / `YOLOv5-seg` / `YOLOv8-seg` / `YOLOv10` / `YOLOv11` 에서 동적으로 모델을 변경하는 것을 지원합니다.
+1. `YOLOv5` / `YOLOv8` / `YOLOv9` / `RTDETR` / `YOLOv5-seg` / `YOLOv8-seg` / `YOLOv10` / `YOLOv11` / `YOLOv12` 에서 동적으로 모델을 변경하는 것을 지원합니다.
 2. `IOU` / `Confidence` / `Delay time` / `line thick`를 동적으로 변경하는 것을 지원합니다.
 
 ### 3. 모델을 자동으로 로드합니다.
@@ -51,7 +51,7 @@
 
 **알림:**
 
-1. 모든 `pt` 파일에는 `yolov5` / `yolov8` / `yolov9` / `yolov10` / `yolo11` / `rtdetr` / `sam` / `samv2` / `mobilesam` / `fastsam`. 등의 이름이 지정됩니다. (예: `yolov8-test.pt`)
+1. 모든 `pt` 파일에는 `yolov5` / `yolov8` / `yolov9` / `yolov10` / `yolo11` / `yolo12` / `rtdetr` / `sam` / `samv2` / `mobilesam` / `fastsam`. 등의 이름이 지정됩니다. (예: `yolov8-test.pt`)
 2. 분할 모드의 `pt` 파일인 경우 `yolov5n-seg` / `yolov8s-seg`를 포함하여 이름을 지정하세요. (예: `yolov8n-seg-test.pt`)
 3. 포즈 추정 모드의 `pt` 파일인 경우 `yolov8n-pose`를 포함하여 이름을 지정하세요. (예: `yolov8n-pose-test.pt`)
 4. 지향 바운딩 박스 모드의 `pt` 파일인 경우 `yolov8n-obb`를 포함하여 이름을 지정하세요. (예: `yolov8n-obb-test.pt`)
