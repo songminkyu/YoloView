@@ -13,29 +13,27 @@ from pyiqa.archs.arch_util import to_2tuple
 
 
 def transform_mapping(key, args):
-    if key == 'hflip' and args:
+
+    transform_classes = {
+        'random_crop': PairedRandomCrop,
+        'center_crop': PairedCenterCrop,
+        'resize': PairedResize,
+        'adaptive_resize': PairedAdaptiveResize,
+        'random_square_resize': PairedRandomSquareResize,
+        'random_arp_resize': PairedRandomARPResize,
+        'ada_pad': PairedAdaptivePadding,
+        'rot90': PairedRandomRot90,
+        'randomerase': PairedRandomErasing,
+    }
+
+    if key in transform_classes:
+        transform = transform_classes[key]
+        return [transform(**args) if isinstance(args, dict) else transform(args)]
+    elif key == 'hflip' and args:
         return [PairedRandomHorizontalFlip()] 
-    if key == 'vflip' and args:
+    elif key == 'vflip' and args:
         return [PairedRandomVerticalFlip()] 
-    elif key == 'random_crop':
-        return [PairedRandomCrop(args)]
-    elif key == 'center_crop':
-        return [PairedCenterCrop(args)]
-    elif key == 'resize':
-        return [PairedResize(args)]
-    elif key == 'adaptive_resize':
-        return [PairedAdaptiveResize(args)]
-    elif key == 'random_square_resize':
-        return [PairedRandomSquareResize(args)]
-    elif key == 'random_arp_resize':
-        return [PairedRandomARPResize(args)]
-    elif key == 'ada_pad':
-        return [PairedAdaptivePadding(args)]
-    elif key == 'rot90' and args:
-        return [PairedRandomRot90(args)]
-    elif key == 'randomerase':
-        return [PairedRandomErasing(**args)]
-    elif key == 'totensor' and args:
+    elif key == 'totensor':
         return [PairedToTensor()]
     else:
         return []
@@ -47,7 +45,7 @@ def _is_pair(x):
 
 
 class PairedToTensor(tf.ToTensor):
-    """Pair version of center crop"""
+    """Pair version of to tensor"""
     def to_tensor(self, x):
         if isinstance(x, torch.Tensor):
             return x
@@ -105,7 +103,6 @@ class PairedRandomCrop(tf.RandomCrop):
 
 class PairedRandomErasing(tf.RandomErasing):
     """Pair version of random erasing"""
-
     def forward(self, imgs):
         if _is_pair(imgs):
             if torch.rand(1) < self.p:
@@ -146,7 +143,7 @@ class PairedRandomHorizontalFlip(tf.RandomHorizontalFlip):
 
 
 class PairedRandomVerticalFlip(tf.RandomVerticalFlip):
-    """Pair version of random hflip"""
+    """Pair version of random vflip"""
     def forward(self, imgs):
         if _is_pair(imgs):
             if torch.rand(1) < self.p:
@@ -157,9 +154,8 @@ class PairedRandomVerticalFlip(tf.RandomVerticalFlip):
             return super().forward(imgs)
 
 
-
 class PairedRandomRot90(torch.nn.Module):
-    """Pair version of random hflip"""
+    """Pair version of random 90 rotation"""
     def __init__(self, p=0.5):
         super().__init__()
         self.p = p
@@ -296,7 +292,6 @@ def mod_crop(img, scale):
     else:
         raise ValueError(f'Wrong img ndim: {img.ndim}.')
     return img
-
 
 
 def augment(imgs, hflip=True, rotation=True, flows=None, return_status=False):

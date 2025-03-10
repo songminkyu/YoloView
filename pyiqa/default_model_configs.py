@@ -509,6 +509,7 @@ DEFAULT_CONFIGS = OrderedDict({
             'semantic_model_name': 'resnet50',
             'model_name': 'cfanet_nr_flive_res50',
             'use_ref': False,
+            'test_img_size': 384,
         },
         'metric_mode': 'NR',
         'score_range': '~0, ~1',
@@ -761,5 +762,53 @@ DEFAULT_CONFIGS = OrderedDict({
         'metric_mode': 'FR',
         'score_range': '0, ~10',
         'lower_better': True,
-    }
+    },
+    'qualiclip': {
+        'metric_opts': {
+            'type': 'QualiCLIP',
+            'model_type': 'qualiclip',
+        },
+        'metric_mode': 'NR',
+        'score_range': '0, 1',
+    },
+
+    'qualiclip+': {
+        'metric_opts': {
+            'type': 'QualiCLIP',
+            'model_type': 'qualiclip+',
+            'pretrained': True,
+        },
+        'metric_mode': 'NR',
+        'score_range': '0, 1',
+    },
+
+    'qualiclip+-clive': {
+        'metric_opts': {
+            'type': 'QualiCLIP',
+            'model_type': 'qualiclip+-clive',
+            'pretrained': True,
+        },
+        'metric_mode': 'NR',
+        'score_range': '0, 1',
+    },
+
+    'qualiclip+-flive': {
+        'metric_opts': {
+            'type': 'QualiCLIP',
+            'model_type': 'qualiclip+-flive',
+            'pretrained': True,
+        },
+        'metric_mode': 'NR',
+        'score_range': '0, 1',
+    },
+
+    'qualiclip+-spaq': {
+        'metric_opts': {
+            'type': 'QualiCLIP',
+            'model_type': 'qualiclip+-spaq',
+            'pretrained': True,
+        },
+        'metric_mode': 'NR',
+        'score_range': '0, 1',
+    },
 })
