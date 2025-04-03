@@ -471,7 +471,7 @@ class YOLOv8Thread(QThread,BasePredictor):
             if len(self.categories) == 0 or (filtered and pred is not None):
                 # categories가 비어 있거나 필터링된 결과가 있는 경우: 원본 pred 사용
                 pred[:, :4] = ops.scale_boxes(img.shape[2:], pred[:, :4], orig_img.shape)
-                results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred))
+                results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=pred[:, :6]))
             else:
                 # 필터링된 결과가 없는 경우: 원본 이미지를 그대로 사용
                 results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=None))
