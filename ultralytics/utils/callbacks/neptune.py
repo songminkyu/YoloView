@@ -1,6 +1,5 @@
 # Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
 
-
 from ultralytics.utils import LOGGER, SETTINGS, TESTS_RUNNING
 
 try:
@@ -84,7 +83,7 @@ def on_pretrain_routine_start(trainer) -> None:
         )
         run["Configuration/Hyperparameters"] = {k: "" if v is None else v for k, v in vars(trainer.args).items()}
     except Exception as e:
-        LOGGER.warning(f"WARNING ⚠️ NeptuneAI installed but not initialized correctly, not logging this run. {e}")
+        LOGGER.warning(f"NeptuneAI installed but not initialized correctly, not logging this run. {e}")
 
 
 def on_train_epoch_end(trainer) -> None:

@@ -76,11 +76,11 @@ class DFL(nn.Module):
 
 
 class Proto(nn.Module):
-    """YOLOv8 mask Proto module for segmentation models."""
+    """Ultralytics YOLO models mask Proto module for segmentation models."""
 
     def __init__(self, c1, c_=256, c2=32):
         """
-        Initialize the YOLOv8 mask Proto module with specified number of protos and masks.
+        Initialize the Ultralytics YOLO models mask Proto module with specified number of protos and masks.
 
         Args:
             c1 (int): Input channels.
@@ -422,7 +422,7 @@ class C3Ghost(C3):
 
 
 class GhostBottleneck(nn.Module):
-    """Ghost Bottleneck https://github.com/huawei-noah/ghostnet."""
+    """Ghost Bottleneck https://github.com/huawei-noah/Efficient-AI-Backbones."""
 
     def __init__(self, c1, c2, k=3, s=1):
         """
@@ -603,7 +603,7 @@ class MaxSigmoidAttnBlock(nn.Module):
         bs, _, h, w = x.shape
 
         guide = self.gl(guide)
-        guide = guide.view(bs, -1, self.nh, self.hc)
+        guide = guide.view(bs, guide.shape[1], self.nh, self.hc)
         embed = self.ec(x) if self.ec is not None else x
         embed = embed.view(bs, self.nh, self.hc, h, w)
 

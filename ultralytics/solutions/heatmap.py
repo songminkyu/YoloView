@@ -45,7 +45,7 @@ class Heatmap(ObjectCounter):
             self.initialize_region()
 
         # Store colormap
-        self.colormap = cv2.COLORMAP_PARULA if self.CFG["colormap"] is None else self.CFG["colormap"]
+        self.colormap = self.CFG["colormap"]
         self.heatmap = None
 
     def heatmap_effect(self, box):
@@ -100,12 +100,11 @@ class Heatmap(ObjectCounter):
                 self.annotator.draw_region(reg_pts=self.region, color=(104, 0, 123), thickness=self.line_width * 2)
                 self.store_tracking_history(track_id, box)  # Store track history
                 self.store_classwise_counts(cls)  # Store classwise counts in dict
-                current_centroid = ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2)
                 # Get previous position if available
                 prev_position = None
                 if len(self.track_history[track_id]) > 1:
                     prev_position = self.track_history[track_id][-2]
-                self.count_objects(current_centroid, track_id, prev_position, cls)  # Perform object counting
+                self.count_objects(self.track_history[track_id][-1], track_id, prev_position, cls)  # object counting
 
         plot_im = self.annotator.result()
         if self.region is not None:
