@@ -1,4 +1,4 @@
-# YoloView - Pyside6 기반 -  YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / YOLOv12 / RTDETR / SAM / MobileSAM GUI
+# YoloView - Pyside6 기반 -  YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / YOLOv12 / RTDETR / SAM / MobileSAM / PP-OCR GUI
 
 ## 소개
 
@@ -27,8 +27,8 @@
 - [x] 통계치 개선 및 고도화
 - [x] Labal 저장
 - [x] Image Navigation Controls 추가 (<<,< ,>, >>)
-- [ ] 정확성을 위한 큐레이팅(균형 잡힌 컴퓨터 비전 데이터셋 구축) 
-- [ ] Thumbnail view & Filter (우측 클래스별 필터 기능 연동)
+- [x] 정확성을 위한 큐레이팅(균형 잡힌 컴퓨터 비전 데이터셋 구축) 
+- [x] Thumbnail view & Filter (우측 클래스별 필터 기능 연동)
 
 ## 함수
 

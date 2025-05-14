@@ -1,4 +1,4 @@
-# YoloView - YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / YOLOv12 / RTDETR / SAM / MobileSAM / GUI based on Pyside6
+# YoloView - YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / YOLOv12 / RTDETR / SAM / MobileSAM / PP-OCR GUI based on Pyside6
 
 ## Introduction
 
