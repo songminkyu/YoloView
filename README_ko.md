@@ -2,7 +2,7 @@
 
 ## 소개
 
-***YoloView***는 Ultralytics 기반의 `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `YOLO12` `RT-DETR` 모델을 지원하는 사용자 인터페이스 (GUI) 애플리케이션 입니다.
+***YoloView***는 Ultralytics 기반의 `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLOv11` `YOLOv12` `RT-DETR` `SAM` `MobileSAM` `FastSAM` `PP-OCR` 모델을 지원하는 사용자 인터페이스 (GUI) 애플리케이션 입니다.
 
 <p align="center"> 
   <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/main/README.md"> English</a> &nbsp; | &nbsp; 한국어</a>
