@@ -21,6 +21,7 @@ class DetectionPredictor(BasePredictor):
         postprocess: Process raw model predictions into detection results.
         construct_results: Build Results objects from processed predictions.
         construct_result: Create a single Result object from a prediction.
+        get_obj_feats: Extract object features from the feature maps.
 
     Examples:
         >>> from ultralytics.utils import ASSETS
@@ -51,7 +52,7 @@ class DetectionPredictor(BasePredictor):
             >>> results = predictor.predict("path/to/image.jpg")
             >>> processed_results = predictor.postprocess(preds, img, orig_imgs)
         """
-        save_feats = getattr(self, "save_feats", False)
+        save_feats = getattr(self, "_feats", None) is not None
         preds = ops.non_max_suppression(
             preds,
             self.args.conf,
