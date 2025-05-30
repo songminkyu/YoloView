@@ -329,8 +329,15 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.used_model_name = self.new_model_name
         self.current_model_name = self.new_model_name
 
+
     def setup_source(self, source):
-        """Sets up source and inference mode."""
+        """
+           Set up source and inference mode.
+
+           Args:
+               source (str | Path | List[str] | List[Path] | List[np.ndarray] | np.ndarray | torch.Tensor):
+                   Source for inference.
+        """
         self.imgsz = check_imgsz(self.imgsz, stride=self.model.stride, min_dim=2)  # check image size
         self.transforms = (
             getattr(
@@ -346,6 +353,7 @@ class YOLOv8Thread(QThread,BasePredictor):
             batch=self.batchsize,
             vid_stride=self.vid_stride,
             buffer=self.stream_buffer,
+            channels=getattr(self.model, "ch", 3),
         )
         self.source_type = self.dataset.source_type
         if not getattr(self, "stream", True) and (

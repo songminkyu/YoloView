@@ -10,7 +10,7 @@ dependencies = [
     "huggingface-hub>=0.32.3",
     "image-quality>=1.2.7",
     "matplotlib>=3.10.3",
-    "opencv-python>=4.11.0.86",
+    "opencv-python==4.10.0.84",
     "paddleocr>=2.10.0",
     "paddlepaddle>=3.0.0",
     "pandas>=2.2.3",
