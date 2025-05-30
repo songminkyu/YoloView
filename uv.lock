@@ -1169,6 +1169,23 @@ wheels = [
 ]
 
 [[package]]
+name = "pycocotools"
+version = "2.0.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/66/89/a712c15863b4385089cd0d06de88bbcf60253c6684c3bb284e9cb645735d/pycocotools-2.0.9.tar.gz", hash = "sha256:ba82e550670aa1182a911fb3e5f0e83345432044438707bd52c2519cda16872a", size = 25172, upload-time = "2025-05-30T03:18:51.98Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/14/5b/1207a0844051339297b24183266a99e24dbca3add38fb56b776c87152957/pycocotools-2.0.9-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:f1576acbe35da77eec80e98571cbbf9dd98b5ed8bf6f9dde5a0705acd3fdc5e0", size = 152447, upload-time = "2025-05-30T03:18:35.085Z" },
+    { url = "https://files.pythonhosted.org/packages/08/10/b24f106b5d4b191c1e231fed086e99ef8aada6113c15dc3472974c470030/pycocotools-2.0.9-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:15fef0a6ceb53d4818ff402bcd9fe7446dee4296fe9bf44f04be46bac385ef21", size = 460097, upload-time = "2025-05-30T03:18:37.442Z" },
+    { url = "https://files.pythonhosted.org/packages/85/aa/134e254d43b2afc3f4b1e81a0499f1f944260677a08fd9080bc5da153ef9/pycocotools-2.0.9-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7c937845c0f172e532bebcdd458eb6466d01dd8f42d2328120dfa32d5cf5c36b", size = 465527, upload-time = "2025-05-30T03:18:39.152Z" },
+    { url = "https://files.pythonhosted.org/packages/ca/2f/49e9524337749742c1c0dce8a3a837f0cbcf68529224226ca3bb49841887/pycocotools-2.0.9-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:813cca6a49c3c58ae95b6287dc23f32fa730b4f75c6f490ccff69b881f1866b0", size = 454963, upload-time = "2025-05-30T03:18:40.541Z" },
+    { url = "https://files.pythonhosted.org/packages/45/19/5a9a2d81b1cad50885a70e32bba1adf7e15ae1c7c8c59fe43f91aa346d4b/pycocotools-2.0.9-cp312-cp312-win_amd64.whl", hash = "sha256:5c56c06699b527cf65de78f8b486fb305cfe7d87c63f5170563abf6e4d98cb65", size = 78799, upload-time = "2025-05-30T03:18:41.901Z" },
+    { url = "https://files.pythonhosted.org/packages/75/32/83e702686113b4e9d90ff69b76e5876821cc736892733e06b81af03c2d25/pycocotools-2.0.9-cp312-cp312-win_arm64.whl", hash = "sha256:20f81ac9f10885d9a45561706193ecacb3e46e0ec9111557d8c969026da7b9ec", size = 66985, upload-time = "2025-05-30T03:18:43.067Z" },
+]
+
+[[package]]
 name = "pydantic"
 version = "2.11.5"
 source = { registry = "https://pypi.org/simple" }
@@ -4406,6 +4423,7 @@ dependencies = [
     { name = "pandas" },
     { name = "pillow" },
     { name = "pillow-heif" },
+    { name = "pycocotools" },
     { name = "pyside6" },
     { name = "pyside6-fluent-widgets", extra = ["full"] },
     { name = "pyyaml" },
@@ -4431,6 +4449,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pillow", specifier = ">=11.2.1" },
     { name = "pillow-heif", specifier = ">=0.22.0" },
+    { name = "pycocotools", specifier = ">=2.0.9" },
     { name = "pyside6", specifier = ">=6.9.0" },
     { name = "pyside6-fluent-widgets", extras = ["full"], specifier = ">=1.8.1" },
     { name = "pyyaml", specifier = ">=6.0.2" },

@@ -498,9 +498,14 @@ class YOLOv8Thread(QThread,BasePredictor):
             im /= 255  # 0 - 255 to 0.0 - 1.0
         return im
 
-    def inference(self, im, *args, **kwargs):
-        """Runs inference on a given image using the specified model and arguments."""
-        return self.model(im, augment=False, visualize=False, embed=False, *args, **kwargs)
+    def inference(self, im: torch.Tensor, *args, **kwargs):
+        """Run inference on a given image using the specified model and arguments."""
+        visualize = (
+            increment_path(self.save_dir / Path(self.batch[0][0]).stem, mkdir=True)
+            if self.args.visualize and (not self.source_type.tensor)
+            else False
+        )
+        return self.model(im, augment=self.args.augment, visualize=visualize, embed=self.args.embed, *args, **kwargs)
 
     def pre_transform(self, im):
         """
