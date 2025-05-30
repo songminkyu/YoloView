@@ -1,0 +1,29 @@
+[project]
+name = "yoloview"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "colorlog>=6.9.0",
+    "googletrans>=4.0.2",
+    "huggingface-hub>=0.32.3",
+    "image-quality>=1.2.7",
+    "matplotlib>=3.10.3",
+    "opencv-python>=4.11.0.86",
+    "paddleocr>=2.10.0",
+    "paddlepaddle>=3.0.0",
+    "pandas>=2.2.3",
+    "pillow>=11.2.1",
+    "pillow-heif>=0.22.0",
+    "pyside6>=6.9.0",
+    "pyside6-fluent-widgets[full]>=1.8.1",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.3",
+    "scikit-image>=0.25.2",
+    "torch>=2.7.0",
+    "torchaudio>=2.7.0",
+    "torchvision>=0.22.0",
+    "tqdm>=4.67.1",
+    "ultralytics>=8.3.146",
+]
