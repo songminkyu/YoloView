@@ -158,7 +158,6 @@ https://github.com/ultralytics/ultralytics/issues/8772
 ```shell
 pyinstaller --onefile --windowed --icon="images/jellybomb.ico" ^
 --collect-data=pyiqa ^
---collect-data=ultralytics ^
 --add-data="ultralytics/cfg/default.yaml;ultralytics/cfg" ^
 --add-data="ultralytics/cfg/solutions/default.yaml;ultralytics/cfg/solutions" ^
 --add-data="ui/YOLOSHOWUI_rc.py;ui" ^
@@ -175,7 +174,7 @@ main.py
 Next, once built, a main.exe will be created in the dist folder. Go to the top and copy the 'config', 'ptfiles' 'images' 
 folders and paste them under the dist folder.
 
-     └─dist      (Parent Folder)
+    └─dist      (Parent Folder)
     ├─  config  (folder)
     ├─  ptfiles (folder)
     ├─  images (folder)
