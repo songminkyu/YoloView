@@ -7,7 +7,6 @@ requires-python = ">=3.12"
 dependencies = [
     "colorlog>=6.9.0",
     "googletrans>=4.0.2",
-    "huggingface-hub>=0.32.3",
     "image-quality>=1.2.7",
     "matplotlib>=3.10.3",
     "opencv-python==4.11.0.86",
@@ -26,5 +25,5 @@ dependencies = [
     "torchaudio>=2.7.0",
     "torchvision>=0.22.0",
     "tqdm>=4.67.1",
-    "ultralytics==8.3.169",
+    "ultralytics>=8.3.169",
 ]
