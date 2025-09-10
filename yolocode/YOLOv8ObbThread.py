@@ -1,7 +1,7 @@
 import torch
 from yolocode.YOLOv8Thread import YOLOv8Thread
 from ultralytics.engine.results import Results
-from ultralytics.utils import ops
+from ultralytics.utils import ops, nms
 
 class YOLOv8ObbThread(YOLOv8Thread):
 
@@ -12,7 +12,7 @@ class YOLOv8ObbThread(YOLOv8Thread):
 
     def postprocess(self, preds, img, orig_imgs):
         """Post-processes predictions and returns a list of Results objects."""
-        preds = ops.non_max_suppression(
+        preds = nms.non_max_suppression(
             preds,
             self.conf_thres,
             self.iou_thres,

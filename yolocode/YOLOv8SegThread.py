@@ -1,6 +1,6 @@
 from yolocode.YOLOv8Thread import YOLOv8Thread
 from ultralytics.engine.results import Results
-from ultralytics.utils import ops
+from ultralytics.utils import ops, nms
 
 class YOLOv8SegThread(YOLOv8Thread):
 
@@ -12,7 +12,7 @@ class YOLOv8SegThread(YOLOv8Thread):
 
     def postprocess(self, preds, img, orig_imgs):
         """Applies non-max suppression and processes detections for each image in an input batch."""
-        p = ops.non_max_suppression(
+        p = nms.non_max_suppression(
             preds[0],
             self.conf_thres,
             self.iou_thres,

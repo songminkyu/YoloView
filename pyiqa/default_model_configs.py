@@ -362,6 +362,16 @@ DEFAULT_CONFIGS = OrderedDict(
             'lower_better': True,
             'score_range': '0, ~',
         },
+        # sFID used in: https://github.com/openai/guided-diffusion
+        'sfid': {
+            'metric_opts': {
+                'type': 'FID',
+                'dims': 768,
+            },
+            'metric_mode': 'NR',
+            'lower_better': True,
+            'score_range': '0, ~',
+        },
         'fid_dinov2': {
             'metric_opts': {
                 'type': 'FID',

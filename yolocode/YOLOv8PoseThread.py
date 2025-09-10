@@ -1,6 +1,6 @@
 from yolocode.YOLOv8Thread import YOLOv8Thread
 from ultralytics.engine.results import Results
-from ultralytics.utils import ops
+from ultralytics.utils import ops, nms
 
 
 class YOLOv8PoseThread(YOLOv8Thread):
@@ -12,7 +12,7 @@ class YOLOv8PoseThread(YOLOv8Thread):
 
     def postprocess(self, preds, img, orig_imgs):
         """Return detection results for a given input image or list of images."""
-        preds = ops.non_max_suppression(
+        preds = nms.non_max_suppression(
             preds,
             self.conf_thres,
             self.iou_thres,

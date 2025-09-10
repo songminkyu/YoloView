@@ -4,12 +4,14 @@ import numpy as np
 import time
 from yolocode.YOLOv8Thread import YOLOv8Thread
 from PIL import ImageFont, ImageDraw, Image
-from paddleocr import PaddleOCR, draw_ocr
-from paddleocr.paddleocr import MODEL_URLS
+from paddleocr import PaddleOCR
+# from paddleocr.paddleocr import MODEL_URLS
 from utils.image_save import ImageSaver
 from pathlib import Path
 from googletrans import Translator
 import asyncio
+
+# https://www.paddleocr.ai/main/en/update/upgrade_notes.html
 
 class PdOCR:
     def __init__(self, lang: str = "korean", **kwargs):
@@ -17,24 +19,6 @@ class PdOCR:
         self._ocr = PaddleOCR(use_angle_cls=True,lang=self.lang)
         self.img_path = None
         self.ocr_result = {}
-
-    def get_available_langs(self):
-        langs_info = []
-
-        for idx, model_name in enumerate(list(MODEL_URLS['OCR'].keys())):
-            for lang in list(MODEL_URLS['OCR'][model_name]['rec'].keys()):
-                if lang not in langs_info:
-                    langs_info.append(lang)
-
-        print('Available Language : {}'.format(langs_info))
-
-    def get_available_models(self):
-        model_info = {}
-
-        for idx, model_name in enumerate(list(MODEL_URLS['OCR'].keys())):
-            model_info[model_name] = list(MODEL_URLS['OCR'][model_name]['rec'].keys())
-            print('#{} Model Vesion : [{}] - Language : {}'.format(idx + 1, model_name,
-                                                                   list(MODEL_URLS['OCR'][model_name]['rec'].keys())))
 
     def get_ocr_result(self):
         return self.ocr_result

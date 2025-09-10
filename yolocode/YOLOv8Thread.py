@@ -12,7 +12,7 @@ from ultralytics.data.augment import classify_transforms, LetterBox
 from ultralytics.data.utils import IMG_FORMATS, VID_FORMATS
 from ultralytics.engine.predictor import STREAM_WARNING
 from ultralytics.engine.results import Results
-from ultralytics.utils import callbacks, ops, LOGGER, colorstr, MACOS, WINDOWS,DEFAULT_CFG
+from ultralytics.utils import callbacks, ops, nms, LOGGER, colorstr, MACOS, WINDOWS,DEFAULT_CFG
 from collections import defaultdict
 from ultralytics.utils.files import increment_path
 from ultralytics.utils.checks import check_imgsz
@@ -405,7 +405,7 @@ class YOLOv8Thread(QThread,BasePredictor):
             track_result = model.track(orig_imgs, persist=True)
 
             # Set the track preds
-            preds = ops.non_max_suppression(preds,
+            preds = nms.non_max_suppression(preds,
                                             self.conf_thres,
                                             self.iou_thres,
                                             agnostic=self.agnostic_nms,
@@ -456,7 +456,7 @@ class YOLOv8Thread(QThread,BasePredictor):
     def postprocess(self, preds, img, orig_imgs):
         """Post-processes predictions and returns a list of Results objects."""
         # Non-max suppression
-        preds = ops.non_max_suppression(
+        preds = nms.non_max_suppression(
             preds,
             self.conf_thres,
             self.iou_thres,

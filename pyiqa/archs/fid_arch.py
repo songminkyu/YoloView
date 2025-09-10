@@ -81,8 +81,10 @@ class ResizeDataset(torch.utils.data.Dataset):
             img_t = interpolate_bilinear_2d_like_tensorflow1x(
                 img_t.unsqueeze(0), size=self.size, align_corners=False
             )
+            img_t = img_t.squeeze(0)
         else:
             img_np = np.array(img_pil).clip(0, 255)
+            img_t = torch.from_numpy(img_np).permute(2, 0, 1).float()
             img_t = nn.functional.interpolate(
                 img_t.unsqueeze(0), size=self.size, mode='bilinear', align_corners=False
             )
@@ -297,8 +299,16 @@ def get_folder_features(
                     batch = batch / 255
                     normalize_input = True
 
-                feat = model(batch.to(device), False, normalize_input)
-                feat = feat[0].squeeze(-1).squeeze(-1).detach().cpu().numpy()
+                feat = model(batch.to(device), False, normalize_input)[0]
+                if feat.shape[-1] == 1 or len(feat.shape) == 2:
+                    feat = feat.reshape(feat.shape[0], feat.shape[1]).detach().cpu().numpy()
+                else:
+                    # calculate sFID
+                    # use only the first 7 channels to get feature of dim 2023
+                    # References:
+                    #   - https://github.com/openai/guided-diffusion
+                    #   - Generating images with sparse representations, https://arxiv.org/pdf/2103.03841
+                    feat = feat[:, :7].reshape(feat.shape[0], -1).detach().cpu().numpy()
             else:
                 feat = model(batch.to(device))
                 feat = feat.detach().cpu().numpy()
