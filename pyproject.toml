@@ -12,6 +12,7 @@ dependencies = [
     "opencv-python==4.11.0.86",
     "paddleocr>=3.2.0",
     "paddlepaddle>=3.2.0",
+    "paddlex[base]>=3.2.1",
     "pandas>=2.2.3",
     "pillow>=11.2.1",
     "pillow-heif>=0.22.0",
