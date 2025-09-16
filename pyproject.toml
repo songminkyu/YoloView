@@ -26,6 +26,6 @@ dependencies = [
     "torchaudio>=2.8.0",
     "torchvision>=0.23.0",
     "tqdm>=4.67.1",
-    "ultralytics>=8.3.197",
+    "ultralytics>=8.3.200",
     "huggingface-hub>=0.34.4",
 ]
