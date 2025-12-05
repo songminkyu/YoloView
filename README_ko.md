@@ -88,8 +88,8 @@ GPU: NVIDIA GeForce GTX 1660Ti 6GB
 python 버전 3.11가 장착된 가상 환경을 생성한 다음 환경을 활성화합니다.
 
 ```shell
-conda create -n yoloshow python=3.11
-conda activate yoloshow
+conda create -n yoloview python>=3.12
+conda activate yoloview
 ```
 
 ### 2. Pytorch frame 설치

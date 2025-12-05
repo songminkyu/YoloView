@@ -86,8 +86,8 @@ GPU : NVIDIA GeForce GTX 1660Ti 6GB
 create a virtual environment equipped with python version 3.11, then activate environment. 
 
 ```shell
-conda create -n yoloshow python>=3.11
-conda activate yoloshow
+conda create -n yoloview python>=3.12
+conda activate yoloview
 ```
 
 ### 2. Install Pytorch frame 
