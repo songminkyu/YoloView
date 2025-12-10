@@ -16,7 +16,11 @@ import asyncio
 class PdOCR:
     def __init__(self, lang: str = "korean", **kwargs):
         self.lang = lang
-        self._ocr = PaddleOCR(use_angle_cls=True, lang=self.lang)
+        self._ocr = PaddleOCR(
+            use_doc_orientation_classify=False,
+            use_doc_unwarping=False,
+            use_textline_orientation=False,
+            lang=self.lang)
         self.img_path = None
         self.ocr_result = {}
 
@@ -33,17 +37,10 @@ class PdOCR:
 
         # PaddleOCR 3.3.x 결과 구조 처리
         if result and len(result) > 0:
-            if isinstance(result[0], dict):
-                # 3.3.x 버전 형식
-                self.ocr_result = result[0]
-                if 'rec_texts' in self.ocr_result:
-                    ocr_text = self.ocr_result['rec_texts']
-            elif isinstance(result[0], list):
-                # 2.10 버전 형식 (하위 호환성)
-                self.ocr_result = result[0]
-                if self.ocr_result:
-                    for r in result[0]:
-                        ocr_text.append(r[1][0])
+            # 3.3.x 버전 형식
+            self.ocr_result = result[0]
+            if 'rec_texts' in self.ocr_result:
+                ocr_text = self.ocr_result['rec_texts']
 
         if not ocr_text:
             ocr_text = ["No text detected."]
@@ -56,51 +53,44 @@ class PdOCR:
         image = cv2.imread(self.img_path)
         roi_image = image.copy()
 
-        # PaddleOCR 3.3.x 결과 구조 처리
-        if isinstance(self.ocr_result, dict):
-            # 3.3.x 버전 형식
-            boxes = self.ocr_result.get('rec_boxes', [])
-            texts = self.ocr_result.get('rec_texts', [])
+        boxes = []
+        texts = []
 
-            for box, text in zip(boxes, texts):
-                # Check for flat box format [xmin, ymin, xmax, ymax]
+        # PaddleOCR 3.3.x (Dict format)
+        # 3.3.x format: 'rec_boxes' is usually [[x1, y1, x2, y2], ...] flat and rec_polys[[x,y], ...] int
+        # But sometimes can be different depending on config (cls=True vs return_word_box=True)
+        # We normalize everything to 4 points here.
+        raw_boxes = self.ocr_result.get('rec_polys', [])
+        texts = self.ocr_result.get('rec_texts', [])
+
+        for box in raw_boxes:
+            # If box is flatten [xmin, ymin, xmax, ymax]
+            if len(box) == 4 and isinstance(box[0], (int, float, np.number)):
                 xmin, ymin, xmax, ymax = int(box[0]), int(box[1]), int(box[2]), int(box[3])
-                topLeft = (xmin, ymin)
-                topRight = (xmax, ymin)
-                bottomRight = (xmax, ymax)
-                bottomLeft = (xmin, ymax)
+                boxes.append([(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)])
+            # If box is points [[x1,y1], [x2,y2]...]
+            elif len(box) == 4 and len(box[0]) == 2:
+                boxes.append([(int(p[0]), int(p[1])) for p in box])
+            else:
+                # Fallback or skip
+                pass
 
-                cv2.line(roi_image, topLeft, topRight, (0, 255, 0), 2)
-                cv2.line(roi_image, topRight, bottomRight, (0, 255, 0), 2)
-                cv2.line(roi_image, bottomRight, bottomLeft, (0, 255, 0), 2)
-                cv2.line(roi_image, bottomLeft, topLeft, (0, 255, 0), 2)
-                roi_image = self.put_text(roi_image, text, topLeft[0], topLeft[1] - 20, font_size=17)
+        # Draw
+        for box, text in zip(boxes, texts):
+            topLeft = box[0]
+            topRight = box[1]
+            bottomRight = box[2]
+            bottomLeft = box[3]
 
-        elif isinstance(self.ocr_result, list):
-            # 2.10 버전 형식 (하위 호환성)
-            for text_result in self.ocr_result:
-                text = text_result[1][0]
-                tlX = int(text_result[0][0][0])
-                tlY = int(text_result[0][0][1])
-                trX = int(text_result[0][1][0])
-                trY = int(text_result[0][1][1])
-                brX = int(text_result[0][2][0])
-                brY = int(text_result[0][2][1])
-                blX = int(text_result[0][3][0])
-                blY = int(text_result[0][3][1])
+            cv2.line(roi_image, topLeft, topRight, (255, 0, 0), 2)
+            cv2.line(roi_image, topRight, bottomRight, (255, 0, 0), 2)
+            cv2.line(roi_image, bottomRight, bottomLeft, (255, 0, 0), 2)
+            cv2.line(roi_image, bottomLeft, topLeft, (255, 0, 0), 2)
 
-                pts = ((tlX, tlY), (trX, trY), (brX, brY), (blX, blY))
-
-                topLeft = pts[0]
-                topRight = pts[1]
-                bottomRight = pts[2]
-                bottomLeft = pts[3]
-
-                cv2.line(roi_image, topLeft, topRight, (0, 255, 0), 2)
-                cv2.line(roi_image, topRight, bottomRight, (0, 255, 0), 2)
-                cv2.line(roi_image, bottomRight, bottomLeft, (0, 255, 0), 2)
-                cv2.line(roi_image, bottomLeft, topLeft, (0, 255, 0), 2)
-                roi_image = self.put_text(roi_image, text, topLeft[0], topLeft[1] - 20, font_size=17)
+            # Dynamic font size logic can be inside put_text or calculated here.
+            # Currently put_text uses fixed font_size=17 per user's last edit or passed font_size=22 default
+            # User's edit passed font_size=17.
+            roi_image = self.put_text(roi_image, text, topLeft[0], topLeft[1] - 20, font_size=17)
 
         return image, roi_image
 
