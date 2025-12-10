@@ -16,7 +16,7 @@ import asyncio
 class PdOCR:
     def __init__(self, lang: str = "korean", **kwargs):
         self.lang = lang
-        self._ocr = PaddleOCR(use_angle_cls=True,lang=self.lang)
+        self._ocr = PaddleOCR(use_angle_cls=True, lang=self.lang)
         self.img_path = None
         self.ocr_result = {}
 
@@ -29,14 +29,24 @@ class PdOCR:
     def run_ocr(self, img_path: str):
         self.img_path = img_path
         ocr_text = []
-        result = self._ocr.ocr(img_path, cls=True)
-        self.ocr_result = result[0]
+        result = self._ocr.ocr(img_path)
 
-        if self.ocr_result:
-            for r in result[0]:
-                ocr_text.append(r[1][0])
-        else:
-            ocr_text = "No text detected."
+        # PaddleOCR 3.1.x 결과 구조 처리
+        if result and len(result) > 0:
+            if isinstance(result[0], dict):
+                # 3.1.x 버전 형식
+                self.ocr_result = result[0]
+                if 'rec_texts' in self.ocr_result:
+                    ocr_text = self.ocr_result['rec_texts']
+            elif isinstance(result[0], list):
+                # 2.10 버전 형식 (하위 호환성)
+                self.ocr_result = result[0]
+                if self.ocr_result:
+                    for r in result[0]:
+                        ocr_text.append(r[1][0])
+
+        if not ocr_text:
+            ocr_text = ["No text detected."]
 
         image, roi_image = self.show_img_with_ocr()
 
@@ -46,29 +56,52 @@ class PdOCR:
         image = cv2.imread(self.img_path)
         roi_image = image.copy()
 
-        for text_result in self.ocr_result:
-            text = text_result[1][0]
-            tlX = int(text_result[0][0][0])
-            tlY = int(text_result[0][0][1])
-            trX = int(text_result[0][1][0])
-            trY = int(text_result[0][1][1])
-            brX = int(text_result[0][2][0])
-            brY = int(text_result[0][2][1])
-            blX = int(text_result[0][3][0])
-            blY = int(text_result[0][3][1])
+        # PaddleOCR 3.1.x 결과 구조 처리
+        if isinstance(self.ocr_result, dict):
+            # 3.1.x 버전 형식
+            boxes = self.ocr_result.get('rec_polys', [])
+            texts = self.ocr_result.get('rec_texts', [])
 
-            pts = ((tlX, tlY), (trX, trY), (brX, brY), (blX, blY))
+            for box, text in zip(boxes, texts):
+                # box는 [[x1,y1], [x2,y2], [x3,y3], [x4,y4]] 형태
+                pts = [(int(point[0]), int(point[1])) for point in box]
 
-            topLeft = pts[0]
-            topRight = pts[1]
-            bottomRight = pts[2]
-            bottomLeft = pts[3]
+                topLeft = pts[0]
+                topRight = pts[1]
+                bottomRight = pts[2]
+                bottomLeft = pts[3]
 
-            cv2.line(roi_image, topLeft, topRight, (0, 255, 0), 2)
-            cv2.line(roi_image, topRight, bottomRight, (0, 255, 0), 2)
-            cv2.line(roi_image, bottomRight, bottomLeft, (0, 255, 0), 2)
-            cv2.line(roi_image, bottomLeft, topLeft, (0, 255, 0), 2)
-            roi_image = self.put_text(roi_image, text, topLeft[0], topLeft[1] - 20, font_size=17)
+                cv2.line(roi_image, topLeft, topRight, (0, 255, 0), 2)
+                cv2.line(roi_image, topRight, bottomRight, (0, 255, 0), 2)
+                cv2.line(roi_image, bottomRight, bottomLeft, (0, 255, 0), 2)
+                cv2.line(roi_image, bottomLeft, topLeft, (0, 255, 0), 2)
+                roi_image = self.put_text(roi_image, text, topLeft[0], topLeft[1] - 20, font_size=17)
+
+        elif isinstance(self.ocr_result, list):
+            # 2.10 버전 형식 (하위 호환성)
+            for text_result in self.ocr_result:
+                text = text_result[1][0]
+                tlX = int(text_result[0][0][0])
+                tlY = int(text_result[0][0][1])
+                trX = int(text_result[0][1][0])
+                trY = int(text_result[0][1][1])
+                brX = int(text_result[0][2][0])
+                brY = int(text_result[0][2][1])
+                blX = int(text_result[0][3][0])
+                blY = int(text_result[0][3][1])
+
+                pts = ((tlX, tlY), (trX, trY), (brX, brY), (blX, blY))
+
+                topLeft = pts[0]
+                topRight = pts[1]
+                bottomRight = pts[2]
+                bottomLeft = pts[3]
+
+                cv2.line(roi_image, topLeft, topRight, (0, 255, 0), 2)
+                cv2.line(roi_image, topRight, bottomRight, (0, 255, 0), 2)
+                cv2.line(roi_image, bottomRight, bottomLeft, (0, 255, 0), 2)
+                cv2.line(roi_image, bottomLeft, topLeft, (0, 255, 0), 2)
+                roi_image = self.put_text(roi_image, text, topLeft[0], topLeft[1] - 20, font_size=17)
 
         return image, roi_image
 
@@ -77,9 +110,8 @@ class PdOCR:
             color_coverted = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image = Image.fromarray(color_coverted)
 
-        font_path=os.path.join(os.getcwd(),'fonts','SourceHanSansSC-VF.ttf')
+        font_path = os.path.join(os.getcwd(), 'fonts', 'SourceHanSansSC-VF.ttf')
         image_font = ImageFont.truetype(font_path, font_size)
-        font = ImageFont.load_default()
         draw = ImageDraw.Draw(image)
 
         draw.text((x, y), text, font=image_font, fill=color)
