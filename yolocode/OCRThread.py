@@ -31,10 +31,10 @@ class PdOCR:
         ocr_text = []
         result = self._ocr.ocr(img_path)
 
-        # PaddleOCR 3.1.x 결과 구조 처리
+        # PaddleOCR 3.3.x 결과 구조 처리
         if result and len(result) > 0:
             if isinstance(result[0], dict):
-                # 3.1.x 버전 형식
+                # 3.3.x 버전 형식
                 self.ocr_result = result[0]
                 if 'rec_texts' in self.ocr_result:
                     ocr_text = self.ocr_result['rec_texts']
@@ -56,20 +56,19 @@ class PdOCR:
         image = cv2.imread(self.img_path)
         roi_image = image.copy()
 
-        # PaddleOCR 3.1.x 결과 구조 처리
+        # PaddleOCR 3.3.x 결과 구조 처리
         if isinstance(self.ocr_result, dict):
-            # 3.1.x 버전 형식
-            boxes = self.ocr_result.get('rec_polys', [])
+            # 3.3.x 버전 형식
+            boxes = self.ocr_result.get('rec_boxes', [])
             texts = self.ocr_result.get('rec_texts', [])
 
             for box, text in zip(boxes, texts):
-                # box는 [[x1,y1], [x2,y2], [x3,y3], [x4,y4]] 형태
-                pts = [(int(point[0]), int(point[1])) for point in box]
-
-                topLeft = pts[0]
-                topRight = pts[1]
-                bottomRight = pts[2]
-                bottomLeft = pts[3]
+                # Check for flat box format [xmin, ymin, xmax, ymax]
+                xmin, ymin, xmax, ymax = int(box[0]), int(box[1]), int(box[2]), int(box[3])
+                topLeft = (xmin, ymin)
+                topRight = (xmax, ymin)
+                bottomRight = (xmax, ymax)
+                bottomLeft = (xmin, ymax)
 
                 cv2.line(roi_image, topLeft, topRight, (0, 255, 0), 2)
                 cv2.line(roi_image, topRight, bottomRight, (0, 255, 0), 2)
@@ -113,6 +112,10 @@ class PdOCR:
         font_path = os.path.join(os.getcwd(), 'fonts', 'SourceHanSansSC-VF.ttf')
         image_font = ImageFont.truetype(font_path, font_size)
         draw = ImageDraw.Draw(image)
+
+        # Draw background rectangle
+        text_bbox = draw.textbbox((x, y), text, font=image_font)
+        draw.rectangle(text_bbox, fill=(255, 255, 255))
 
         draw.text((x, y), text, font=image_font, fill=color)
 
