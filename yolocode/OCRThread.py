@@ -82,10 +82,10 @@ class PdOCR:
             bottomRight = box[2]
             bottomLeft = box[3]
 
-            cv2.line(roi_image, topLeft, topRight, (255, 0, 0), 2)
-            cv2.line(roi_image, topRight, bottomRight, (255, 0, 0), 2)
-            cv2.line(roi_image, bottomRight, bottomLeft, (255, 0, 0), 2)
-            cv2.line(roi_image, bottomLeft, topLeft, (255, 0, 0), 2)
+            cv2.line(roi_image, topLeft, topRight, (255, 117, 0), 2)
+            cv2.line(roi_image, topRight, bottomRight, (255, 117, 0), 2)
+            cv2.line(roi_image, bottomRight, bottomLeft, (255, 117, 0), 2)
+            cv2.line(roi_image, bottomLeft, topLeft, (255, 117, 0), 2)
 
             # Dynamic font size logic can be inside put_text or calculated here.
             # Currently put_text uses fixed font_size=17 per user's last edit or passed font_size=22 default
@@ -94,7 +94,7 @@ class PdOCR:
 
         return image, roi_image
 
-    def put_text(self, image, text, x, y, color=(0, 255, 0), font_size=22):
+    def put_text(self, image, text, x, y, color=(124, 0, 213), font_size=22):
         if type(image) == np.ndarray:
             color_coverted = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image = Image.fromarray(color_coverted)
