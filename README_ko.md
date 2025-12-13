@@ -92,7 +92,7 @@ conda create -n yoloview python>=3.12
 conda activate yoloview
 ```
 
-### 2. Pytorch frame 설치
+### 2. Pytorch frame 설치 (CUDA)
 
 ```shell
 Windows: uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
