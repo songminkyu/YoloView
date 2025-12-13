@@ -93,8 +93,8 @@ conda activate yoloview
 ### 2. Install Pytorch frame 
 
 ```shell
-Windows: pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
-Linux: pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+Windows: uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+Linux: uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 ```
 
 Change other pytorch version in  [![Pytorch](https://img.shields.io/badge/PYtorch-test?style=flat&logo=pytorch&logoColor=white&color=orange)](https://pytorch.org/)
