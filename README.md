@@ -110,7 +110,7 @@ cd {the location of the program}
 Install dependency package of program 
 
 ```shell
-pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+ uv sync
 ```
 
 ultralytics root download
