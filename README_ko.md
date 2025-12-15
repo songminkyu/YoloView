@@ -112,7 +112,7 @@ cd {프로그램의 위치 program}
 프로그램의 종속성 패키지 설치
 
 ```shell
-pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+uv sync
 ```
 
 ultralytics 루트 다운로드
