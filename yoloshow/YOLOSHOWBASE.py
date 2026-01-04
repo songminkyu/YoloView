@@ -40,7 +40,7 @@ from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
 from yolocode.FastSAMThread import FastSAMThread
 # from yolocode.SAMThread import SAMThread
 # from yolocode.SAMv2Thread import SAMv2Thread
-from yolocode.SAMThread import SAMThread, SAMv2Thread
+from yolocode.SAMThread import SAMPredictorThread, SAM2PredictorThread
 from yolocode.BBoxValidThread import BBoxValidThread
 from yolocode.SegValidThread import SegValidThread
 from yolocode.YOLOv8ClsThread import YOLOv8ClsThread
@@ -80,8 +80,8 @@ MODEL_THREAD_CLASSES = {
     "yolov12-pose": YOLOv8PoseThread,
     "yolov12-cls": YOLOv8ClsThread,
     "fastsam": FastSAMThread,
-    "sam": SAMThread,
-    "samv2": SAMv2Thread,
+    "sam": SAMPredictorThread,
+    "samv2": SAM2PredictorThread,
     "bbox-valid": BBoxValidThread,
     "seg-valid": SegValidThread,
     "ocr": OCRThread

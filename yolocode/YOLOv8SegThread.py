@@ -9,6 +9,8 @@ class YOLOv8SegThread(YOLOv8Thread):
         self.data = 'YoloView/ultralytics/cfg/datasets/coco128-seg.yaml'  # data_dict
         self.task = 'segment'
         self.project = 'runs/segment'
+        self.compile = False
+        self.imgsz = (640, 640)
 
     def postprocess(self, preds, img, orig_imgs):
         """Applies non-max suppression and processes detections for each image in an input batch."""
@@ -21,7 +23,6 @@ class YOLOv8SegThread(YOLOv8Thread):
             nc=len(self.model.names),
             classes=self.classes,
         )
-
         p, has_filtered = self.filter_and_sort_preds(p, self.categories, epsilon=1e-5)
 
         if not isinstance(orig_imgs, list):  # input images are a torch.Tensor, not a list

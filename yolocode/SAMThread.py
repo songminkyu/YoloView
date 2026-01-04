@@ -39,7 +39,7 @@ from ultralytics.models.sam.amg import (
 )
 from ultralytics.models.sam.sam3.geometry_encoders import Prompt
 
-class SAMThread(YOLOv8SegThread):
+class SAMPredictorThread(YOLOv8SegThread):
     """Predictor class for SAM, enabling real-time image segmentation with promptable capabilities.
 
     This class extends BasePredictor and implements the Segment Anything Model (SAM) for advanced image segmentation
@@ -98,7 +98,7 @@ class SAMThread(YOLOv8SegThread):
         if overrides is None:
             overrides = {}
 
-        super(SAMThread, self).__init__()
+        super(SAMPredictorThread, self).__init__()
         overrides.update(dict(task="segment", mode="predict", batch=1))
         BasePredictor.__init__(self, cfg=cfg, overrides=overrides, _callbacks=_callbacks)
         self.retina_masks = True
@@ -370,7 +370,6 @@ class SAMThread(YOLOv8SegThread):
             >>> masks, scores, boxes = predictor.generate(im)
         """
         import torchvision  # scope for faster 'import ultralytics'
-
         self.segment_all = True
         ih, iw = im.shape[2:]
         crop_regions, layer_idxs = generate_crop_boxes((ih, iw), crop_n_layers, crop_overlap_ratio)
@@ -684,7 +683,7 @@ class SAMThread(YOLOv8SegThread):
         return pred_masks, pred_bboxes
 
 
-class SAMv2Thread(SAMThread):
+class SAM2PredictorThread(SAMPredictorThread):
     """SAM2Predictor class for advanced image segmentation using Segment Anything Model 2 architecture.
 
     This class extends the base Predictor class to implement SAM2-specific functionality for image segmentation tasks.
@@ -827,7 +826,7 @@ class SAMv2Thread(SAMThread):
         return pred_masks.flatten(0, 1), pred_scores.flatten(0, 1)
 
 
-class SAM2VideoPredictorThread(SAMv2Thread):
+class SAM2VideoPredictorThread(SAM2PredictorThread):
     """SAM2VideoPredictor to handle user interactions with videos and manage inference states.
 
     This class extends the functionality of SAM2Predictor to support video processing and maintains the state of
@@ -1855,7 +1854,7 @@ class SAM2VideoPredictorThread(SAMv2Thread):
                 obj_output_dict["non_cond_frame_outputs"].pop(f, None)
 
 
-class SAM2DynamicInteractivePredictorThread(SAMv2Thread):
+class SAM2DynamicInteractivePredictorThread(SAM2PredictorThread):
     """SAM2DynamicInteractivePredictor extends SAM2Predictor to support dynamic interactions with video frames or a
     sequence of images.
 
@@ -2188,7 +2187,7 @@ class SAM2DynamicInteractivePredictorThread(SAMv2Thread):
         }
 
 
-class SAM3PredictorThread(SAMv2Thread):
+class SAM3PredictorThread(SAM2PredictorThread):
     """Segment Anything Model 3 (SAM3) Interactive Predictor for image segmentation tasks."""
 
     _bb_feat_sizes = [

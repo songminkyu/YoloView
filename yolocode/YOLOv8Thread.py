@@ -69,7 +69,7 @@ class YOLOv8Thread(QThread, BasePredictor):
         self.track_model = None
         self.model = None
         self.data = 'YoloView/ultralytics/cfg/datasets/coco.yaml'  # data_dict
-        self.imgsz = tuple[640, 640]
+        self.imgsz = 640
         self.device = None
         self.dataset = None
         self.task = 'detect'
@@ -337,7 +337,10 @@ class YOLOv8Thread(QThread, BasePredictor):
                   inference.
               stride (int, optional): Model stride for image size checking.
         """
-        self.imgsz = check_imgsz(self.args.imgsz, stride=stride or self.model.stride, min_dim=2)  # check image size
+        if self.imgsz is None:
+            self.imgsz = self.args.imgsz
+
+        self.imgsz = check_imgsz(self.imgsz, stride=stride or self.model.stride, min_dim=2)  # check image size
         self.transforms = (
             getattr(
                 self.model.model,
@@ -487,17 +490,21 @@ class YOLOv8Thread(QThread, BasePredictor):
 
         return results
 
-    def preprocess(self, im):
-        """
-        Prepares input image before inference.
+    def preprocess(self, im: torch.Tensor | list[np.ndarray]) -> torch.Tensor:
+        """Prepare input image before inference.
 
         Args:
-            im (torch.Tensor | List(np.ndarray)): BCHW for tensor, [(HWC) x B] for list.
+            im (torch.Tensor | list[np.ndarray]): Images of shape (N, 3, H, W) for tensor, [(H, W, 3) x N] for list.
+
+        Returns:
+            (torch.Tensor): Preprocessed image tensor of shape (N, 3, H, W).
         """
         not_tensor = not isinstance(im, torch.Tensor)
         if not_tensor:
             im = np.stack(self.pre_transform(im))
-            im = im[..., ::-1].transpose((0, 3, 1, 2))  # BGR to RGB, BHWC to BCHW, (n, 3, h, w)
+            if im.shape[-1] == 3:
+                im = im[..., ::-1]  # BGR to RGB
+            im = im.transpose((0, 3, 1, 2))  # BHWC to BCHW, (n, 3, h, w)
             im = np.ascontiguousarray(im)  # contiguous
             im = torch.from_numpy(im)
 
@@ -579,8 +586,8 @@ class YOLOv8Thread(QThread, BasePredictor):
         self.plotted_img = result.plot(**plot_args)
 
         # track 모드에서 라인 이미지 생성
-        self.im = self.plotted_img
         if self.track_mode is True and self.track_pointlist:
+            self.im = self.plotted_img
             for points in self.track_pointlist:
                 cv2.polylines(self.im, [points], isClosed=False, color=(203, 224, 252), thickness=5)
 
