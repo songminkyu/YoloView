@@ -24,7 +24,7 @@ from ultralytics.cfg import get_cfg, get_save_dir
 from utils.image_save import ImageSaver
 from concurrent.futures import ThreadPoolExecutor
 
-class YOLOv8Thread(QThread,BasePredictor):
+class YOLOv8Thread(QThread, BasePredictor):
     # 입출력 메시지
     send_input = Signal(np.ndarray)
     send_output = Signal(np.ndarray)
@@ -69,7 +69,7 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.track_model = None
         self.model = None
         self.data = 'YoloView/ultralytics/cfg/datasets/coco.yaml'  # data_dict
-        self.imgsz = 640
+        self.imgsz = tuple[640, 640]
         self.device = None
         self.dataset = None
         self.task = 'detect'
@@ -330,15 +330,14 @@ class YOLOv8Thread(QThread,BasePredictor):
         self.current_model_name = self.new_model_name
 
 
-    def setup_source(self, source):
+    def setup_source(self, source, stride: int | None = None):
+        """Set up source and inference mode.
+          Args:
+              source (str | Path | list[str] | list[Path] | list[np.ndarray] | np.ndarray | torch.Tensor): Source for
+                  inference.
+              stride (int, optional): Model stride for image size checking.
         """
-           Set up source and inference mode.
-
-           Args:
-               source (str | Path | List[str] | List[Path] | List[np.ndarray] | np.ndarray | torch.Tensor):
-                   Source for inference.
-        """
-        self.imgsz = check_imgsz(self.imgsz, stride=self.model.stride, min_dim=2)  # check image size
+        self.imgsz = check_imgsz(self.args.imgsz, stride=stride or self.model.stride, min_dim=2)  # check image size
         self.transforms = (
             getattr(
                 self.model.model,
@@ -362,7 +361,9 @@ class YOLOv8Thread(QThread,BasePredictor):
                 or len(self.dataset) > 1000  # many images
                 or any(getattr(self.dataset, "video_flag", [False]))
         ):  # videos
-            LOGGER.warning(STREAM_WARNING)
+            import torchvision  # noqa (import here triggers torchvision NMS use in nms.py)
+            if not getattr(self, "stream", True):  # videos
+                LOGGER.warning(STREAM_WARNING)
         self.vid_path = [None] * self.dataset.bs
         self.vid_writer = [None] * self.dataset.bs
         self.vid_frame = [None] * self.dataset.bs

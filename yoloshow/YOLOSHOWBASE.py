@@ -38,8 +38,9 @@ from yolocode.RTDETRThread import RTDETRThread
 from yolocode.YOLOv8PoseThread import YOLOv8PoseThread
 from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
 from yolocode.FastSAMThread import FastSAMThread
-from yolocode.SAMThread import SAMThread
-from yolocode.SAMv2Thread import SAMv2Thread
+# from yolocode.SAMThread import SAMThread
+# from yolocode.SAMv2Thread import SAMv2Thread
+from yolocode.SAM3Thread import SAMThread, SAMv2Thread
 from yolocode.BBoxValidThread import BBoxValidThread
 from yolocode.SegValidThread import SegValidThread
 from yolocode.YOLOv8ClsThread import YOLOv8ClsThread
