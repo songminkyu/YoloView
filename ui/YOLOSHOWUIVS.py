@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QDoubleSpinBox, QFrame,
 
 from qfluentwidgets import ComboBox
 from ui.utils.UpdateFrame import DoubleClickQFrame
-from ui.utils.CustomComboBox import CustomCheckBoxWidget
+from ui.utils.CustomComboBox import CategoriesCheckBoxWidget
 from . import YOLOSHOWUI_rc
 
 class Ui_MainWindow(object):
@@ -1720,7 +1720,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_21.addWidget(self.model_box1)
 
-        self.category_box1 = CustomCheckBoxWidget(self.ModelBOX1)
+        self.category_box1 = CategoriesCheckBoxWidget(self.ModelBOX1)
         self.category_box1.setObjectName(u"category_box")
         self.category_box1.setMinimumSize(QSize(240, 22))
         self.category_box1.setMaximumSize(QSize(240, 20))
@@ -1847,7 +1847,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_35.addWidget(self.model_box2)
 
-        self.category_box2 = CustomCheckBoxWidget(self.ModelBOX2)
+        self.category_box2 = CategoriesCheckBoxWidget(self.ModelBOX2)
         self.category_box2.setObjectName(u"category_box")
         self.category_box2.setMinimumSize(QSize(240, 22))
         self.category_box2.setMaximumSize(QSize(240, 20))

@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QFontMetrics
 from qfluentwidgets import ComboBox
 
-class CustomCheckBoxWidget(ComboBox):
+class CategoriesCheckBoxWidget(ComboBox):
     def __init__(self, parent=None):
         super().__init__(parent)
 
