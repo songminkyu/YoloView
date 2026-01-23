@@ -1,6 +1,6 @@
 # YOLO Detection System with Kafka
 
-프로덕션 레벨의 YOLO 객체 탐지 시스템 - Kafka + FastAPI + PostgreSQL
+프로덕션 레벨의 YOLO 객체 탐지 시스템 - Kafka + FastAPI + PostgreSQL + ELK
 
 ## 📋 시스템 구성
 
