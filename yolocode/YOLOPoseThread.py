@@ -12,16 +12,7 @@ class YOLOPoseThread(YOLOBaseThread):
 
     def postprocess(self, preds, img, orig_imgs):
         """Return detection results for a given input image or list of images."""
-        p = nms.non_max_suppression(
-            preds,
-            self.conf_thres,
-            self.iou_thres,
-            agnostic=self.agnostic_nms,
-            max_det=self.max_det,
-            nc = len(self.model.names),
-            classes=self.classes,
-            end2end=getattr(self.model, "end2end", False),
-        )
+        p = super().non_max_suppression(preds)
 
         # 필터링된 preds 및 필터링 여부 리스트 가져오기
         p, has_filtered = self.filter_and_sort_preds(p, self.categories, epsilon=1e-5)

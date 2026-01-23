@@ -463,19 +463,14 @@ class YOLOBaseThread(QThread, BasePredictor):
     def postprocess(self, preds, img, orig_imgs, **kwargs):
         """Post-processes predictions and returns a list of Results objects."""
         # Non-max suppression
-        nc = kwargs.get('nc', len(self.model.names) if hasattr(self.model, 'names') else 0)
-        end2end = kwargs.get('end2end', getattr(self.model.model, 'end2end', False) if hasattr(self.model, 'model') else False)
-        
-        preds = nms.non_max_suppression(
-            preds,
-            self.conf_thres,
-            self.iou_thres,
-            agnostic=self.agnostic_nms,
-            max_det=self.max_det,
-            classes=self.classes,
-            nc=nc,
-            end2end=end2end,
-        )
+
+        save_feats = getattr(self, "_feats", None) is not None
+
+        preds = self.non_max_suppression(preds)
+
+        if save_feats:
+            obj_feats = self.get_obj_feats(self._feats, preds[1])
+            preds = preds[0]
 
         # 필터링 및 정렬된 preds를 미리 생성
         preds, has_filtered = self.filter_and_sort_preds(preds, self.categories, epsilon=1e-5)
@@ -497,6 +492,20 @@ class YOLOBaseThread(QThread, BasePredictor):
                 results.append(Results(orig_img, path=img_path, names=self.model.names, boxes=None))
 
         return results
+
+    def non_max_suppression(self, preds):
+        preds = nms.non_max_suppression(
+            preds,
+            self.conf_thres,
+            self.iou_thres,
+            self.classes,
+            self.agnostic_nms,
+            max_det=self.max_det,
+            nc=0 if self.task == "detect" else len(self.model.names),
+            end2end=getattr(self.model, "end2end", False),
+            rotated=self.task == "obb",
+        )
+        return preds
 
     def preprocess(self, im: torch.Tensor | list[np.ndarray]) -> torch.Tensor:
         """Prepare input image before inference.

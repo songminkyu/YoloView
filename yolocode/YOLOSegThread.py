@@ -17,16 +17,8 @@ class YOLOSegThread(YOLOBaseThread):
         proto_preds = preds[0][1] if isinstance(preds[0], tuple) else preds[1]
         nms_inputs = preds[0][0] if isinstance(preds[0], tuple) else preds[0]
 
-        p = nms.non_max_suppression(
-            nms_inputs,
-            self.conf_thres,
-            self.iou_thres,
-            agnostic=self.agnostic_nms,
-            max_det=self.max_det,
-            nc=len(self.model.names),
-            classes=self.classes,
-            end2end=getattr(self.model, 'end2end', False),
-        )
+        p = super().non_max_suppression(nms_inputs)
+
         p, has_filtered = self.filter_and_sort_preds(p, self.categories, epsilon=1e-5)
 
         if not isinstance(orig_imgs, list):  # input images are a torch.Tensor, not a list
