@@ -5,6 +5,7 @@ glo._init()
 glo.set_value('yoloname', "yolov5 yolov8 yolov9 yolov9-seg yolov10 "
                             "yolo11 yolo11-seg yolo11-pose yolo11-cls yolo11-obb "
                             "yolo12 yolo12-seg yolo12-pose yolo12-cls yolo12-obb "
+                            "yolo26 yolo26-seg yolo26-pose yolo26-cls yolo26-obb "
                             "yolov5-seg yolov8-seg rtdetr yolov8-pose yolov8-obb yolov8-cls "
                             "fastsam sam samv2 bbox-valid seg-valid ocr ")
 from utils.logger import LoggerUtils
@@ -77,6 +78,11 @@ MODEL_THREAD_CLASSES = {
     "yolov12-obb": YOLOObbThread,
     "yolov12-pose": YOLOPoseThread,
     "yolov12-cls": YOLOClsThread,
+    "yolov26": YOLOBaseThread,
+    "yolov26-seg": YOLOSegThread,
+    "yolov26-obb": YOLOObbThread,
+    "yolov26-pose": YOLOPoseThread,
+    "yolov26-cls": YOLOClsThread,
     "fastsam": FastSAMThread,
     "sam": SAMPredictorThread,
     "samv2": SAM2PredictorThread,
@@ -97,11 +103,12 @@ ALL_MODEL_NAMES = [
     # YOLOv8 모델
     "yolov8", "yolov8-seg", "yolov8-pose", "yolov8-obb", "yolov8-cls",
 
-    # YOLOv9 ~ YOLOv11 모델
+    # YOLOv9 ~ YOLOv26 모델
     "yolov9",
     "yolov10",
     "yolov11", "yolov11-seg", "yolov11-pose", "yolov11-obb", "yolov11-cls",
     "yolov12", "yolov12-seg", "yolov12-pose", "yolov12-obb", "yolov12-cls",
+    "yolov26", "yolov26-seg", "yolov26-pose", "yolov26-obb", "yolov26-cls",
 
     # 기타 모델
     "rtdetr", "fastsam", "sam", "samv2",
@@ -607,20 +614,26 @@ class YOLOSHOWBASE:
                 func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName, self.checkClsName]),
             "yolov12": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and not any(
                 func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName, self.checkClsName]),
+            "yolov26": lambda name: any(sub in name for sub in ["yolov26", "yolo26"]) and not any(
+                func(name) for func in [self.checkSegName, self.checkPoseName, self.checkObbName, self.checkClsName]),
             "rtdetr": lambda name: "rtdetr" in name,
             "yolov5-seg": lambda name: "yolov5" in name and self.checkSegName(name),
             "yolov8-seg": lambda name: "yolov8" in name and self.checkSegName(name),
             "yolov11-seg": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkSegName(name),
             "yolov12-seg": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and self.checkSegName(name),
+            "yolov26-seg": lambda name: any(sub in name for sub in ["yolov26", "yolo26"]) and self.checkSegName(name),
             "yolov8-pose": lambda name: "yolov8" in name and self.checkPoseName(name),
             "yolov11-pose": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkPoseName(name),
             "yolov12-pose": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and self.checkPoseName(name),
+            "yolov26-pose": lambda name: any(sub in name for sub in ["yolov26", "yolo26"]) and self.checkPoseName(name),
             "yolov8-obb": lambda name: "yolov8" in name and self.checkObbName(name),
             "yolov11-obb": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkObbName(name),
             "yolov12-obb": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and self.checkObbName(name),
+            "yolov26-obb": lambda name: any(sub in name for sub in ["yolov26", "yolo26"]) and self.checkObbName(name),
             "yolov8-cls": lambda name: "yolov8" in name and self.checkClsName(name),
             "yolov11-cls": lambda name: any(sub in name for sub in ["yolov11", "yolo11"]) and self.checkClsName(name),
             "yolov12-cls": lambda name: any(sub in name for sub in ["yolov12", "yolo12"]) and self.checkClsName(name),
+            "yolov26-cls": lambda name: any(sub in name for sub in ["yolov26", "yolo26"]) and self.checkClsName(name),
             "fastsam": lambda name: "fastsam" in name,
             "samv2": lambda name: any(sub in name for sub in ["sam2", "samv2"]),
             "sam": lambda name: "sam" in name,
@@ -664,6 +677,8 @@ class YOLOSHOWBASE:
             return bool(re.match(r'yolo.?11.?-' + taskname + r'.*\.pt$', modelname))
         elif "yolo12" in modelname:
             return bool(re.match(r'yolo.?12.?-' + taskname + r'.*\.pt$', modelname))
+        elif "yolo26" in modelname:
+            return bool(re.match(r'yolo.?26.?-' + taskname + r'.*\.pt$', modelname))
 
     # Modelname의 세그먼트 이름 지정 문제 해결
     def checkSegName(self, modelname):
@@ -727,13 +742,14 @@ class YOLOSHOWBASE:
             self.ui.fps_label.setText('--')
 
     def showTrackStatus(self, model_name):
-        # 모델명이 yolov5, yolov8, yolov9, yolov10, yolov11 중 하나이며 seg, pose, obb가 아닌 경우에만 track_box와 track_label을 보여줌
+        # 모델명이 yolov5, yolov8, yolov9, yolov10, yolov11, yolov12, yolov26 중 하나이며 seg, pose, obb가 아닌 경우에만 track_box와 track_label을 보여줌
         if ("yolov5" in model_name or
             "yolov8" in model_name or
             "yolov9" in model_name or
             "yolov10" in model_name or
             "yolo11" in model_name or
-            "yolo12" in model_name) and \
+            "yolo12" in model_name or
+            "yolo26" in model_name) and \
                 not self.checkSegName(model_name) and \
                 not self.checkPoseName(model_name) and \
                 not self.checkObbName(model_name) and \
@@ -969,7 +985,10 @@ class YOLOSHOWBASE:
 
     # YOLOv5 및 YOLOv9를 수정하여 yolo.py 충돌 해결
     def solveYoloConflict(self, ptnamelst):
-        glo.set_value("yoloname", "yolov5 yolov8 yolov9 yolov9-seg yolov5-seg yolov8-seg rtdetr yolov8-pose yolo11 yolo11-seg yolo11-pose yolo12 yolo12-seg yolo12-pose")
+        glo.set_value("yoloname", "yolov5 yolov8 yolov9 yolov9-seg yolov5-seg yolov8-seg rtdetr yolov8-pose "
+                                  "yolo11 yolo11-seg yolo11-pose yolo11-obb yolo11-cls "
+                                  "yolo12 yolo12-seg yolo12-pose yolo12-obb yolo12-cls "
+                                  "yolo26 yolo26-seg yolo26-pose yolo26-obb yolo26-cls")
         self.reloadModel()
 
     # 통계 결과를 수락하고 json에 기록

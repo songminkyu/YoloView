@@ -1,8 +1,8 @@
-# YoloView - YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / YOLOv12 / RTDETR / SAM / MobileSAM / PP-OCR GUI based on Pyside6
+# YoloView - YOLOv5 / YOLOv8 / YOLOv9 / YOLOv10 / YOLOv11 / YOLOv12 / YOLOv26 / RTDETR / SAM / MobileSAM / PP-OCR GUI based on Pyside6
 
 ## Introduction
 
-***YoloView*** is a user interface (GUI) application that supports Ultralytics-based `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLOv11` `YOLOv12` `RT-DETR` `SAM` `MobileSAM` `FastSAM` `PP-OCR` models. 
+***YoloView*** is a user interface (GUI) application that supports Ultralytics-based `YOLOv5` `YOLOv8` `YOLOv9` `YOLOv10` `YOLOv11` `YOLOv12` `YOLOv26` `RT-DETR` `SAM` `MobileSAM` `FastSAM` `PP-OCR` models. 
 
  <p align="center"> 
   English &nbsp; | &nbsp; <a href="https://github.com/songminkyu/YOLOSHOW_New/blob/main/README_ko.md">한국어</a>
@@ -12,14 +12,14 @@
 
 ## Todo List
 
-- [x] Add `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `YOLO12` `RT-DETR` `SAM`  `MobileSAM`  `FastSAM` `PP-OCR` Model
+- [x] Add `YOLOv8` `YOLOv9` `YOLOv10` `YOLO11` `YOLO12` `YOLO26` `RT-DETR` `SAM`  `MobileSAM`  `FastSAM` `PP-OCR` Model
 - [x] Support Instance Segmentation （ `YOLOv5`  `YOLOv8`  `YOLOv11` `SAM`  `MobileSAM`  `FastSAM`）
-- [x] Support Pose Estimation （ `YOLOv8 ~ 12`）
-- [x] Support Oriented Bounding Boxes ( `YOLOv8 ~ 12` )
+- [x] Support Pose Estimation （ `YOLOv8 ~ 26`）
+- [x] Support Oriented Bounding Boxes ( `YOLOv8 ~ 26` )
 - [x] Support Http Protocol in `RTSP` Function ( `Single` Mode )
 - [x] Add Model Comparison Mode（VS Mode）
 - [x] Support Dragging File Input
-- [x] `YOLO11 ~ 12` has additional features (obb,pose,deteced,segment,track)
+- [x] `YOLO11 ~ 26` has additional features (obb,pose,deteced,segment,track)
 - [x] Tracking & Counting ( `YOLOv8 ~ 12`)
 - [x] Added bbox and segment category filter functions (under model selection function)
 - [x] Added bbox and segment label verification function(`bbox-valid.pt` & `seg-valid.pt`)
@@ -49,7 +49,7 @@ If you need add the new `pt` file, please click `Import Model` button in `Settin
 
 **Notice :** 
 
-1. All `pt` files are named including `yolov5` / `yolov8` / `yolov9` / `yolov10` / `yolo11`/ `yolo12` / `rtdetr` / `sam` / `samv2` / `mobilesam` / `fastsam`.  (e.g. `yolov8-test.pt`)
+1. All `pt` files are named including `yolov5` / `yolov8` / `yolov9` / `yolov10` / `yolo11`/ `yolo12`/ `yolo26` / `rtdetr` / `sam` / `samv2` / `mobilesam` / `fastsam`.  (e.g. `yolov8-test.pt`)
 2. If it is a `pt` file of  segmentation mode, please name it including `yolov5n-seg` / `yolov8s-seg` .  (e.g. `yolov8n-seg-test.pt`)
 3. If it is a `pt` file of  pose estimation mode, please name it including `yolov8n-pose` .  (e.g. `yolov8n-pose-test.pt`)
 4. If it is a `pt` file of  oriented bounding box mode, please name it including `yolov8n-obb` .  (e.g. `yolov8n-obb-test.pt`)
@@ -193,7 +193,7 @@ folders and paste them under the dist folder.
 
 ### YOLO Supported Version
 
-[YOLOv5](https://github.com/ultralytics/yolov5)  [YOLOv8](https://github.com/ultralytics/ultralytics)  [YOLOv9](https://github.com/ultralytics/ultralytics)  [YOLOv10](https://github.com/ultralytics/ultralytics)  [YOLO11](https://github.com/ultralytics/ultralytics) [YOLO12](https://github.com/ultralytics/ultralytics)
+[YOLOv5](https://github.com/ultralytics/yolov5)  [YOLOv8](https://github.com/ultralytics/ultralytics)  [YOLOv9](https://github.com/ultralytics/ultralytics)  [YOLOv10](https://github.com/ultralytics/ultralytics)  [YOLO11](https://github.com/ultralytics/ultralytics) [YOLO12](https://github.com/ultralytics/ultralytics) [YOLO26](https://github.com/ultralytics/ultralytics)
 
 ### YOLO Graphical User Interface
 

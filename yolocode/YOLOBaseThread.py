@@ -16,7 +16,7 @@ from ultralytics.utils import callbacks, ops, nms, LOGGER, colorstr, MACOS, WIND
 from collections import defaultdict
 from ultralytics.utils.files import increment_path
 from ultralytics.utils.checks import check_imgsz
-from ultralytics.utils.torch_utils import select_device
+from ultralytics.utils.torch_utils import select_device, smart_inference_mode
 from ultralytics import YOLO
 from ultralytics.engine.predictor import BasePredictor
 from ultralytics.cfg import get_cfg, get_save_dir
@@ -138,7 +138,7 @@ class YOLOBaseThread(QThread, BasePredictor):
         # --- 이미지 및 표 결과 보내기 --- #
         self.result_picture_and_table()
 
-    @torch.no_grad()
+    @smart_inference_mode()
     def detect(self, is_folder_last=False, index=0, total_count=0):
 
         # warmup model
@@ -234,62 +234,65 @@ class YOLOBaseThread(QThread, BasePredictor):
 
                 n = len(im0s)
                 for i in range(n):
-                    self.seen += 1
-                    self.results[i].speed = {
-                        "preprocess": self.dt[0].dt * 1e3 / n,
-                        "inference": self.dt[1].dt * 1e3 / n,
-                        "postprocess": self.dt[2].dt * 1e3 / n,
-                    }
-                    p, im0 = path[i], None if self.source_type.tensor else im0s[i].copy()
-                    self.file_path = p = Path(p)
+                    try:
+                        self.seen += 1
+                        self.results[i].speed = {
+                            "preprocess": self.dt[0].dt * 1e3 / n,
+                            "inference": self.dt[1].dt * 1e3 / n,
+                            "postprocess": self.dt[2].dt * 1e3 / n,
+                        }
+                        p, im0 = path[i], None if self.source_type.tensor else im0s[i].copy()
+                        self.file_path = p = Path(p)
 
-                    label_str = self.write_results(i, self.results, (p, im, im0))  # labels   /// original :s +=
+                        label_str = self.write_results(i, self.results, (p, im, im0))  # labels   /// original :s +=
 
-                    # labels and nums dict
-                    class_nums = 0
-                    target_nums = 0
-                    self.labels_dict = {}
-                    if 'no detections' in label_str:
-                        pass
-                    else:
-                        for each_target in label_str.split(',')[:-1]:
-                            num_labelname = list(each_target.split(' '))
-                            nums = 0
-                            label_name = ""
-                            for each in range(len(num_labelname)):
-                                if num_labelname[each].isdigit() and each != len(num_labelname) - 1:
-                                    nums = num_labelname[each]
-                                elif len(num_labelname[each]):
-                                    label_name += num_labelname[each] + " "
-                            target_nums += int(nums)
-                            class_nums += 1
-                            if label_name in self.labels_dict:
-                                self.labels_dict[label_name] += int(nums)
-                            else:  # 카테고리의 첫 번째 발생
-                                self.labels_dict[label_name] = int(nums)
-
-                    # 원본 이미지 및 결과 이미지가 각각의 입력 상자로 전송됩니다.
-                    for key, value in self.labels_dict.items():
-                        if key in self.results_picture:
-                            self.results_picture[key] += value  # Accumulate the count
+                        # labels and nums dict
+                        class_nums = 0
+                        target_nums = 0
+                        self.labels_dict = {}
+                        if 'no detections' in label_str:
+                            pass
                         else:
-                            self.results_picture[key] = value  # First occurrence
+                            for each_target in label_str.split(',')[:-1]:
+                                num_labelname = list(each_target.split(' '))
+                                nums = 0
+                                label_name = ""
+                                for each in range(len(num_labelname)):
+                                    if num_labelname[each].isdigit() and each != len(num_labelname) - 1:
+                                        nums = num_labelname[each]
+                                    elif len(num_labelname[each]):
+                                        label_name += num_labelname[each] + " "
+                                target_nums += int(nums)
+                                class_nums += 1
+                                if label_name in self.labels_dict:
+                                    self.labels_dict[label_name] += int(nums)
+                                else:  # 카테고리의 첫 번째 발생
+                                    self.labels_dict[label_name] = int(nums)
 
-                    self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
-                    self.send_output.emit(self.plotted_img)  # after detection
-                    self.send_class_num.emit(class_nums)
-                    self.send_target_num.emit(target_nums)
+                        # 원본 이미지 및 결과 이미지가 각각의 입력 상자로 전송됩니다.
+                        for key, value in self.labels_dict.items():
+                            if key in self.results_picture:
+                                self.results_picture[key] += value  # Accumulate the count
+                            else:
+                                self.results_picture[key] = value  # First occurrence
 
-                    if self.save_res and label_str:
-                        save_path = str(self.save_path / p.name)  # im.jpg
-                        self.res_path = self.save_preds(self.vid_cap, i, save_path)
+                        self.send_input.emit(im0s if isinstance(im0s, np.ndarray) else im0s[0])
+                        self.send_output.emit(self.plotted_img)  # after detection
+                        self.send_class_num.emit(class_nums)
+                        self.send_target_num.emit(target_nums)
 
-                    if self.save_label and self.dataset.mode == "image":
-                        self.txt_path = self.save_path / "labels" / p.stem
-                        self.results[i].save_txt(f"{self.txt_path}.txt")
+                        if self.save_res and label_str:
+                            save_path = str(self.save_path / p.name)  # im.jpg
+                            self.res_path = self.save_preds(self.vid_cap, i, save_path)
 
-                    if self.speed_thres != 0:
-                        time.sleep(self.speed_thres / 1000)  # delay , ms
+                        if self.save_label and self.dataset.mode == "image":
+                            self.txt_path = self.save_path / "labels" / p.stem
+                            self.results[i].save_txt(f"{self.txt_path}.txt")
+
+                        if self.speed_thres != 0:
+                            time.sleep(self.speed_thres / 1000)  # delay , ms
+                    except Exception:
+                        break
 
                 if self.is_folder and not is_folder_last:
                     # 현재 영상이 영상인지 확인
@@ -345,7 +348,7 @@ class YOLOBaseThread(QThread, BasePredictor):
             getattr(
                 self.model.model,
                 "transforms",
-                classify_transforms(self.imgsz[0], crop_fraction=self.crop_fraction),
+                classify_transforms(self.imgsz[0]),
             )
             if self.task == "classify"
             else None
@@ -457,9 +460,12 @@ class YOLOBaseThread(QThread, BasePredictor):
         except Exception as e:
             print("Error", e)
 
-    def postprocess(self, preds, img, orig_imgs):
+    def postprocess(self, preds, img, orig_imgs, **kwargs):
         """Post-processes predictions and returns a list of Results objects."""
         # Non-max suppression
+        nc = kwargs.get('nc', len(self.model.names) if hasattr(self.model, 'names') else 0)
+        end2end = kwargs.get('end2end', getattr(self.model.model, 'end2end', False) if hasattr(self.model, 'model') else False)
+        
         preds = nms.non_max_suppression(
             preds,
             self.conf_thres,
@@ -467,6 +473,8 @@ class YOLOBaseThread(QThread, BasePredictor):
             agnostic=self.agnostic_nms,
             max_det=self.max_det,
             classes=self.classes,
+            nc=nc,
+            end2end=end2end,
         )
 
         # 필터링 및 정렬된 preds를 미리 생성
@@ -513,6 +521,17 @@ class YOLOBaseThread(QThread, BasePredictor):
         if not_tensor:
             im /= 255  # 0 - 255 to 0.0 - 1.0
         return im
+
+    @staticmethod
+    def get_obj_feats(feat_maps, idxs):
+        """Extract object features from the feature maps."""
+        import torch
+
+        s = min(x.shape[1] for x in feat_maps)  # find shortest vector length
+        obj_feats = torch.cat(
+            [x.permute(0, 2, 3, 1).reshape(x.shape[0], -1, s, x.shape[1] // s).mean(dim=-1) for x in feat_maps], dim=1
+        )  # mean reduce all vectors to same length
+        return [feats[idx] if idx.shape[0] else [] for feats, idx in zip(obj_feats, idxs)]  # for each img in batch
 
     def inference(self, im: torch.Tensor, *args, **kwargs):
         """Run inference on a given image using the specified model and arguments."""
