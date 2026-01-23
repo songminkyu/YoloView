@@ -1,4 +1,4 @@
-from yolocode.YOLOv8SegThread import YOLOv8SegThread
+from yolocode.YOLOSegThread import YOLOv8SegThread
 import numpy as np
 import torch
 import torch.nn.functional as F

@@ -1,12 +1,12 @@
 import os.path
-from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOBaseThread import YOLOBaseThread
 from pathlib import Path
 from utils.image_save import ImageSaver
 import cv2
 import yaml
 import numpy as np
 
-class SegValidThread(YOLOv8Thread):
+class SegValidThread(YOLOBaseThread):
     def __init__(self):
         super(SegValidThread, self).__init__()
         self.task = 'seg_valid'

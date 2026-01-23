@@ -1,11 +1,11 @@
 import os.path
-from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOBaseThread import YOLOBaseThread
 from pathlib import Path
 from utils.image_save import ImageSaver
 import cv2
 import yaml
 
-class BBoxValidThread(YOLOv8Thread):
+class BBoxValidThread(YOLOBaseThread):
     def __init__(self):
         super(BBoxValidThread, self).__init__()
         self.task = 'bbox_valid'

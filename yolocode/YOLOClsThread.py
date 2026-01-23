@@ -2,14 +2,14 @@ import cv2
 import torch
 from PIL import Image
 
-from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOBaseThread import YOLOBaseThread
 from ultralytics.engine.results import Results
 from ultralytics.utils import ops
 
-class YOLOv8ClsThread(YOLOv8Thread):
+class YOLOClsThread(YOLOBaseThread):
 
     def __init__(self):
-        super(YOLOv8ClsThread, self).__init__()
+        super(YOLOClsThread, self).__init__()
         self.task = 'classify'
         self.project = 'runs/classify'
         self._legacy_transform_name = "ultralytics.yolo.data.augment.ToTensor"

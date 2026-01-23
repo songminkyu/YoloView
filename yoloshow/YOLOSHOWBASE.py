@@ -32,18 +32,16 @@ from ui.utils.CustomMessageBox import MessageBox
 from models import common
 from ui.utils.webCamera import Camera, WebcamThread
 
-from yolocode.YOLOv8Thread import YOLOv8Thread
-from yolocode.YOLOv8SegThread import YOLOv8SegThread
+from yolocode.YOLOBaseThread import YOLOBaseThread
+from yolocode.YOLOSegThread import YOLOSegThread
 from yolocode.RTDETRThread import RTDETRThread
-from yolocode.YOLOv8PoseThread import YOLOv8PoseThread
-from yolocode.YOLOv8ObbThread import YOLOv8ObbThread
+from yolocode.YOLOPoseThread import YOLOPoseThread
+from yolocode.YOLOObbThread import YOLOObbThread
 from yolocode.FastSAMThread import FastSAMThread
-# from yolocode.SAMThread import SAMThread
-# from yolocode.SAMv2Thread import SAMv2Thread
 from yolocode.SAMThread import SAMPredictorThread, SAM2PredictorThread
 from yolocode.BBoxValidThread import BBoxValidThread
 from yolocode.SegValidThread import SegValidThread
-from yolocode.YOLOv8ClsThread import YOLOv8ClsThread
+from yolocode.YOLOClsThread import YOLOClsThread
 from yolocode.OCRThread import OCRThread
 from ultralytics import YOLO
 from ultralytics import FastSAM
@@ -59,26 +57,26 @@ WINDOW_SPLIT_BODY = 20
 KEYS_LEFT_BOX_MENU = ['src_menu', 'src_setting', 'src_webcam', 'src_folder', 'src_camera', 'src_vsmode', 'src_setting', 'src_distribute']
 # 모델 이름 및 스레드 클래스 매핑
 MODEL_THREAD_CLASSES = {
-    "yolov5": YOLOv8Thread,
-    "yolov5-seg": YOLOv8SegThread,
-    "yolov9": YOLOv8Thread,
-    "yolov10": YOLOv8Thread,
+    "yolov5": YOLOBaseThread,
+    "yolov5-seg": YOLOSegThread,
+    "yolov9": YOLOBaseThread,
+    "yolov10": YOLOBaseThread,
     "rtdetr": RTDETRThread,
-    "yolov8": YOLOv8Thread,
-    "yolov8-seg": YOLOv8SegThread,
-    "yolov8-pose": YOLOv8PoseThread,
-    "yolov8-obb": YOLOv8ObbThread,
-    "yolov8-cls": YOLOv8ClsThread,
-    "yolov11": YOLOv8Thread,
-    "yolov11-seg": YOLOv8SegThread,
-    "yolov11-obb": YOLOv8ObbThread,
-    "yolov11-pose": YOLOv8PoseThread,
-    "yolov11-cls": YOLOv8ClsThread,
-    "yolov12": YOLOv8Thread,
-    "yolov12-seg": YOLOv8SegThread,
-    "yolov12-obb": YOLOv8ObbThread,
-    "yolov12-pose": YOLOv8PoseThread,
-    "yolov12-cls": YOLOv8ClsThread,
+    "yolov8": YOLOBaseThread,
+    "yolov8-seg": YOLOSegThread,
+    "yolov8-pose": YOLOPoseThread,
+    "yolov8-obb": YOLOObbThread,
+    "yolov8-cls": YOLOClsThread,
+    "yolov11": YOLOBaseThread,
+    "yolov11-seg": YOLOSegThread,
+    "yolov11-obb": YOLOObbThread,
+    "yolov11-pose": YOLOPoseThread,
+    "yolov11-cls": YOLOClsThread,
+    "yolov12": YOLOBaseThread,
+    "yolov12-seg": YOLOSegThread,
+    "yolov12-obb": YOLOObbThread,
+    "yolov12-pose": YOLOPoseThread,
+    "yolov12-cls": YOLOClsThread,
     "fastsam": FastSAMThread,
     "sam": SAMPredictorThread,
     "samv2": SAM2PredictorThread,

@@ -2,7 +2,7 @@ import cv2
 import os
 import numpy as np
 import time
-from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOBaseThread import YOLOBaseThread
 from PIL import ImageFont, ImageDraw, Image
 from paddleocr import PaddleOCR
 # from paddleocr.paddleocr import MODEL_URLS
@@ -114,7 +114,7 @@ class PdOCR:
 
         return opencv_image
 
-class OCRThread(YOLOv8Thread):
+class OCRThread(YOLOBaseThread):
     def __init__(self):
         super(OCRThread, self).__init__()
         self.task = 'ocr'

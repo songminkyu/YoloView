@@ -1,11 +1,11 @@
 import numpy as np
 import torch
-from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOBaseThread import YOLOBaseThread
 from ultralytics.data.augment import LetterBox
 from ultralytics.engine.results import Results
 from ultralytics.utils import ops
 
-class RTDETRThread(YOLOv8Thread):
+class RTDETRThread(YOLOBaseThread):
     def postprocess(self, preds, img, orig_imgs):
         """
         Postprocess the raw predictions from the model to generate bounding boxes and confidence scores.

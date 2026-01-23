@@ -24,7 +24,7 @@ from ultralytics.cfg import get_cfg, get_save_dir
 from utils.image_save import ImageSaver
 from concurrent.futures import ThreadPoolExecutor
 
-class YOLOv8Thread(QThread, BasePredictor):
+class YOLOBaseThread(QThread, BasePredictor):
     # 입출력 메시지
     send_input = Signal(np.ndarray)
     send_output = Signal(np.ndarray)
@@ -39,7 +39,7 @@ class YOLOv8Thread(QThread, BasePredictor):
     send_result_table = Signal(list,list)  # Send the result table
 
     def __init__(self):
-        super(YOLOv8Thread, self).__init__()
+        super(YOLOBaseThread, self).__init__()
         BasePredictor.__init__(self, cfg=DEFAULT_CFG, overrides=None, _callbacks=None)
         self.used_model_name = None  # 사용할 감지 모델의 이름
         # YOLOSHOW 인터페이스 매개 변수 설정

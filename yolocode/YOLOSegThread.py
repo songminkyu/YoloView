@@ -1,11 +1,11 @@
-from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOBaseThread import YOLOBaseThread
 from ultralytics.engine.results import Results
 from ultralytics.utils import ops, nms
 
-class YOLOv8SegThread(YOLOv8Thread):
+class YOLOSegThread(YOLOBaseThread):
 
     def __init__(self):
-        super(YOLOv8SegThread, self).__init__()
+        super(YOLOSegThread, self).__init__()
         self.data = 'YoloView/ultralytics/cfg/datasets/coco128-seg.yaml'  # data_dict
         self.task = 'segment'
         self.project = 'runs/segment'

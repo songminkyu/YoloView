@@ -9,7 +9,7 @@ segmentation tasks.
 """
 
 from __future__ import annotations
-from yolocode.YOLOv8SegThread import YOLOv8SegThread
+from yolocode.YOLOSegThread import YOLOSegThread
 from collections import OrderedDict, defaultdict
 from copy import deepcopy
 from typing import Any
@@ -39,7 +39,7 @@ from ultralytics.models.sam.amg import (
 )
 from ultralytics.models.sam.sam3.geometry_encoders import Prompt
 
-class SAMPredictorThread(YOLOv8SegThread):
+class SAMPredictorThread(YOLOSegThread):
     """Predictor class for SAM, enabling real-time image segmentation with promptable capabilities.
 
     This class extends BasePredictor and implements the Segment Anything Model (SAM) for advanced image segmentation

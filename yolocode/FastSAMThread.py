@@ -1,12 +1,12 @@
 from ultralytics.models.fastsam.utils import adjust_bboxes_to_image_border
-from yolocode.YOLOv8SegThread import YOLOv8SegThread
+from yolocode.YOLOSegThread import YOLOSegThread
 import torch
 from PIL import Image
 from ultralytics.utils import DEFAULT_CFG, checks
 from ultralytics.utils.metrics import box_iou
 from ultralytics.utils.ops import scale_masks
 
-class FastSAMThread(YOLOv8SegThread):
+class FastSAMThread(YOLOSegThread):
 
     def __init__(self):
         super(FastSAMThread, self).__init__()

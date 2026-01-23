@@ -1,12 +1,12 @@
-from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOBaseThread import YOLOBaseThread
 from ultralytics.engine.results import Results
 from ultralytics.utils import ops, nms
 
 
-class YOLOv8PoseThread(YOLOv8Thread):
+class YOLOPoseThread(YOLOBaseThread):
 
     def __init__(self):
-        super(YOLOv8PoseThread, self).__init__()
+        super(YOLOPoseThread, self).__init__()
         self.task = 'pose'
         self.project = 'runs/pose'
 

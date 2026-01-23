@@ -1,12 +1,12 @@
 import torch
-from yolocode.YOLOv8Thread import YOLOv8Thread
+from yolocode.YOLOBaseThread import YOLOBaseThread
 from ultralytics.engine.results import Results
 from ultralytics.utils import ops, nms
 
-class YOLOv8ObbThread(YOLOv8Thread):
+class YOLOObbThread(YOLOBaseThread):
 
     def __init__(self):
-        super(YOLOv8ObbThread, self).__init__()
+        super(YOLOObbThread, self).__init__()
         self.task = 'obb'
         self.project = 'runs/obb'
 
