@@ -1,0 +1,16 @@
+[project]
+name = "yolo-api"
+version = "0.1.0"
+description = "YoloView Production API"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "kafka-python",
+    "pydantic",
+    "python-logstash",
+    "prometheus-fastapi-instrumentator",
+    "redis",
+]
+
+[tool.uv]
+managed = true

@@ -1,0 +1,13 @@
+[project]
+name = "yolo-consumer"
+version = "0.1.0"
+description = "YoloView Consumer Service"
+dependencies = [
+    "kafka-python",
+    "psycopg2-binary",
+    "redis",
+    "python-logstash",
+]
+
+[tool.uv]
+managed = true

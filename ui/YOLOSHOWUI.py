@@ -2207,6 +2207,31 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_17.addWidget(self.save_status_button)
 
+        # api server
+        self.message_relay_button = QCheckBox(self.frame_4)
+        self.message_relay_button.setObjectName(u"message_relay_button")
+        self.message_relay_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.message_relay_button.setStyleSheet(u"QCheckBox {\n"
+                                                "color: white;\n"
+                                                "font: 700 13pt \"Nirmala UI\";\n"
+                                                "        }\n"
+                                                "QCheckBox::indicator {\n"
+                                                "           padding-top: 1px;\n"
+                                                "            width: 40px;\n"
+                                                "            height: 30px;\n"
+                                                "            border: none;\n"
+                                                " }\n"
+                                                "\n"
+                                                "QCheckBox::indicator:unchecked {\n"
+                                                "            image: url(:/setting /images/newsize/check_no.png);\n"
+                                                "        }\n"
+                                                "\n"
+                                                "QCheckBox::indicator:checked {\n"
+                                                "            image:url(:/setting /images/newsize/check_yes.png);\n"
+                                                "        }")
+
+        self.verticalLayout_17.addWidget(self.message_relay_button)
+
         self.save_button = QPushButton(self.frame_4)
         self.save_button.setObjectName(u"save_button")
         sizePolicy2.setHeightForWidth(self.save_button.sizePolicy().hasHeightForWidth())
@@ -2317,8 +2342,9 @@ class Ui_MainWindow(object):
         self.ToggleBotton_5.setText(QCoreApplication.translate("MainWindow", u"Line Width", None))
         self.import_button.setText(QCoreApplication.translate("MainWindow", u"Import Model", None))
         self.save_label_button.setText(QCoreApplication.translate("MainWindow", u"Save Label", None))
-        self.save_json_button.setText(QCoreApplication.translate("MainWindow", u"Save Json", None))
         self.save_status_button.setText(QCoreApplication.translate("MainWindow", u"Save Mode", None))
+        self.save_json_button.setText(QCoreApplication.translate("MainWindow", u"Save Json", None))
+        self.message_relay_button.setText(QCoreApplication.translate("MainWindow", u"Message Relay", None))
         self.save_button.setText(QCoreApplication.translate("MainWindow", u"Save Result", None))
     # retranslateUi
 

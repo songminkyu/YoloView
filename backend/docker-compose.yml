@@ -1,0 +1,150 @@
+version: '3.8'
+
+services:
+  # --- Kafka KRaft ---
+  kafka:
+    image: confluentinc/cp-kafka:7.7.7
+    container_name: yolo-kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+    networks:
+      - yolo-net
+
+  # --- Database ---
+  postgres:
+    image: postgres:15-alpine
+    container_name: yolo-postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: yolodb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - yolo-net
+
+  # --- Cache ---
+  redis:
+    image: redis:alpine
+    container_name: yolo-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - yolo-net
+
+  # --- API Layer (Producer) ---
+  api:
+    build: ./api
+    container_name: yolo-api
+    ports:
+      - "8000:8000"
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - LOGSTASH_HOST=logstash
+      - LOGSTASH_PORT=5000
+    depends_on:
+      - kafka
+      - redis
+    networks:
+      - yolo-net
+
+  # --- Consumer Layer ---
+  consumer:
+    build: ./consumer
+    container_name: yolo-consumer
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - POSTGRES_URL=postgresql://user:password@postgres:5432/yolodb
+      - REDIS_URL=redis://redis:6379/0
+      - LOGSTASH_HOST=logstash
+      - LOGSTASH_PORT=5000
+    depends_on:
+      - kafka
+      - postgres
+      - redis
+    networks:
+      - yolo-net
+
+  # --- ELK Stack ---
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    container_name: yolo-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - yolo-net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.0
+    container_name: yolo-logstash
+    volumes:
+      - ./config/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
+    networks:
+      - yolo-net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.8.0
+    container_name: yolo-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - yolo-net
+
+  # --- Monitoring ---
+  prometheus:
+    image: prom/prometheus
+    container_name: yolo-prometheus
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - yolo-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: yolo-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    networks:
+      - yolo-net
+
+networks:
+  yolo-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  elasticsearch_data:

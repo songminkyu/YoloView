@@ -117,6 +117,10 @@ class YOLOSHOWVS(QMainWindow, YOLOSHOWBASE):
         self.ui.save_json_button.hide()
         # --- 모델 가져오기 및 결과 내보내기 --- #
 
+        # --- 메세지 서버 전송 --- #
+        self.ui.message_relay_button.clicked.connect(self.messageRelay)
+        # --- 메세지 서버 전송 --- #
+
         # --- 비디오, 사진 미리보기 --- #
         self.ui.main_leftbox.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
         self.ui.main_rightbox.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)

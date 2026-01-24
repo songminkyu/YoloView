@@ -867,6 +867,16 @@ class YOLOSHOWBASE:
             for yolo_thread in self.yolo_threads.threads_pool.values():
                 yolo_thread.save_label = True
 
+    def messageRelay(self):
+        if self.ui.message_relay_button.checkState() == Qt.CheckState.Unchecked:
+            self.showStatus('NOTE: Activate message relay.')
+            for yolo_thread in self.yolo_threads.threads_pool.values():
+                yolo_thread.msg_relay = False
+        elif self.ui.message_relay_button.checkState() == Qt.CheckState.Checked:
+            self.showStatus('NOTE: Inactivate message relay.')
+            for yolo_thread in self.yolo_threads.threads_pool.values():
+                yolo_thread.msg_relay = True
+
     # 내보내기 결과 상태(탐지된 이미지 정보 기록)
     def saveJson(self):
         if self.ui.save_json_button.checkState() == Qt.CheckState.Unchecked:

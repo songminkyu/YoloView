@@ -1,5 +1,7 @@
 import os.path
 import time
+import requests
+import json
 
 import cv2
 import numpy as np
@@ -56,6 +58,7 @@ class YOLOBaseThread(QThread, BasePredictor):
         self.save_res = False  # Save test results
         self.save_json = False # Save result json
         self.save_label = False  # Save result label
+        self.msg_relay = False # to api server
         self.iou_thres = 0.45  # iou
         self.conf_thres = 0.25  # conf
         self.speed_thres = 10  # delay, ms
@@ -291,7 +294,12 @@ class YOLOBaseThread(QThread, BasePredictor):
 
                         if self.speed_thres != 0:
                             time.sleep(self.speed_thres / 1000)  # delay , ms
-                    except Exception:
+                        
+                        # Send detection results to API server
+                        if self.msg_relay:
+                            self.send_to_api(self.results[i], self.labels_dict, p)
+                    except Exception as e:
+                        print(f"Error in detection loop: {e}")
                         break
 
                 if self.is_folder and not is_folder_last:
@@ -620,3 +628,33 @@ class YOLOBaseThread(QThread, BasePredictor):
                 cv2.polylines(self.im, [points], isClosed=False, color=(203, 224, 252), thickness=5)
 
         return log_string
+
+    def send_to_api(self, result, labels, path):
+        """Send detection results to the backend API server."""
+        try:
+            api_url = "http://localhost:8000/api/v1/detections"
+            detections = []
+            
+            # Format detections for the API
+            if hasattr(result, 'boxes') and result.boxes is not None:
+                for box in result.boxes:
+                    detections.append({
+                        "class": result.names[int(box.cls)],
+                        "conf": float(box.conf),
+                        "bbox": box.xyxy.tolist()[0]
+                    })
+            
+            payload = {
+                "model_name": os.path.basename(self.used_model_name) if self.used_model_name else "unknown",
+                "detections": detections,
+                "timestamp": time.time(),
+                "source": str(path)
+            }
+            
+            # Using a slightly longer timeout for debugging stability.
+            # In production, consider using an asynchronous background task.
+            requests.post(api_url, json=payload, timeout=15.0)
+        except Exception as e:
+            # Silence errors to prevent UI disruption, but consider logging for debugging
+            # print(f"API Send Error: {e}")
+            pass
