@@ -29,6 +29,7 @@
 - [x] Image Navigation Controls 추가 (<<,< ,>, >>)
 - [x] 정확성을 위한 큐레이팅(균형 잡힌 컴퓨터 비전 데이터셋 구축) 
 - [x] Thumbnail view & Filter (우측 클래스별 필터 기능 연동)
+- [x] 메세지 릴레이 서버 추가
 
 ## 함수
 
