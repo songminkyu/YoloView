@@ -27,6 +27,8 @@
 - [x] Improved and enhanced statistics
 - [x] Save Labal
 - [x] Image Navigation Controls (<<,< ,>, >>)
+- [x] Curating for Accuracy (Building a Balanced Computer Vision Dataset)
+- [x] Classes Filter (Integrating the right-hand class filter function)
 - [x] Add a message relay server
 
 ## Functions
