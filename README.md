@@ -27,6 +27,7 @@
 - [x] Improved and enhanced statistics
 - [x] Save Labal
 - [x] Image Navigation Controls (<<,< ,>, >>)
+- [x] Add a message relay server
 
 ## Functions
 
