@@ -656,5 +656,5 @@ class YOLOBaseThread(QThread, BasePredictor):
             requests.post(api_url, json=payload, timeout=15.0)
         except Exception as e:
             # Silence errors to prevent UI disruption, but consider logging for debugging
-            # print(f"API Send Error: {e}")
+            self.send_msg.emit("API Send Error: {}".format(e))
             pass
