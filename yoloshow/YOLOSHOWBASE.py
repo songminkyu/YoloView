@@ -477,7 +477,7 @@ class YOLOSHOWBASE:
                     return False
                 self.showStatus(f'Loading Rtsp：{self.rtspUrl}')
                 self.streamingThread = WebcamThread(self.rtspUrl)
-                self.streamingThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
+                self.streamingThread.changePixmap.connect(lambda frame: self.showImg(frame, self.ui.main_leftbox, 'img'))
                 self.streamingThread.start()
                 self.inputPath = self.rtspUrl
             elif parsed_url.scheme in ['http', 'https']:
@@ -486,7 +486,7 @@ class YOLOSHOWBASE:
                     return False
                 self.showStatus(f'Loading Http：{self.rtspUrl}')
                 self.streamingThread = WebcamThread(self.rtspUrl)
-                self.streamingThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
+                self.streamingThread.changePixmap.connect(lambda frame: self.showImg(frame, self.ui.main_leftbox, 'img'))
                 self.streamingThread.start()
                 self.inputPath = self.rtspUrl
             else:
