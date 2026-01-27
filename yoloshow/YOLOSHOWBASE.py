@@ -453,7 +453,7 @@ class YOLOSHOWBASE:
         # RTSP 샘플 주소
         # https://www.data.go.kr/data/15063717/fileData.do?recommendDataYn=Y
         # rtsp://210.99.70.120:1935/live/cctv001.stream
-        # rtsp://210.99.70.120:1935/live/cctv008.stream
+        # rtmp://210.99.70.120/live/cctv001.stream
         rtspDialog = RtspInputMessageBox(self, mode="single")
         self.rtspUrl = None
         if rtspDialog.exec():
@@ -471,36 +471,41 @@ class YOLOSHOWBASE:
 
         if self.rtspUrl:
             parsed_url = urlparse(self.rtspUrl)
-            if parsed_url.scheme == 'rtsp':
+            if parsed_url.scheme in ['rtsp', 'rtmp']:
                 if not self.checkRtspUrl(self.rtspUrl):
                     self.showStatus('Rtsp stream is not available')
                     return False
                 self.showStatus(f'Loading Rtsp：{self.rtspUrl}')
-                self.rtspThread = WebcamThread(self.rtspUrl)
-                self.rtspThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
-                self.rtspThread.start()
+                self.streamingThread = WebcamThread(self.rtspUrl)
+                self.streamingThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
+                self.streamingThread.start()
                 self.inputPath = self.rtspUrl
             elif parsed_url.scheme in ['http', 'https']:
                 if not self.checkHttpUrl(self.rtspUrl):
                     self.showStatus('Http stream is not available')
                     return False
                 self.showStatus(f'Loading Http：{self.rtspUrl}')
-                self.rtspThread = WebcamThread(self.rtspUrl)
-                self.rtspThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
-                self.rtspThread.start()
+                self.streamingThread = WebcamThread(self.rtspUrl)
+                self.streamingThread.changePixmap.connect(lambda x: self.showImg(x, self.ui.main_leftbox, 'img'))
+                self.streamingThread.start()
                 self.inputPath = self.rtspUrl
             else:
-                self.showStatus('URL is not an rtsp stream')
+                self.showStatus('URL is not an {} stream'.format(parsed_url.scheme))
                 return False
 
     # 웹캠 Rtsp가 연결되어 있는지 확인
-    def checkRtspUrl(self, url, timeout=5):
+    def checkRtspUrl(self, url, timeout=15):
         try:
             # URL을 구문 분석하여 호스트 이름과 포트를 취득
             from urllib.parse import urlparse
             parsed_url = urlparse(url)
             hostname = parsed_url.hostname
-            port = parsed_url.port or 554  # RTSP 기본 포트는 554
+            if parsed_url.port is not None:
+                port = parsed_url.port
+            elif parsed_url.scheme == 'rtsp':
+                port = 554  # rtsp 기본 포트는 554
+            else:
+                port = 1935 # rtmp 기본 포트는 1935
 
             # socket 객체 생성
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -514,7 +519,7 @@ class YOLOSHOWBASE:
             return False
 
     # HTTP 웹캠이 연결되어 있는지 확인
-    def checkHttpUrl(self, url, timeout=5):
+    def checkHttpUrl(self, url, timeout=15):
         try:
             # URL을 구문 분석하여 호스트 이름과 포트를 취득
             from urllib.parse import urlparse
