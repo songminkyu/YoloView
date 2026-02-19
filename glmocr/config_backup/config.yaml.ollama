@@ -1,0 +1,12 @@
+pipeline:
+  maas:
+    enabled: false
+  
+  ocr_api:
+    api_host: localhost
+    api_port: 11434
+    api_path: /api/generate  # Use Ollama native endpoint
+    model: glm-ocr:latest    # Required: specify model name
+    api_mode: ollama_generate  # Required: use Ollama native format
+  
+  enable_layout: false  # Recommended for initial testing
