@@ -3,6 +3,7 @@ name = "yoloview"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+keywords = ["ocr", "yolo", "ai", "vision"]
 requires-python = ">=3.12"
 dependencies = [
     "colorlog>=6.9.0",
@@ -22,13 +23,24 @@ dependencies = [
     "pyyaml>=6.0.2",
     "requests>=2.32.3",
     "scikit-image>=0.25.2",
-    "torch>=2.9.1",
-    "torchaudio>=2.9.1",
-    "torchvision>=0.24.1",
     "tqdm>=4.67.1",
     "ultralytics>=8.4.14",
     "huggingface-hub>=1.4.1",
     "transformers>=5.2.0",
+]
+
+[project.optional-dependencies]
+cpu = [
+    "torch==2.9.1",
+    "torchaudio==2.9.1",
+    "torchvision==0.24.1",
+]
+cu128 = [
+    "torch==2.9.1",
+    "torchaudio==2.9.1",
+    "torchvision==0.24.1",
+]
+glmocr = [
     "accelerate>=1.12.0",
     "flask>=3.1.3",
     "portalocker>=3.2.0",
@@ -38,3 +50,48 @@ dependencies = [
     "pypdfium2>=5.5.0",
     "pytest>=9.0.2",
 ]
+all = [
+    "tokenizers>=0.22.2",
+    "accelerate>=1.12.0",
+    "flask>=3.1.3",
+    "portalocker>=3.2.0",
+    "python-dotenv>=1.2.1",
+    "wordfreq>=3.1.1",
+    "sentencepiece>=0.2.1",
+    "pypdfium2>=5.5.0",
+    "pytest>=9.0.2",
+]
+
+[tool.setuptools]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = "cpu" },
+    { extra = "cu128" },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu128", extra = "cu128" },
+]
+torchvision = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu128", extra = "cu128" },
+]
+torchaudio = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu128", extra = "cu128" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
