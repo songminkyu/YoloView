@@ -114,11 +114,11 @@ class PdOCR:
 
         return opencv_image
 
-class OCRThread(YOLOBaseThread):
+class PaddleOCRThread(YOLOBaseThread):
     def __init__(self):
-        super(OCRThread, self).__init__()
-        self.task = 'ocr'
-        self.project = 'runs/ocr'
+        super(PaddleOCRThread, self).__init__()
+        self.task = 'paddle-ocr'
+        self.project = 'runs/paddle-ocr'
         self.labels_path = None  # 라벨 파일 경로
         self.save_res = None
         self.save_path = None
@@ -185,5 +185,5 @@ class OCRThread(YOLOBaseThread):
         return translation_result
 
 if __name__ == '__main__':
-    r = OCRThread()
+    r = PaddleOCRThread()
     r.postprocess(None,None,None)

@@ -101,7 +101,7 @@ class YOLOBaseThread(QThread, BasePredictor):
 
     def run(self):
 
-        if self.task not in ['bbox_valid', 'seg_valid', 'ocr']:
+        if self.task not in ['bbox_valid', 'seg_valid', 'paddle-ocr']:
             if not self.model or (self.track_mode and not self.track_model):
                 self.send_msg.emit("Loading model: {}".format(os.path.basename(self.new_model_name)))
                 self.init_setup_model(self.new_model_name)
@@ -125,7 +125,7 @@ class YOLOBaseThread(QThread, BasePredictor):
         if self.task in {'bbox_valid', 'seg_valid'} and self.is_folder:
             self.postprocess(None, None, None)
             return
-        elif self.task == 'ocr':
+        elif self.task == 'paddle-ocr':
             self.postprocess(self.ocr_lang, None, None)
             return
         elif self.is_folder:
