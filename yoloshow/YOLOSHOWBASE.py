@@ -44,6 +44,7 @@ from yolocode.BBoxValidThread import BBoxValidThread
 from yolocode.SegValidThread import SegValidThread
 from yolocode.YOLOClsThread import YOLOClsThread
 from yolocode.PaddleOCRThread import PaddleOCRThread
+from yolocode.GlmOCRThread import GlmOCRThread
 from ultralytics import YOLO
 from ultralytics import FastSAM
 from ultralytics import RTDETR
@@ -88,9 +89,10 @@ MODEL_THREAD_CLASSES = {
     "samv2": SAM2PredictorThread,
     "bbox-valid": BBoxValidThread,
     "seg-valid": SegValidThread,
-    "paddle-ocr": PaddleOCRThread
+    "paddle-ocr": PaddleOCRThread,
+    "glm-ocr": GlmOCRThread,
 }
-# 扩展MODEL_THREAD_CLASSES字典
+# MODEL_THREAD_CLASSES
 MODEL_NAME_DICT = list(MODEL_THREAD_CLASSES.items())
 for key, value in MODEL_NAME_DICT:
     MODEL_THREAD_CLASSES[f"{key}_left"] = value
@@ -112,7 +114,7 @@ ALL_MODEL_NAMES = [
 
     # 기타 모델
     "rtdetr", "fastsam", "sam", "samv2",
-    "bbox-valid", "seg-valid", "paddle-ocr"
+    "bbox-valid", "seg-valid", "paddle-ocr", "glm-ocr"
 ]
 loggertool = LoggerUtils()
 
@@ -644,7 +646,8 @@ class YOLOSHOWBASE:
             "sam": lambda name: "sam" in name,
             "bbox-valid": lambda name: "bbox-valid" in name,
             "seg-valid": lambda name: "seg-valid" in name,
-            "paddle-ocr": lambda name: "paddle-ocr" in name
+            "paddle-ocr": lambda name: "paddle-ocr" in name,
+            "glm-ocr": lambda name: "glm-ocr" in name
         }
 
         if mode:
