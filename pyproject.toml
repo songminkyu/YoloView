@@ -31,14 +31,14 @@ dependencies = [
 
 [project.optional-dependencies]
 cpu = [
-    "torch==2.9.1",
-    "torchaudio==2.9.1",
+    "torch>=2.9.1",
+    "torchaudio>=2.9.1",
     "torchvision==0.24.1",
 ]
 cu128 = [
-    "torch==2.9.1",
-    "torchaudio==2.9.1",
-    "torchvision==0.24.1",
+    "torch>=2.9.1",
+    "torchaudio>=2.9.1",
+    "torchvision>=0.24.1",
 ]
 glmocr = [
     "accelerate>=1.12.0",
@@ -63,6 +63,7 @@ all = [
 ]
 
 [tool.setuptools]
+packages = []
 
 [tool.uv]
 conflicts = [

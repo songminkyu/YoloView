@@ -12,6 +12,7 @@ from googletrans import Translator
 import asyncio
 
 # https://www.paddleocr.ai/main/en/update/upgrade_notes.html
+# https://github.com/PaddlePaddle/PaddleOCR/issues/17539
 
 class PdOCR:
     def __init__(self, lang: str = "korean", **kwargs):
@@ -20,7 +21,8 @@ class PdOCR:
             use_doc_orientation_classify=False,
             use_doc_unwarping=False,
             use_textline_orientation=False,
-            lang=self.lang)
+            lang=self.lang,
+            enable_mkldnn=False)
         self.img_path = None
         self.ocr_result = {}
 
