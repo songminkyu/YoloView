@@ -375,7 +375,10 @@ def apply_layout_postprocess(
                 for orig_idx in range(len(boxes)):
                     if np.allclose(boxes[orig_idx], box_data[2:6], atol=1.0):
                         if orig_idx < len(polygon_points):
-                            poly = polygon_points[orig_idx].astype(np.float32)
+                            candidate_poly = polygon_points[orig_idx]
+                            # Some detectors may return None for missing polygons
+                            if candidate_poly is not None:
+                                poly = candidate_poly.astype(np.float32)
                         break
 
             if poly is None:

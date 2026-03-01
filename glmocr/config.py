@@ -46,6 +46,8 @@ _ENV_MAP: Dict[str, str] = {
     "OCR_MODEL": "pipeline.ocr_api.model",
     # Layout
     "ENABLE_LAYOUT": "pipeline.enable_layout",
+    # Allow overriding which GPU(s) the layout model uses
+    "LAYOUT_CUDA_VISIBLE_DEVICES": "pipeline.layout.cuda_visible_devices",
     # Logging
     "LOG_LEVEL": "logging.level",
 }
@@ -360,6 +362,11 @@ class GlmOcrConfig(_BaseConfig):
             "timeout": "pipeline.maas.request_timeout",
             "enable_layout": "pipeline.enable_layout",
             "log_level": "logging.level",
+            # Self-hosted OCR API
+            "ocr_api_host": "pipeline.ocr_api.api_host",
+            "ocr_api_port": "pipeline.ocr_api.api_port",
+            # Layout GPU binding
+            "cuda_visible_devices": "pipeline.layout.cuda_visible_devices",
         }
         for kw, dotted in _KW_MAP.items():
             if kw in overrides and overrides[kw] is not None:
