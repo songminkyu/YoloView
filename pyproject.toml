@@ -24,7 +24,7 @@ dependencies = [
     "requests>=2.32.3",
     "scikit-image>=0.25.2",
     "tqdm>=4.67.1",
-    "ultralytics>=8.4.30",
+    "ultralytics>=8.4.32",
     "huggingface-hub>=1.4.1",
     "transformers>=5.2.0",
 ]
